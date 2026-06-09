@@ -35,7 +35,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Iniciar sesión</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
-<body>
+<body class="auth-page">
+    <div class="back-link">
+        <a href="index.php">← Volver al inicio</a>
+    </div>
     
     <div class="container">
         <img class="logo" src="img/logonegro.png" alt="Logo" class="logo">
@@ -55,6 +58,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
         <div class="form-link">
             ¿No tienes cuenta? <a href="signup.php">Registrarse</a>
+        </div>
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+            <a href="index.php" style="display: block; text-align: center; padding: 10px; background-color: #f0f0f0; color: #333; text-decoration: none; border-radius: 8px; font-weight: 500;">← Volver al Inicio</a>
         </div>
     </div>
 </body>
