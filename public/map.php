@@ -1,12 +1,9 @@
 <?php
-// Iniciar sesión para verificar si el usuario está logueado
 session_start();
 
-// Verificar si el usuario NO ha iniciado sesión
 if (!isset($_SESSION['user_id'])) {
-    // Si no está logueado, redirigir a login
     header('Location: login.php');
-    exit();
+    exit;
 }
 ?>
 
@@ -40,18 +37,15 @@ if (!isset($_SESSION['user_id'])) {
 
     <script src="../assets/map/leaflet.js"></script>
     <script>
-        // ========================================
-        // DATOS DE EVENTOS (ejemplo básico)
-        // ========================================
         const eventos = [
             {
                 id: 1,
-                nombre: "-",
-                descripcion: "-",
-                tipo: "-",
+                nombre: "Minecraft en el Parque",
+                descripcion: "Evento de Minecraft",
+                tipo: "Juego",
                 lat: -34.437655,
                 lng: -57.434721,
-                fecha: "-"
+                fecha: "2026-06-11"
             },
             {
                 id: 2,
@@ -73,13 +67,9 @@ if (!isset($_SESSION['user_id'])) {
             }
         ];
 
-        // ========================================
-        // INICIALIZAR MAPA CON LÍMITES DE URUGUAY
-        // ========================================
-        // Límites aproximados de Uruguay
         const limiteUruguay = L.latLngBounds([
-            [-35.5, -59.0], // suroeste
-            [-30.0, -53.0]  // noreste
+            [-35.5, -59.0],
+            [-30.0, -53.0]
         ]);
 
         const mapa = L.map('mapa', {
@@ -94,27 +84,14 @@ if (!isset($_SESSION['user_id'])) {
             maxZoom: 19
         }).addTo(mapa);
 
-        // ========================================
-        // FUNCIÓN: Crear marcadores en el mapa
-        // ========================================
         function crearMarcadores() {
             eventos.forEach(evento => {
                 const marcador = L.marker([evento.lat, evento.lng]).addTo(mapa);
-                const contenidoPopup = `
-                    <div style="font-weight: bold; color: var(--color-primary);">${evento.nombre}</div>
-                    <div style="font-size: 12px; color: #666;">${evento.descripcion}</div>
-                    <div style="margin-top: 5px; font-size: 12px;">
-                        <strong>Tipo:</strong> ${evento.tipo}<br>
-                        <strong>Fecha:</strong> ${evento.fecha}
-                    </div>
-                `;
-                marcador.bindPopup(contenidoPopup);
+                const popup = `<strong>${evento.nombre}</strong><br>${evento.descripcion}<br><strong>Tipo:</strong> ${evento.tipo}`;
+                marcador.bindPopup(popup);
             });
         }
 
-        // ========================================
-        // FUNCIÓN: Llenar lista de eventos en la barra lateral
-        // ========================================
         function llenarListaEventos() {
             const lista = document.getElementById('lista-eventos');
             lista.innerHTML = '';
@@ -122,25 +99,14 @@ if (!isset($_SESSION['user_id'])) {
             eventos.forEach(evento => {
                 const div = document.createElement('div');
                 div.className = 'elemento-evento';
-                div.innerHTML = `
-                    <h3>${evento.nombre}</h3>
-                    <p>${evento.descripcion}</p>
-                    <p><strong>${evento.fecha}</strong></p>
-                    <span class="tipo-evento">${evento.tipo}</span>
-                `;
-
-                // Al hacer click en un evento, centrar mapa y mostrar popup
+                div.innerHTML = `<h3>${evento.nombre}</h3><p>${evento.descripcion}</p><p><strong>${evento.fecha}</strong></p><span class="tipo-evento">${evento.tipo}</span>`;
                 div.addEventListener('click', () => {
                     mapa.setView([evento.lat, evento.lng], 15);
                 });
-
                 lista.appendChild(div);
             });
         }
 
-        // ========================================
-        // EJECUTAR AL CARGAR
-        // ========================================
         crearMarcadores();
         llenarListaEventos();
     </script>

@@ -1,34 +1,32 @@
 <?php
-// Incluir el archivo de configuración de la base de datos y la clase User
-require '../database/database.php';
-require '../src/User.php';
+session_start();
+
+require '../includes/config.php';
+require '../src/user.php';
 
 $error = '';
 
-// Verificar si se recibió una solicitud POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Crear una instancia de la clase User, pasando la conexión PDO como argumento
+    $username = htmlspecialchars($_POST['username']);
+    $email = htmlspecialchars($_POST['email']);
+    $password = htmlspecialchars($_POST['password']);
+    
     $user = new User($pdo);
-    // Sanitizar la entrada del usuario e intenta iniciar sesión
-    $loggedInUser = $user->login(htmlspecialchars($_POST['username']), htmlspecialchars($_POST['password']), htmlspecialchars($_POST['email']));
-    // Verificar si se pudo iniciar sesión correctamente
+    $loggedInUser = $user->login($username, $password, $email);
+    
     if ($loggedInUser) {
-        // Iniciar sesión de PHP para mantener al usuario autenticado
-        session_start();
-        // Almacenar el ID de usuario en la sesión para identificar al usuario
         $_SESSION['user_id'] = $loggedInUser['id'];
-        // Redirigir al usuario a la página de bienvenida después de iniciar sesión
+        $_SESSION['username'] = $loggedInUser['username'];
         header('Location: welcome.php');
         exit;
     } else {
-        // Mostrar un mensaje de error si las credenciales de inicio de sesión son incorrectas
-        $error = 'Credenciales de inicio de sesión inválidas';
+        $error = 'Credenciales inválidas';
     }
 }
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -37,11 +35,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body class="auth-page">
     <div class="back-link">
-        <a href="index.php">← Volver al inicio</a>
+        <a href="home.php">← Volver al inicio</a>
     </div>
     
     <div class="container">
-        <img class="logo" src="img/logonegro.png" alt="Logo" class="logo">
+        <img class="logo" src="img/LogoNegro1.png" alt="Logo" class="logo">
         <hr class="hr">
         <br>
         <h2>Inicia sesión</h2>
@@ -60,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ¿No tienes cuenta? <a href="signup.php">Registrarse</a>
         </div>
         <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
-            <a href="index.php" style="display: block; text-align: center; padding: 10px; background-color: #f0f0f0; color: #333; text-decoration: none; border-radius: 8px; font-weight: 500;">← Volver al Inicio</a>
+            <a href="home.php" style="display: block; text-align: center; padding: 10px; background-color: #f0f0f0; color: #333; text-decoration: none; border-radius: 8px; font-weight: 500;">← Volver al Inicio</a>
         </div>
     </div>
 </body>

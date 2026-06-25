@@ -11,7 +11,7 @@
     <!-- Header -->
     <header>
         <nav>
-            <div class="logo-header">APEX<span class="logo-accent">DIGITAL</span></div>
+            <div href="home.php" class="logo-header">APEX<span class="logo-accent">DIGITAL</span></div>
             <ul>
                 <li><a href="#about">Nosotros</a></li>
                 <li><a href="#mision">Misión & Visión</a></li>
@@ -133,18 +133,17 @@
             <a href="#about">Nosotros</a>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2026 ApexDigital</p>
+            <p>2026 ApexDigital</p>
         </div>
     </footer>
 
     <!-- Leaflet JS -->
     <script src="../assets/map/leaflet.js"></script>
     <script>
-        var mapElement = document.getElementById('map');
+        const mapElement = document.getElementById('map');
         if (mapElement) {
-            var coords = [-34.437655, -57.434721];
-            
-            var map = L.map('map', {
+            const coords = [-34.437655, -57.434721];
+            const map = L.map('map', {
                 center: coords,
                 zoom: 12,
                 minZoom: 10,
@@ -156,7 +155,7 @@
                 maxZoom: 19
             }).addTo(map);
 
-            var marker = L.marker(coords).addTo(map);
+            const marker = L.marker(coords).addTo(map);
             marker.bindPopup('<strong>ApexDigital</strong><br>Juan Lacaze, Uruguay').openPopup();
         }
     </script>

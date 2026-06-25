@@ -1,18 +1,12 @@
 <?php
-// Iniciar la sesión
 session_start();
 
-// Verificar si el usuario está logueado
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
-    exit();
+    exit;
 }
 
-// Obtener el nombre del usuario (si está disponible)
-$username = "Usuario";
-if (isset($_SESSION['username'])) {
-    $username = htmlspecialchars($_SESSION['username']);
-}
+$username = isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Usuario';
 ?>
 
 <!DOCTYPE html>

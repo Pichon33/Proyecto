@@ -1,23 +1,22 @@
 <?php
-// Incluir el archivo de configuración de la base de datos y la clase User
-require '../database/database.php';
-require '../src/User.php';
+require '../includes/config.php';
+require '../src/user.php';
+
+$error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $error = '';
+    $password = htmlspecialchars($_POST['password']);
+    $confirmPassword = htmlspecialchars($_POST['confirm_password']);
     
-    // Confirmar que la contraseña ingresada sea igual a la confirmación de contraseña
-    if (isset($_POST['password']) && isset($_POST['confirm_password'])) {
-        if ($_POST['password'] !== $_POST['confirm_password']) {
-            $error = "Las contraseñas no coinciden.";
-        }
-    }
-    
-    // Solo registrar si no hay errores
-    if (empty($error)) {
+    if ($password !== $confirmPassword) {
+        $error = "Las contraseñas no coinciden.";
+    } else {
         $user = new User($pdo);
-        $user->register(htmlspecialchars($_POST['username']), htmlspecialchars($_POST['password']), htmlspecialchars($_POST['email']));
-        // Redirigir al usuario a la página de inicio de sesión después del registro
+        $user->register(
+            htmlspecialchars($_POST['username']), 
+            $password, 
+            htmlspecialchars($_POST['email'])
+        );
         header('Location: login.php');
         exit;
     }
@@ -26,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -39,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
     
     <div class="container">
-        <img class="logo" src="img/logonegro.png" alt="Logo" class="logo">
+        <img class="logo" src="img/LogoNegro1.png" alt="Logo" class="logo">
         <hr class="hr">
         <br>
         <h2>Registrarse</h2>
