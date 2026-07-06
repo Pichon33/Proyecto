@@ -1,1213 +1,3 @@
-/* ========================================
-   VARIABLES Y RESET GLOBAL
-   ======================================== */
-
-/* Variables de colores reutilizables en todo el sitio */
-:root {
-    --color-primary: #d73856;      /* Rojo/Rosa - Color principal de la marca */
-    --color-secondary: #6b4fa0;    /* Morado - Color secundario para acentos */
-    --color-dark: #1a0033;         /* Morado oscuro - Para fondos y textos oscuros */
-    --color-light: #f9f9f9;        /* Gris muy claro - Fondos suaves */
-    --color-white: #ffffff;        /* Blanco puro - Para fondos claros */
-    --color-text: #333333;         /* Gris oscuro - Color de texto principal */
-    --color-border: #f0f0f0;       /* Gris claro - Para bordes y separadores */
-    --color-error: #d73856;        /* Rojo/Rosa - Color para mensajes de error */
-    --color-input-bg: #f0f0f0;     /* Gris claro - Fondo de campos de entrada */
-    --color-input-focus: #e0e0e0;  /* Gris más oscuro - Fondo cuando el input está activo */
-}
-
-/* Reset - Elimina márgenes y rellenos por defecto del navegador */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box; /* Incluye padding y border en el ancho total */
-}
-
-html, body {
-    height: 100%; /* Hace que el body ocupe toda la pantalla */
-}
-
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Tipografía moderna */
-    color: var(--color-text);  /* Aplica el color de texto predeterminado */
-    line-height: 1.6; /* Espaciado entre líneas para mejor legibilidad */
-}
-
-/* ========================================
-   HEADER Y NAVEGACIÓN
-   ======================================== */
-
-/* Encabezado con fondo degradado que se queda fijo al hacer scroll */
-header {
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-dark) 100%);
-    padding: 20px 0;
-    position: sticky; /* Se queda en la parte superior al hacer scroll */
-    top: 0;
-    z-index: 100; /* Asegura que esté sobre otros elementos */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
-}
-
-/* Barra de navegación - Flex para alinear contenido en horizontal */
-nav {
-    max-width: 1200px; /* Ancho máximo de contenido */
-    margin: 0 auto; /* Centra la navegación */
-    display: flex;
-    justify-content: space-between; /* Espaciado entre logo, menú y botones */
-    align-items: center;
-    padding: 0 20px;
-}
-
-/* Logo en el header */
-.logo-header {
-    font-weight: bold;
-    color: var(--color-white);
-    font-size: 24px;
-    letter-spacing: 1px; /* Espaciado entre letras */
-}
-
-/* Parte del logo con color diferente (DIGITAL) */
-.logo-accent {
-    color: #ffb3c1; /* Rosa claro */
-}
-
-/* Lista de enlaces de navegación */
-nav ul {
-    display: flex;
-    list-style: none; /* Elimina viñetas */
-    gap: 30px; /* Espaciado entre items */
-}
-
-/* Enlaces generales en navegación */
-nav a {
-    color: var(--color-white);
-    text-decoration: none;
-    font-weight: 500;
-    transition: opacity 0.3s ease; /* Suaviza cambios visuales */
-}
-
-nav a:hover {
-    opacity: 0.8; /* Se vuelve más transparente al pasar el mouse */
-}
-
-/* Contenedor de botones login/signup en header */
-.nav-buttons {
-    display: flex;
-    gap: 15px;
-}
-
-.nav-buttons a {
-    padding: 10px 20px;
-    border-radius: 8px; /* Esquinas redondeadas */
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.3s ease;
-}
-
-/* Botón "Ingresar" - Borde blanco sin fondo */
-.login-btn {
-    background-color: transparent;
-    border: 2px solid var(--color-white);
-    color: var(--color-white);
-}
-
-.login-btn:hover {
-    background-color: var(--color-white);
-    color: var(--color-primary);
-}
-
-/* Botón "Registrarse" - Fondo blanco */
-.signup-btn {
-    background-color: var(--color-white);
-    color: var(--color-primary);
-}
-
-.signup-btn:hover {
-    background-color: #f0f0f0;
-}
-
-/* ========================================
-   HERO SECTION (Sección grande con título)
-   ======================================== */
-
-.hero {
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-dark) 100%);
-    color: var(--color-white);
-    padding: 120px 20px; /* Mucho espacio arriba y abajo */
-    text-align: center;
-}
-
-.hero h1 {
-    font-size: 52px;
-    margin-bottom: 15px;
-    font-weight: 700;
-    letter-spacing: 2px;
-}
-
-.hero p {
-    font-size: 24px;
-    margin-bottom: 40px;
-    font-style: italic;
-    opacity: 0.95; /* Ligeramente transparente */
-}
-
-/* Descripción más pequeña debajo del título principal */
-.hero-desc {
-    font-size: 16px;
-    max-width: 600px;
-    margin: 0 auto 40px;
-    opacity: 0.9;
-}
-
-/* ========================================
-   BOTONES CTA (Call To Action)
-   ======================================== */
-
-/* Contenedor de botones centrados y flexibles */
-.cta-buttons {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    flex-wrap: wrap; /* Se adapta en pantallas pequeñas */
-}
-
-.cta-btn {
-    padding: 14px 35px;
-    font-size: 16px;
-    font-weight: 600;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    display: inline-block;
-}
-
-/* Botón principal - Fondo blanco */
-.cta-primary {
-    background-color: var(--color-white);
-    color: var(--color-primary);
-}
-
-.cta-primary:hover {
-    transform: translateY(-2px); /* Se mueve hacia arriba */
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada */
-}
-
-/* Botón secundario - Transparente con borde */
-.cta-secondary {
-    background-color: transparent;
-    color: var(--color-white);
-    border: 2px solid var(--color-white);
-}
-
-.cta-secondary:hover {
-    background-color: rgba(255, 255, 255, 0.1); /* Fondo blanco muy suave */
-}
-
-/* ========================================
-   SECCIONES GENERALES
-   ======================================== */
-
-section {
-    padding: 70px 20px; /* Espacio vertical considerable */
-    max-width: 1200px; /* Ancho máximo del contenido */
-    margin: 0 auto; /* Centra la sección */
-}
-
-/* Títulos de sección grandes */
-section h2 {
-    font-size: 36px;
-    margin-bottom: 40px;
-    text-align: center;
-    color: var(--color-dark);
-    position: relative;
-    padding-bottom: 15px;
-}
-
-/* Línea decorativa debajo de los títulos */
-section h2:after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%); /* Centra la línea */
-    width: 60px;
-    height: 4px;
-    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
-    border-radius: 2px;
-}
-
-h2, h3, h4 {
-    color: var(--color-text);
-}
-
-/* ========================================
-   SECCIÓN NOSOTROS
-   ======================================== */
-
-.about-section {
-    background-color: var(--color-light); /* Fondo gris claro */
-}
-
-/* Caja de contenido con borde y sombra */
-.about-content {
-    background: var(--color-white);
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); /* Sombra suave */
-    border-left: 5px solid var(--color-primary); /* Borde rojo a la izquierda */
-    font-size: 18px;
-    line-height: 1.8;
-}
-
-/* ========================================
-   MISIÓN Y VISIÓN
-   ======================================== */
-
-/* Grid de 2 columnas para misión y visión */
-.mv-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
-}
-
-/* Tarjetas de misión/visión con fondo degradado suave */
-.mv-card {
-    background: linear-gradient(135deg, rgba(215, 56, 86, 0.1) 0%, rgba(107, 79, 160, 0.1) 100%);
-    padding: 40px;
-    border-radius: 12px;
-    border: 2px solid var(--color-border);
-    transition: transform 0.3s ease;
-}
-
-.mv-card:hover {
-    transform: translateY(-5px); /* Se levanta al hacer hover */
-}
-
-.mv-card h3 {
-    color: var(--color-primary);
-    font-size: 22px;
-    margin-bottom: 15px;
-}
-
-.mv-card p {
-    font-size: 15px;
-    color: #666;
-    line-height: 1.7;
-}
-
-/* ========================================
-   OBJETIVOS
-   ======================================== */
-
-.objectives-section {
-    background-color: var(--color-white);
-}
-
-/* Grid responsivo para objetivos */
-.objectives-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 25px;
-}
-
-/* Tarjeta individual de objetivo */
-.objective-item {
-    background: var(--color-white);
-    padding: 25px;
-    border-radius: 10px;
-    border-top: 4px solid var(--color-primary); /* Borde superior rojo */
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-    text-align: center;
-    transition: all 0.3s ease;
-}
-
-.objective-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12); /* Sombra más fuerte */
-}
-
-.objective-item h4 {
-    color: var(--color-dark);
-    margin-bottom: 10px;
-    font-size: 15px;
-}
-
-.objective-item p {
-    color: #666;
-    font-size: 13px;
-    line-height: 1.5;
-}
-
-/* ========================================
-   VALORES
-   ======================================== */
-
-.values-section {
-    background-color: var(--color-light);
-}
-
-/* Grid responsivo para tarjetas de valores */
-.values-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 25px;
-}
-
-/* Tarjetas de valores con fondo degradado de colores principales */
-.value-card {
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
-    color: var(--color-white);
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    text-align: center;
-    transition: transform 0.3s ease;
-}
-
-.value-card:hover {
-    transform: scale(1.05); /* Crece ligeramente */
-}
-
-.value-card h3 {
-    font-size: 18px;
-    margin-bottom: 12px;
-    color: var(--color-white);
-}
-
-.value-card p {
-    font-size: 13px;
-    line-height: 1.6;
-    opacity: 0.95;
-}
-
-/* ========================================
-   UBICACIÓN Y MAPA
-   ======================================== */
-
-.location-section {
-    background-color: var(--color-white);
-}
-
-/* Grid para información y mapa lado a lado */
-.map-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
-    align-items: start;
-}
-
-/* Información sobre la ubicación */
-.map-info {
-    background: var(--color-light);
-    padding: 30px;
-    border-radius: 10px;
-}
-
-.map-info h3 {
-    color: var(--color-primary);
-    margin-bottom: 15px;
-    font-size: 20px;
-}
-
-.map-info p {
-    color: #666;
-    margin-bottom: 12px;
-    font-size: 14px;
-    line-height: 1.6;
-}
-
-/* Elemento del mapa interactivo */
-#map {
-    height: 350px;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-}
-
-/* ========================================
-   FOOTER
-   ======================================== */
-
-footer {
-    background: var(--color-dark); /* Fondo morado oscuro */
-    color: var(--color-white);
-    text-align: center;
-    padding: 35px 20px;
-    margin-top: 50px;
-}
-
-footer h4 {
-    margin-bottom: 10px;
-    font-size: 18px;
-    letter-spacing: 1px;
-    color: var(--color-white);
-}
-
-footer p {
-    margin-bottom: 8px;
-    opacity: 0.9;
-    font-size: 14px;
-}
-
-/* Enlaces en el footer */
-.footer-links {
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-}
-
-.footer-links a {
-    color: var(--color-white);
-    text-decoration: none;
-    transition: opacity 0.3s ease;
-    font-size: 13px;
-}
-
-.footer-links a:hover {
-    opacity: 0.7;
-}
-
-/* Línea divisoria al final del footer */
-.footer-bottom {
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-    margin-top: 25px;
-    padding-top: 20px;
-    font-size: 12px;
-    opacity: 0.8;
-}
-
-/* ========================================
-   BACK LINK (Volver en Login/Signup)
-   ======================================== */
-
-.back-link {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-}
-
-.back-link a {
-    color: var(--color-primary);
-    text-decoration: none;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: opacity 0.3s ease;
-}
-
-.back-link a:hover {
-    opacity: 0.7;
-}
-
-/* ========================================
-   FORMULARIOS (LOGIN/SIGNUP)
-   ======================================== */
-
-/* Página de autenticación con fondo degradado */
-body.auth-page {
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-dark) 100%);
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* Caja principal de formulario */
-.container {
-    background: var(--color-white);
-    border-radius: 20px;
-    padding: 40px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    width: 100%;
-    max-width: 400px;
-}
-
-.container h2 {
-    text-align: center;
-    color: var(--color-text);
-    margin-bottom: 30px;
-    font-size: 24px;
-}
-
-/* Formulario - Elementos apilados verticalmente */
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-/* Campos de entrada */
-input {
-    padding: 12px 15px;
-    border: none;
-    border-radius: 8px;
-    background-color: var(--color-input-bg);
-    font-size: 14px;
-    transition: background-color 0.3s ease;
-}
-
-input:focus {
-    outline: none;
-    background-color: var(--color-input-focus); /* Se oscurece al hacer clic */
-}
-
-/* Botón de envío */
-button {
-    padding: 12px 20px;
-    background-color: var(--color-secondary);
-    color: var(--color-white);
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-button:hover {
-    background-color: #5a3f8a; /* Morado más oscuro */
-}
-
-/* Mensaje de error */
-.error {
-    color: var(--color-error);
-    background-color: #ffe0e6; /* Rosa muy claro */
-    padding: 12px 15px;
-    border-radius: 8px;
-    margin-bottom: 15px;
-    border-left: 4px solid var(--color-error);
-    font-size: 14px;
-}
-
-/* Enlace para ir a otra página (ej: "¿No tienes cuenta?") */
-.form-link {
-    text-align: center;
-    margin-top: 20px;
-    font-size: 14px;
-    color: #666;
-}
-
-.form-link a {
-    color: var(--color-secondary);
-    text-decoration: none;
-    font-weight: 600;
-}
-
-.form-link a:hover {
-    text-decoration: underline;
-}
-
-/* Logo en formularios */
-.logo {
-    display: block;
-    margin: 0 auto 1px;
-    width: 120px;
-    height: 130px;
-}
-
-.hr {
-    border: none;
-    border-top: 2px solid var(--color-dark);
-}
-
-/* ========================================
-   RESPONSIVE DESIGN (Pantallas medianas)
-   ======================================== */
-
-@media (max-width: 768px) {
-    nav ul {
-        display: none; /* Oculta el menú en pantallas pequeñas */
-    }
-
-    .logo-header {
-        font-size: 20px;
-    }
-
-    .hero h1 {
-        font-size: 36px;
-    }
-
-    .hero p {
-        font-size: 18px;
-    }
-
-    .hero {
-        padding: 80px 20px;
-    }
-
-    section {
-        padding: 50px 20px;
-    }
-
-    section h2 {
-        font-size: 28px;
-    }
-
-    .mv-container {
-        grid-template-columns: 1fr; /* Una columna en lugar de dos */
-    }
-
-    .map-container {
-        grid-template-columns: 1fr;
-    }
-
-    #map {
-        height: 300px;
-    }
-
-    .nav-buttons {
-        gap: 8px;
-    }
-
-    .nav-buttons a {
-        padding: 8px 15px;
-        font-size: 13px;
-    }
-
-    .objectives-grid {
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    }
-
-    .values-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .container {
-        margin: 20px;
-    }
-}
-
-@media (max-width: 480px) {
-    .logo-header {
-        font-size: 18px;
-    }
-
-    .hero h1 {
-        font-size: 28px;
-    }
-
-    .hero p {
-        font-size: 16px;
-    }
-
-    .hero {
-        padding: 60px 20px;
-    }
-
-    .cta-buttons {
-        flex-direction: column;
-    }
-
-    .cta-btn {
-        width: 100%;
-    }
-
-    section h2 {
-        font-size: 24px;
-    }
-
-    section {
-        padding: 40px 15px;
-    }
-
-    .mv-container {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-
-    .objectives-grid {
-        grid-template-columns: 1fr;
-        gap: 15px;
-    }
-
-    .values-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .map-container {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-
-    #map {
-        height: 250px;
-    }
-
-    nav {
-        flex-direction: column;
-        gap: 15px;
-        padding: 15px;
-    }
-
-    nav ul {
-        display: none;
-    }
-
-    .nav-buttons {
-        width: 100%;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    nav a {
-        font-size: 13px;
-    }
-
-    .back-link {
-        top: 15px;
-        left: 15px;
-    }
-
-    .back-link a {
-        font-size: 13px;
-    }
-
-    .container {
-        max-width: 100%;
-        padding: 30px 20px;
-        margin: 0;
-        border-radius: 0;
-    }
-
-    footer {
-        padding: 25px 15px;
-    }
-}
-
-@media (max-width: 360px) {
-    .hero h1 {
-        font-size: 24px;
-        letter-spacing: 0.5px;
-    }
-
-    .hero p {
-        font-size: 14px;
-    }
-
-    .cta-btn {
-        padding: 12px 25px;
-        font-size: 14px;
-    }
-
-    section h2 {
-        font-size: 20px;
-    }
-
-    .objective-item h4 {
-        font-size: 13px;
-    }
-
-    .objective-item p {
-        font-size: 12px;
-    }
-
-    .value-card h3 {
-        font-size: 16px;
-    }
-
-    .value-card p {
-        font-size: 12px;
-    }
-}
-
-/* ========================================
-   PÁGINA MAPA (map.php)
-   ======================================== */
-
-/* Página de mapa a pantalla completa */
-body.mapa-pagina {
-    background: #ffffff;
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
-
-/* Encabezado del mapa */
-.encabezado-mapa {
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-dark) 100%);
-    padding: 15px 20px;
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    flex-shrink: 0; /* No se reduce con el flex */
-}
-
-.encabezado-mapa h1 {
-    font-size: 24px;
-    margin: 0;
-}
-
-.encabezado-mapa .enlaces-navegacion {
-    display: flex;
-    gap: 15px;
-}
-
-.encabezado-mapa a {
-    color: var(--color-white);
-    text-decoration: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
-
-.encabezado-mapa a:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-}
-
-/* Contenedor principal del mapa */
-.contenedor-mapa-completo {
-    display: flex;
-    flex: 1;
-    overflow: hidden;
-}
-
-/* Barra lateral con lista de eventos */
-.barra-lateral-mapa {
-    width: 300px;
-    background: var(--color-light);
-    padding: 20px;
-    overflow-y: auto; /* Scroll vertical si hay muchos eventos */
-    border-right: 1px solid #e0e0e0;
-    flex-shrink: 0;
-}
-
-.barra-lateral-mapa h2 {
-    font-size: 18px;
-    color: var(--color-dark);
-    margin: 0 0 20px 0;
-    border-bottom: 2px solid var(--color-primary);
-    padding-bottom: 10px;
-}
-
-/* Elemento individual en la lista de eventos */
-.elemento-evento {
-    background: var(--color-white);
-    padding: 15px;
-    margin-bottom: 15px;
-    border-radius: 8px;
-    border-left: 4px solid var(--color-primary);
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.elemento-evento:hover {
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    transform: translateX(5px); /* Se mueve hacia la derecha */
-}
-
-.elemento-evento h3 {
-    font-size: 14px;
-    color: var(--color-dark);
-    margin: 0 0 5px 0;
-}
-
-.elemento-evento p {
-    font-size: 12px;
-    color: #666;
-    margin: 5px 0;
-}
-
-/* Etiqueta de tipo de evento */
-.elemento-evento .tipo-evento {
-    display: inline-block;
-    font-size: 11px;
-    background: var(--color-primary);
-    color: var(--color-white);
-    padding: 3px 8px;
-    border-radius: 4px;
-    margin-top: 5px;
-}
-
-/* Elemento del mapa - ocupa el espacio restante */
-#mapa {
-    flex: 1;
-    width: 100%;
-    height: 100%;
-}
-
-/* ========================================
-   PÁGINA WELCOME (Dashboard - welcome.php)
-   ======================================== */
-
-body.welcome-page {
-    background: #f5f5f5; /* Gris muy claro */
-    min-height: 100vh;
-}
-
-/* Encabezado del dashboard */
-.welcome-header {
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-dark) 100%);
-    color: var(--color-white);
-    padding: 30px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
-
-.welcome-header h1 {
-    font-size: 28px;
-    margin: 0;
-}
-
-/* Información del usuario (nombre y botón logout) */
-.welcome-header .user-info {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-/* Botón cerrar sesión */
-.logout-btn {
-    background: rgba(255, 255, 255, 0.2);
-    border: 2px solid var(--color-white);
-    color: var(--color-white);
-    padding: 10px 20px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 600;
-    transition: all 0.3s ease;
-}
-
-.logout-btn:hover {
-    background: var(--color-white);
-    color: var(--color-primary);
-}
-
-/* Contenedor principal del dashboard */
-.welcome-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 40px 20px;
-}
-
-.welcome-title {
-    font-size: 32px;
-    color: var(--color-dark);
-    margin-bottom: 10px;
-}
-
-.welcome-subtitle {
-    font-size: 16px;
-    color: #666;
-    margin-bottom: 40px;
-}
-
-/* Grid de tarjetas de características */
-.features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 25px;
-    margin-bottom: 40px;
-}
-
-/* Tarjeta individual de característica */
-.feature-card {
-    background: var(--color-white);
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-    text-align: center;
-    transition: all 0.3s ease;
-    border-top: 4px solid var(--color-primary);
-}
-
-.feature-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
-}
-
-/* Ícono grande en la tarjeta */
-.feature-icon {
-    font-size: 48px;
-    margin-bottom: 15px;
-}
-
-.feature-card h2 {
-    font-size: 20px;
-    color: var(--color-dark);
-    margin: 0 0 10px 0;
-    text-align: center;
-}
-
-.feature-card p {
-    font-size: 14px;
-    color: #666;
-    margin: 0 0 20px 0;
-}
-
-/* Enlaces en las tarjetas */
-.feature-card a {
-    display: inline-block;
-    padding: 10px 25px;
-    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
-    color: var(--color-white);
-    text-decoration: none;
-    border-radius: 8px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-}
-
-.feature-card a:hover {
-    transform: scale(1.05);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
-
-/* Sección de información rápida */
-.quick-info {
-    background: var(--color-white);
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-    border-left: 5px solid var(--color-secondary);
-}
-
-.quick-info h2 {
-    font-size: 22px;
-    color: var(--color-dark);
-    margin-bottom: 20px;
-}
-
-/* Grid para cajas de información */
-.info-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-}
-
-/* Caja individual de información */
-.info-box {
-    background: var(--color-light);
-    padding: 20px;
-    border-radius: 8px;
-    border-left: 3px solid var(--color-primary);
-}
-
-.info-box strong {
-    display: block;
-    color: var(--color-primary);
-    margin-bottom: 5px;
-}
-
-.info-box p {
-    color: #666;
-    margin: 0;
-    font-size: 14px;
-}
-
-/* ========================================
-   RESPONSIVE - MAPA Y DASHBOARD
-   ======================================== */
-
-@media (max-width: 768px) {
-    .contenedor-mapa-completo {
-        flex-direction: column;
-    }
-
-    .barra-lateral-mapa {
-        width: 100%;
-        height: auto;
-        max-height: 25vh;
-        border-right: none;
-        border-bottom: 1px solid #e0e0e0;
-    }
-
-    #mapa {
-        flex: 1;
-    }
-
-    .encabezado-mapa {
-        flex-direction: column;
-        gap: 10px;
-        align-items: flex-start;
-    }
-
-    .encabezado-mapa h1 {
-        font-size: 18px;
-    }
-
-    .encabezado-mapa .enlaces-navegacion {
-        width: 100%;
-        flex-direction: column;
-    }
-
-    .encabezado-mapa a {
-        width: 100%;
-        text-align: center;
-        padding: 8px 15px;
-        font-size: 14px;
-    }
-
-    .welcome-header {
-        flex-direction: column;
-        gap: 20px;
-        align-items: flex-start;
-    }
-
-    .welcome-header .user-info {
-        width: 100%;
-        justify-content: space-between;
-    }
-
-    .logout-btn {
-        width: auto;
-    }
-
-    .welcome-title {
-        font-size: 24px;
-    }
-
-    .features-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .info-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 480px) {
-    .encabezado-mapa {
-        padding: 10px 15px;
-    }
-
-    .encabezado-mapa h1 {
-        font-size: 16px;
-    }
-
-    .barra-lateral-mapa {
-        padding: 15px;
-        max-height: 20vh;
-    }
-
-    .barra-lateral-mapa h2 {
-        font-size: 14px;
-    }
-
-    .elemento-evento {
-        padding: 12px;
-        margin-bottom: 10px;
-    }
-
-    .elemento-evento h3 {
-        font-size: 12px;
-    }
-
-    .elemento-evento p {
-        font-size: 11px;
-    }
-}
-
 * {
     margin: 0;
     padding: 0;
@@ -1216,24 +6,22 @@ body.welcome-page {
 
 html, body {
     height: 100%;
+    font-family: Arial, sans-serif;
+    background-color: #f0f8ff;
+    color: #333;
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: var(--color-text);
     line-height: 1.6;
 }
 
-/* ========================================
-   HEADER Y NAVEGACIÓN
-   ======================================== */
 header {
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-dark) 100%);
-    padding: 20px 0;
+    background-color: #0099cc;
+    padding: 10px 0;
     position: sticky;
     top: 0;
     z-index: 100;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 nav {
@@ -1243,30 +31,36 @@ nav {
     justify-content: space-between;
     align-items: center;
     padding: 0 20px;
+    gap: 20px;
+}
+
+.BannerBlanco {
+    height: 90px;
+    max-width: 300px;
+    display: block;
 }
 
 .logo-header {
     font-weight: bold;
-    color: var(--color-white);
-    font-size: 24px;
-    letter-spacing: 1px;
+    color: white;
+    font-size: 20px;
 }
 
 .logo-accent {
-    color: #ffb3c1;
+    color: #ffffff;
 }
 
 nav ul {
     display: flex;
     list-style: none;
-    gap: 30px;
+    gap: 20px;
 }
 
 nav a {
-    color: var(--color-white);
+    color: white;
     text-decoration: none;
-    font-weight: 500;
-    transition: opacity 0.3s ease;
+    font-size: 14px;
+    transition: opacity 0.3s;
 }
 
 nav a:hover {
@@ -1275,733 +69,470 @@ nav a:hover {
 
 .nav-buttons {
     display: flex;
-    gap: 15px;
+    gap: 10px;
 }
 
-.nav-buttons a {
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-weight: 600;
+.login-btn, .signup-btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
     text-decoration: none;
-    transition: all 0.3s ease;
+    transition: background-color 0.3s;
 }
 
 .login-btn {
     background-color: transparent;
-    border: 2px solid var(--color-white);
-    color: var(--color-white);
+    color: white;
+    border: 1px solid white;
 }
 
 .login-btn:hover {
-    background-color: var(--color-white);
-    color: var(--color-primary);
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
 .signup-btn {
-    background-color: var(--color-white);
-    color: var(--color-primary);
+    background-color: white;
+    color: #0099cc;
+    border: none;
 }
 
 .signup-btn:hover {
-    background-color: #f0f0f0;
+    background-color: #e6f2ff;
 }
 
-/* ========================================
-   HERO SECTION
-   ======================================== */
 .hero {
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-dark) 100%);
-    color: var(--color-white);
-    padding: 120px 20px;
+    background-color: #0099cc;
+    color: white;
+    padding: 100px 20px;
     text-align: center;
 }
 
 .hero h1 {
-    font-size: 52px;
+    font-size: 48px;
     margin-bottom: 15px;
-    font-weight: 700;
-    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .hero p {
-    font-size: 24px;
-    margin-bottom: 40px;
-    font-style: italic;
-    opacity: 0.95;
+    font-size: 18px;
+    margin-bottom: 5px;
 }
 
 .hero-desc {
     font-size: 16px;
-    max-width: 600px;
-    margin: 0 auto 40px;
-    opacity: 0.9;
+    margin-bottom: 40px;
 }
 
-/* ========================================
-   BOTONES CTA
-   ======================================== */
 .cta-buttons {
     display: flex;
-    gap: 20px;
+    gap: 15px;
     justify-content: center;
     flex-wrap: wrap;
 }
 
 .cta-btn {
-    padding: 14px 35px;
-    font-size: 16px;
-    font-weight: 600;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    padding: 12px 30px;
+    border-radius: 4px;
     text-decoration: none;
-    display: inline-block;
+    font-size: 16px;
+    transition: background-color 0.3s;
 }
 
 .cta-primary {
-    background-color: var(--color-white);
-    color: var(--color-primary);
+    background-color: white;
+    color: #0099cc;
 }
 
 .cta-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    background-color: #e6f2ff;
 }
 
 .cta-secondary {
     background-color: transparent;
-    color: var(--color-white);
-    border: 2px solid var(--color-white);
+    color: white;
+    border: 2px solid white;
 }
 
 .cta-secondary:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
-/* ========================================
-   SECCIONES GENERALES
-   ======================================== */
-section {
-    padding: 70px 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-section h2 {
-    font-size: 36px;
-    margin-bottom: 40px;
-    text-align: center;
-    color: var(--color-dark);
-    position: relative;
-    padding-bottom: 15px;
-}
-
-section h2:after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 4px;
-    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
-    border-radius: 2px;
-}
-
-h2, h3, h4 {
-    color: var(--color-text);
-}
-
-/* ========================================
-   SECCIÓN NOSOTROS
-   ======================================== */
-.about-section {
-    background-color: var(--color-light);
-}
-
-.about-content {
-    background: var(--color-white);
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-    border-left: 5px solid var(--color-primary);
-    font-size: 18px;
-    line-height: 1.8;
-}
-
-/* ========================================
-   MISIÓN Y VISIÓN
-   ======================================== */
-.mv-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
-}
-
-.mv-card {
-    background: linear-gradient(135deg, rgba(215, 56, 86, 0.1) 0%, rgba(107, 79, 160, 0.1) 100%);
-    padding: 40px;
-    border-radius: 12px;
-    border: 2px solid var(--color-border);
-    transition: transform 0.3s ease;
-}
-
-.mv-card:hover {
-    transform: translateY(-5px);
-}
-
-.mv-card h3 {
-    color: var(--color-primary);
-    font-size: 22px;
-    margin-bottom: 15px;
-}
-
-.mv-card p {
-    font-size: 15px;
-    color: #666;
-    line-height: 1.7;
-}
-
-/* ========================================
-   OBJETIVOS
-   ======================================== */
-.objectives-section {
-    background-color: var(--color-white);
-}
-
-.objectives-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 25px;
-}
-
-.objective-item {
-    background: var(--color-white);
-    padding: 25px;
-    border-radius: 10px;
-    border-top: 4px solid var(--color-primary);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-    text-align: center;
-    transition: all 0.3s ease;
-}
-
-.objective-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
-}
-
-.objective-item h4 {
-    color: var(--color-dark);
-    margin-bottom: 10px;
-    font-size: 15px;
-}
-
-.objective-item p {
-    color: #666;
-    font-size: 13px;
-    line-height: 1.5;
-}
-
-/* ========================================
-   VALORES
-   ======================================== */
-.values-section {
-    background-color: var(--color-light);
-}
-
-.values-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 25px;
-}
-
-.value-card {
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
-    color: var(--color-white);
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    text-align: center;
-    transition: transform 0.3s ease;
-}
-
-.value-card:hover {
-    transform: scale(1.05);
-}
-
-.value-card h3 {
-    font-size: 18px;
-    margin-bottom: 12px;
-    color: var(--color-white);
-}
-
-.value-card p {
-    font-size: 13px;
-    line-height: 1.6;
-    opacity: 0.95;
-}
-
-/* ========================================
-   UBICACIÓN Y MAPA
-   ======================================== */
-.location-section {
-    background-color: var(--color-white);
-}
-
-.map-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
-    align-items: start;
-}
-
-.map-info {
-    background: var(--color-light);
-    padding: 30px;
-    border-radius: 10px;
-}
-
-.map-info h3 {
-    color: var(--color-primary);
-    margin-bottom: 15px;
-    font-size: 20px;
-}
-
-.map-info p {
-    color: #666;
-    margin-bottom: 12px;
-    font-size: 14px;
-    line-height: 1.6;
-}
-
-#map {
-    height: 350px;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-}
-
-/* ========================================
-   FOOTER
-   ======================================== */
-footer {
-    background: var(--color-dark);
-    color: var(--color-white);
-    text-align: center;
-    padding: 35px 20px;
-    margin-top: 50px;
-}
-
-footer h4 {
-    margin-bottom: 10px;
-    font-size: 18px;
-    letter-spacing: 1px;
-    color: var(--color-white);
-}
-
-footer p {
-    margin-bottom: 8px;
-    opacity: 0.9;
-    font-size: 14px;
-}
-
-.footer-links {
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-}
-
-.footer-links a {
-    color: var(--color-white);
-    text-decoration: none;
-    transition: opacity 0.3s ease;
-    font-size: 13px;
-}
-
-.footer-links a:hover {
-    opacity: 0.7;
-}
-
-.footer-bottom {
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-    margin-top: 25px;
-    padding-top: 20px;
-    font-size: 12px;
-    opacity: 0.8;
-}
-
-/* ========================================
-   BACK LINK (Login/Signup)
-   ======================================== */
 .back-link {
-    position: absolute;
-    top: 20px;
-    left: 20px;
+    padding: 20px;
+    text-align: left;
 }
 
 .back-link a {
-    color: var(--color-primary);
+    color: #0099cc;
     text-decoration: none;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: opacity 0.3s ease;
+    font-size: 14px;
+    padding: 10px 20px;
+    background-color: #e6f2ff;
+    border-radius: 4px;
+    display: inline-block;
+    border: 1px solid #0099cc;
+    transition: all 0.3s;
 }
 
 .back-link a:hover {
-    opacity: 0.7;
+    background-color: #0099cc;
+    color: white;
 }
 
-/* ========================================
-   FORMULARIOS (LOGIN/SIGNUP)
-   ======================================== */
-body.auth-page {
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-dark) 100%);
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.boton-volver {
+    display: inline-block;
+    margin-top: 30px;
+    padding: 12px 30px;
+    background-color: #e6f2ff;
+    color: #0099cc;
+    text-align: center;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 14px;
+    border: 1px solid #0099cc;
+    transition: all 0.3s;
+}
+
+.boton-volver:hover {
+    background-color: #0099cc;
+    color: white;
+}
+
+.volver-footer {
+    text-align: center;
+    margin-top: 30px;
+    padding: 20px;
 }
 
 .container {
-    background: var(--color-white);
-    border-radius: 20px;
-    padding: 40px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    width: 100%;
-    max-width: 400px;
+    max-width: 500px;
+    margin: 40px auto;
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .container h2 {
+    margin-bottom: 20px;
+    color: #0099cc;
     text-align: center;
-    color: var(--color-text);
-    margin-bottom: 30px;
-    font-size: 24px;
+    font-size: 28px;
+}
+
+.logo {
+    max-width: 120px;
+    display: block;
+    margin: 0 auto 20px;
+}
+
+.hr {
+    border: none;
+    border-top: 1px solid #e0e0e0;
+    margin: 20px 0;
 }
 
 form {
     display: flex;
     flex-direction: column;
-    gap: 15px;
 }
 
 input {
-    padding: 12px 15px;
-    border: none;
-    border-radius: 8px;
-    background-color: var(--color-input-bg);
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
     font-size: 14px;
-    transition: background-color 0.3s ease;
+    background-color: #f9f9f9;
 }
 
 input:focus {
     outline: none;
-    background-color: var(--color-input-focus);
+    border-color: #0099cc;
+    background-color: white;
 }
 
 button {
-    padding: 12px 20px;
-    background-color: var(--color-secondary);
-    color: var(--color-white);
+    padding: 12px;
+    background-color: #0099cc;
+    color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 4px;
     font-size: 16px;
-    font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s;
 }
 
 button:hover {
-    background-color: #5a3f8a;
+    background-color: #0077aa;
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }
 
 .error {
-    color: var(--color-error);
-    background-color: #ffe0e6;
-    padding: 12px 15px;
-    border-radius: 8px;
+    background-color: #ffcccc;
+    color: #cc0000;
+    padding: 12px;
+    border-radius: 4px;
     margin-bottom: 15px;
-    border-left: 4px solid var(--color-error);
     font-size: 14px;
+}
+
+.success-message {
+    background-color: #ccffcc;
+    color: #009900;
+    padding: 12px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.validacion {
+    font-size: 12px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+    padding: 8px;
+    border-radius: 4px;
+    background-color: #e6f2ff;
+}
+
+.validacion.error {
+    background-color: #ffcccc;
+    color: #cc0000;
+}
+
+.validacion.correcto {
+    background-color: #ccffcc;
+    color: #009900;
+}
+
+.validacion-item {
+    font-size: 12px;
+    margin: 4px 0;
+}
+
+.validacion-item.ok {
+    color: #009900;
+}
+
+.validacion-item.no-ok {
+    color: #cc0000;
 }
 
 .form-link {
     text-align: center;
-    margin-top: 20px;
+    margin-top: 15px;
     font-size: 14px;
-    color: #666;
 }
 
 .form-link a {
-    color: var(--color-secondary);
+    color: #0099cc;
     text-decoration: none;
-    font-weight: 600;
 }
 
 .form-link a:hover {
     text-decoration: underline;
 }
 
-.logo {
-    display: block;
-    margin: 0 auto 1px;
-    width: 120px;
-    height: 130px;
+.auth-page {
+    background-color: #ffffff;
+    min-height: 100vh;
+    padding-bottom: 40px;
 }
 
-.hr {
-    border: none;
-    border-top: 2px solid var(--color-dark);
+.welcome-page {
+    background-color: #f0f8ff;
+    padding-bottom: 40px;
 }
 
-/* ========================================
-   RESPONSIVE DESIGN
-   ======================================== */
-@media (max-width: 768px) {
-    nav ul {
-        display: none;
-    }
-
-    .logo-header {
-        font-size: 20px;
-    }
-
-    .hero h1 {
-        font-size: 36px;
-    }
-
-    .hero p {
-        font-size: 18px;
-    }
-
-    .hero {
-        padding: 80px 20px;
-    }
-
-    section {
-        padding: 50px 20px;
-    }
-
-    section h2 {
-        font-size: 28px;
-    }
-
-    .mv-container {
-        grid-template-columns: 1fr;
-    }
-
-    .map-container {
-        grid-template-columns: 1fr;
-    }
-
-    #map {
-        height: 300px;
-    }
-
-    .nav-buttons {
-        gap: 8px;
-    }
-
-    .nav-buttons a {
-        padding: 8px 15px;
-        font-size: 13px;
-    }
-
-    .objectives-grid {
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    }
-
-    .values-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .container {
-        margin: 20px;
-    }
-}
-
-@media (max-width: 480px) {
-    .logo-header {
-        font-size: 18px;
-    }
-
-    .hero h1 {
-        font-size: 28px;
-    }
-
-    .hero p {
-        font-size: 16px;
-    }
-
-    .hero {
-        padding: 60px 20px;
-    }
-
-    .cta-buttons {
-        flex-direction: column;
-    }
-
-    .cta-btn {
-        width: 100%;
-    }
-
-    section h2 {
-        font-size: 24px;
-    }
-
-    section {
-        padding: 40px 15px;
-    }
-
-    .mv-container {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-
-    .objectives-grid {
-        grid-template-columns: 1fr;
-        gap: 15px;
-    }
-
-    .values-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .map-container {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-
-    #map {
-        height: 250px;
-    }
-
-    nav {
-        flex-direction: column;
-        gap: 15px;
-        padding: 15px;
-    }
-
-    nav ul {
-        display: none;
-    }
-
-    .nav-buttons {
-        width: 100%;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    nav a {
-        font-size: 13px;
-    }
-
-    .back-link {
-        top: 15px;
-        left: 15px;
-    }
-
-    .back-link a {
-        font-size: 13px;
-    }
-
-    .container {
-        max-width: 100%;
-        padding: 30px 20px;
-        margin: 0;
-        border-radius: 0;
-    }
-
-    footer {
-        padding: 25px 15px;
-    }
-}
-
-@media (max-width: 360px) {
-    .hero h1 {
-        font-size: 24px;
-        letter-spacing: 0.5px;
-    }
-
-    .hero p {
-        font-size: 14px;
-    }
-
-    .cta-btn {
-        padding: 12px 25px;
-        font-size: 14px;
-    }
-
-    section h2 {
-        font-size: 20px;
-    }
-
-    .objective-item h4 {
-        font-size: 13px;
-    }
-
-    .objective-item p {
-        font-size: 12px;
-    }
-
-    .value-card h3 {
-        font-size: 16px;
-    }
-
-    .value-card p {
-        font-size: 12px;
-    }
-}
-
-/* ========================================
-   PÁGINA MAPA (map.php)
-   ======================================== */
-body.mapa-pagina {
-    background: #ffffff;
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
-
-.encabezado-mapa {
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-dark) 100%);
-    padding: 15px 20px;
-    color: white;
+.welcome-header {
+    background-color: #0099cc;
+    color: #333;
+    padding: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    flex-shrink: 0;
+    flex-wrap: wrap;
+    gap: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.welcome-header img {
+    height: 90px;
+    max-width: 300px;
+    display: block;
+}
+
+.welcome-header h1 {
+    display: none;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: white;
+}
+
+.logout-btn {
+    background-color: white;
+    color: #0099cc;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.logout-btn:hover {
+    background-color: #e6f2ff;
+}
+
+.welcome-container {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.welcome-title {
+    font-size: 32px;
+    color: #0099cc;
+    margin-bottom: 10px;
+}
+
+.welcome-subtitle {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.feature-card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: box-shadow 0.3s;
+}
+
+.feature-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.feature-icon {
+    width: 60px;
+    height: 60px;
+    background-color: #e6f2ff;
+    font-size: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 35%;
+    margin: 0 auto 10px;
+}
+
+.feature-card h2 {
+    color: #0099cc;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.feature-card p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.feature-card a {
+    display: inline-block;
+    background-color: #0099cc;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.feature-card a:hover {
+    background-color: #0077aa;
+}
+
+.about-section {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    text-align: center;
+}
+
+.about-section h2 {
+    color: #0099cc;
+    font-size: 28px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.about-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+footer {
+    background-color: #0099cc;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    margin-top: 40px;
+}
+
+.mapa-pagina {
+    background-color: #f0f8ff;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.encabezado-mapa {
+    background-color: #0099cc;
+    color: white;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .encabezado-mapa h1 {
     font-size: 24px;
-    margin: 0;
+    margin-bottom: 15px;
 }
 
-.encabezado-mapa .enlaces-navegacion {
+.enlaces-navegacion {
     display: flex;
     gap: 15px;
 }
 
-.encabezado-mapa a {
-    color: var(--color-white);
+.enlaces-navegacion a {
+    color: white;
     text-decoration: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-weight: 500;
-    transition: all 0.3s ease;
+    padding: 8px 16px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    transition: background-color 0.3s;
+    border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
-.encabezado-mapa a:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+.enlaces-navegacion a:hover {
+    background-color: rgba(255, 255, 255, 0.4);
 }
 
 .contenedor-mapa-completo {
@@ -2012,320 +543,132 @@ body.mapa-pagina {
 
 .barra-lateral-mapa {
     width: 300px;
-    background: var(--color-light);
-    padding: 20px;
+    background-color: white;
+    border-right: 1px solid #ddd;
     overflow-y: auto;
-    border-right: 1px solid #e0e0e0;
-    flex-shrink: 0;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .barra-lateral-mapa h2 {
+    color: #0099cc;
     font-size: 18px;
-    color: var(--color-dark);
-    margin: 0 0 20px 0;
-    border-bottom: 2px solid var(--color-primary);
+    margin-bottom: 15px;
+    border-bottom: 2px solid #0099cc;
     padding-bottom: 10px;
 }
 
 .elemento-evento {
-    background: var(--color-white);
-    padding: 15px;
-    margin-bottom: 15px;
-    border-radius: 8px;
-    border-left: 4px solid var(--color-primary);
+    background-color: #f9f9f9;
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 4px;
+    border-left: 3px solid #0099cc;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s;
 }
 
 .elemento-evento:hover {
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    background-color: #e6f2ff;
+    box-shadow: 0 2px 8px rgba(0, 153, 204, 0.2);
     transform: translateX(5px);
 }
 
 .elemento-evento h3 {
+    color: #0099cc;
     font-size: 14px;
-    color: var(--color-dark);
-    margin: 0 0 5px 0;
+    margin-bottom: 5px;
 }
 
 .elemento-evento p {
     font-size: 12px;
     color: #666;
-    margin: 5px 0;
+    margin-bottom: 5px;
 }
 
-.elemento-evento .tipo-evento {
+.tipo-evento {
     display: inline-block;
-    font-size: 11px;
-    background: var(--color-primary);
-    color: var(--color-white);
+    background-color: #0099cc;
+    color: white;
     padding: 3px 8px;
-    border-radius: 4px;
+    border-radius: 3px;
+    font-size: 11px;
     margin-top: 5px;
 }
 
 #mapa {
     flex: 1;
-    width: 100%;
-    height: 100%;
+    background-color: #e0e0e0;
 }
 
-/* ========================================
-   PÁGINA WELCOME (welcome.php)
-   ======================================== */
-body.welcome-page {
-    background: #f5f5f5;
-    min-height: 100vh;
-}
-
-.welcome-header {
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-dark) 100%);
-    color: var(--color-white);
-    padding: 30px 20px;
+#lista-eventos {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    flex-direction: column;
 }
 
-.welcome-header h1 {
-    font-size: 28px;
-    margin: 0;
-}
-
-.welcome-header .user-info {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.logout-btn {
-    background: rgba(255, 255, 255, 0.2);
-    border: 2px solid var(--color-white);
-    color: var(--color-white);
-    padding: 10px 20px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 600;
-    transition: all 0.3s ease;
-}
-
-.logout-btn:hover {
-    background: var(--color-white);
-    color: var(--color-primary);
-}
-
-.welcome-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 40px 20px;
-}
-
-.welcome-title {
-    font-size: 32px;
-    color: var(--color-dark);
-    margin-bottom: 10px;
-}
-
-.welcome-subtitle {
-    font-size: 16px;
-    color: #666;
-    margin-bottom: 40px;
-}
-
-.features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 25px;
-    margin-bottom: 40px;
-}
-
-.feature-card {
-    background: var(--color-white);
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-    text-align: center;
-    transition: all 0.3s ease;
-    border-top: 4px solid var(--color-primary);
-}
-
-.feature-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
-}
-
-.feature-icon {
-    font-size: 48px;
-    margin-bottom: 15px;
-}
-
-.feature-card h2 {
-    font-size: 20px;
-    color: var(--color-dark);
-    margin: 0 0 10px 0;
-    text-align: center;
-}
-
-.feature-card p {
-    font-size: 14px;
-    color: #666;
-    margin: 0 0 20px 0;
-}
-
-.feature-card a {
-    display: inline-block;
-    padding: 10px 25px;
-    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
-    color: var(--color-white);
-    text-decoration: none;
-    border-radius: 8px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-}
-
-.feature-card a:hover {
-    transform: scale(1.05);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
-
-.quick-info {
-    background: var(--color-white);
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-    border-left: 5px solid var(--color-secondary);
-}
-
-.quick-info h2 {
-    font-size: 22px;
-    color: var(--color-dark);
-    margin-bottom: 20px;
-}
-
-.info-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-}
-
-.info-box {
-    background: var(--color-light);
-    padding: 20px;
-    border-radius: 8px;
-    border-left: 3px solid var(--color-primary);
-}
-
-.info-box strong {
-    display: block;
-    color: var(--color-primary);
-    margin-bottom: 5px;
-}
-
-.info-box p {
-    color: #666;
-    margin: 0;
-    font-size: 14px;
-}
-
-/* ========================================
-   RESPONSIVE - MAPA Y WELCOME
-   ======================================== */
 @media (max-width: 768px) {
-    .contenedor-mapa-completo {
+    .hero h1 {
+        font-size: 32px;
+    }
+
+    .hero p {
+        font-size: 16px;
+    }
+
+    nav {
         flex-direction: column;
+        gap: 15px;
     }
 
-    .barra-lateral-mapa {
-        width: 100%;
-        height: auto;
-        max-height: 25vh;
-        border-right: none;
-        border-bottom: 1px solid #e0e0e0;
-    }
-
-    #mapa {
-        flex: 1;
-    }
-
-    .encabezado-mapa {
+    nav ul {
         flex-direction: column;
         gap: 10px;
-        align-items: flex-start;
+        text-align: center;
     }
 
-    .encabezado-mapa h1 {
-        font-size: 18px;
+    .container {
+        margin: 20px 10px;
+        padding: 20px;
     }
 
-    .encabezado-mapa .enlaces-navegacion {
-        width: 100%;
+    .cta-buttons {
         flex-direction: column;
     }
 
-    .encabezado-mapa a {
+    .cta-btn {
         width: 100%;
-        text-align: center;
-        padding: 8px 15px;
-        font-size: 14px;
     }
 
     .welcome-header {
         flex-direction: column;
-        gap: 20px;
-        align-items: flex-start;
+        text-align: center;
     }
 
-    .welcome-header .user-info {
+    .user-info {
+        flex-direction: column;
         width: 100%;
-        justify-content: space-between;
-    }
-
-    .logout-btn {
-        width: auto;
-    }
-
-    .welcome-title {
-        font-size: 24px;
     }
 
     .features-grid {
         grid-template-columns: 1fr;
     }
-
-    .info-grid {
-        grid-template-columns: 1fr;
-    }
 }
 
 @media (max-width: 480px) {
-    .encabezado-mapa {
-        padding: 10px 15px;
+    nav {
+        padding: 0 10px;
     }
 
-    .encabezado-mapa h1 {
-        font-size: 16px;
-    }
-
-    .barra-lateral-mapa {
+    .container {
+        margin: 10px;
         padding: 15px;
-        max-height: 20vh;
     }
 
-    .barra-lateral-mapa h2 {
-        font-size: 14px;
+    .hero {
+        padding: 40px 15px;
     }
 
-    .elemento-evento {
-        padding: 12px;
-        margin-bottom: 10px;
-    }
-
-    .elemento-evento h3 {
-        font-size: 12px;
-    }
-
-    .elemento-evento p {
-        font-size: 11px;
+    button, input {
+        font-size: 16px;
     }
 }
