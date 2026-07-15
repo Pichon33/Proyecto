@@ -1,6 +1,6 @@
 <?php
 $host = 'localhost';
-$dbname = 'apexdigital';
+$dbname = 'hayplan';
 $username = 'root';
 $password = '';
 
