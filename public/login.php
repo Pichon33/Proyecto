@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $usuarioIniciado = $usuarioObj->login($usuario, $contrasena, $email);
         
         if ($usuarioIniciado) {
-            $_SESSION['user_id'] = $usuarioIniciado['id'];
+            $_SESSION['user_id'] = $usuarioIniciado['id_usuario'];
             $_SESSION['username'] = $usuarioIniciado['username'];
             header('Location: menu.php');
             exit;
