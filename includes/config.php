@@ -1,8 +1,8 @@
 <?php
 $host = 'localhost';
-$dbname = 'hayplan';
+$dbname = 'HayPlan';
 $username = 'root';
-$password = '';
+$password = '57884081';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
@@ -10,3 +10,4 @@ try {
 } catch (PDOException $e) {
     die("Error en la base de datos: " . $e->getMessage());
 }
+
