@@ -2,7 +2,7 @@
 $host = 'localhost';
 $dbname = 'HayPlan';
 $username = 'root';
-$password = '57884081';
+$password = '';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
