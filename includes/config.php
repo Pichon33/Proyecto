@@ -10,4 +10,4 @@ try {
 } catch (PDOException $e) {
     die("Error en la base de datos: " . $e->getMessage());
 }
-
+?>
