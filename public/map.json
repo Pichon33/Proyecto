@@ -1,0 +1,31 @@
+{
+  "eventos": [
+    {
+      "id": 1,
+      "nombre": "Minecraft en el Parque",
+      "descripcion": "Evento de Minecraft",
+      "tipo": "Juego",
+      "lat": -34.437655,
+      "lng": -57.434721,
+      "fecha": "2026-06-11"
+    },
+    {
+      "id": 2,
+      "nombre": "Fiesta del Verano",
+      "descripcion": "Celebración de inicio de verano",
+      "tipo": "Fiesta",
+      "lat": -34.440,
+      "lng": -57.430,
+      "fecha": "2026-06-15"
+    },
+    {
+      "id": 3,
+      "nombre": "Torneo de Fútbol",
+      "descripcion": "Competencia deportiva local",
+      "tipo": "Deporte",
+      "lat": -34.435,
+      "lng": -57.438,
+      "fecha": "2026-06-20"
+    }
+  ]
+}
