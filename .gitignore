@@ -1,0 +1,6 @@
+# Archivos generados localmente o cargados por usuarios
+/public/img/perfiles/
+/public/img/eventos/
+
+# Copias comprimidas locales
+*.zip
