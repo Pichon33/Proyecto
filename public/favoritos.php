@@ -17,13 +17,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $accion = $_POST['accion'] ?? '';
 
     if ($idEvento > 0 && $accion === 'agregar') {
-        $agregar = $pdo->prepare('INSERT IGNORE INTO Favorito (id_usuario, id_evento) VALUES (?, ?)');
+        $agregar = $pdo->prepare('INSERT IGNORE INTO EventoFavorito (id_usuario, id_evento) VALUES (?, ?)');
         $agregar->execute([$idUsuario, $idEvento]);
         $mensaje = 'El evento se agregó a tus favoritos.';
     }
 
     if ($idEvento > 0 && $accion === 'quitar') {
-        $quitar = $pdo->prepare('DELETE FROM Favorito WHERE id_usuario = ? AND id_evento = ?');
+        $quitar = $pdo->prepare('DELETE FROM EventoFavorito WHERE id_usuario = ? AND id_evento = ?');
         $quitar->execute([$idUsuario, $idEvento]);
         $mensaje = 'El evento se quitó de tus favoritos.';
     }
@@ -36,7 +36,7 @@ $consulta = $pdo->prepare(
      FROM Evento e
      INNER JOIN Categoria c ON e.id_categoria = c.id_categoria
      INNER JOIN Ubicacion u ON e.id_ubicacion = u.id_ubicacion
-     LEFT JOIN Favorito f ON f.id_evento = e.id_evento AND f.id_usuario = ?
+     LEFT JOIN EventoFavorito f ON f.id_evento = e.id_evento AND f.id_usuario = ?
      WHERE e.titulo LIKE ?
        AND e.estado = 'Aprobado'
      ORDER BY es_favorito DESC, e.fecha ASC, e.hora ASC"

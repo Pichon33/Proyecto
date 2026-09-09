@@ -22,10 +22,9 @@ $ciudades = [
 ];
 
 $consultaPerfil = $pdo->prepare(
-    'SELECT u.username, u.email, p.ubicacion, p.avatar, c.telefono_C
+    'SELECT u.username, u.email, p.ubicacion, p.avatar, p.telefono
      FROM Usuario u
      LEFT JOIN PerfilUsuario p ON u.id_usuario = p.id_usuario
-     LEFT JOIN Comun c ON u.id_usuario = c.id_usuario
      WHERE u.id_usuario = ?'
 );
 $consultaPerfil->execute([$idUsuario]);
@@ -81,22 +80,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $actualizarUsuario->execute([$nombre, $correo, $idUsuario]);
 
                 $actualizarPerfil = $pdo->prepare(
-                    'INSERT INTO PerfilUsuario (id_usuario, ubicacion, avatar)
-                     VALUES (?, ?, ?)
-                     ON DUPLICATE KEY UPDATE ubicacion = VALUES(ubicacion), avatar = VALUES(avatar)'
+                    'INSERT INTO PerfilUsuario (id_usuario, telefono, ubicacion, avatar)
+                     VALUES (?, ?, ?, ?)
+                     ON DUPLICATE KEY UPDATE
+                        telefono = VALUES(telefono),
+                        ubicacion = VALUES(ubicacion),
+                        avatar = VALUES(avatar)'
                 );
-                $actualizarPerfil->execute([$idUsuario, $ciudad, $avatar]);
-
-                $actualizarTelefono = $pdo->prepare(
-                    'INSERT INTO Comun (id_usuario, telefono_C)
-                     VALUES (?, ?)
-                     ON DUPLICATE KEY UPDATE telefono_C = VALUES(telefono_C)'
-                );
-                $actualizarTelefono->execute([$idUsuario, $telefono]);
+                $actualizarPerfil->execute([$idUsuario, $telefono, $ciudad, $avatar]);
 
                 $_SESSION['username'] = $nombre;
                 $_SESSION['email'] = $correo;
-                $perfil = ['username' => $nombre, 'email' => $correo, 'ubicacion' => $ciudad, 'avatar' => $avatar, 'telefono_C' => $telefono];
+                $perfil = ['username' => $nombre, 'email' => $correo, 'ubicacion' => $ciudad, 'avatar' => $avatar, 'telefono' => $telefono];
                 $mensaje = 'Los datos del perfil se guardaron correctamente.';
             } catch (PDOException $e) {
                 $error = 'No se pudieron guardar los datos. Revisá que el correo no esté siendo usado.';
@@ -174,7 +169,7 @@ $inicial = strtoupper(substr($perfil['username'], 0, 1));
                         </label>
                         <label class="campo-perfil">
                             Teléfono
-                            <input type="tel" name="telefono" value="<?php echo htmlspecialchars($perfil['telefono_C'] ?? ''); ?>" placeholder="Ej.: 099 123 456" disabled>
+                            <input type="tel" name="telefono" value="<?php echo htmlspecialchars($perfil['telefono'] ?? ''); ?>" placeholder="Ej.: 099 123 456" disabled>
                         </label>
                         <label class="campo-perfil">
                             Ciudad

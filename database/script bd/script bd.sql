@@ -9,14 +9,6 @@ CREATE TABLE Usuario (
     rol VARCHAR(20) NOT NULL DEFAULT 'Usuario'
 );
 
-CREATE TABLE Comun (
-    id_usuario INT PRIMARY KEY,
-    telefono_C VARCHAR(20),
-    FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
-);
-
 CREATE TABLE Organizador (
     id_usuario INT PRIMARY KEY,
     telefono_org VARCHAR(20),
@@ -100,6 +92,7 @@ CREATE TABLE CorteCalle (
 
 CREATE TABLE PerfilUsuario (
     id_usuario int primary key,
+    telefono varchar(20) null,
     ubicacion varchar(150) null,
     avatar varchar(255) null,
     tema enum('claro', 'oscuro') not null default 'claro',
@@ -108,7 +101,7 @@ CREATE TABLE PerfilUsuario (
         on update cascade
 );
 
-CREATE TABLE Favorito (
+CREATE TABLE EventoFavorito (
     id_usuario INT NOT NULL,
     id_evento INT NOT NULL,
     PRIMARY KEY (id_usuario, id_evento),
