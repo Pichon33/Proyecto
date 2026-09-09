@@ -1,7 +1,7 @@
 <?php
 class User {
     private $pdo;
-    
+
     function __construct($pdo) {
         $this->pdo = $pdo;
     }
@@ -21,7 +21,7 @@ class User {
         $stmt = $this->pdo->prepare('SELECT * FROM Usuario WHERE email = :email');
         $stmt->execute(['email' => $email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
-        
+
         if ($user && password_verify($password, $user['password'])) {
             return $user;
         }
