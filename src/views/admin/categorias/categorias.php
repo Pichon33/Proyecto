@@ -5,7 +5,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['rol'] != 'Administrador') {
     die("Acceso denegado");
 }
 
-require_once dirname(__DIR__, 3) . '/includes/config.php';
+require_once dirname(__DIR__, 4) . '/includes/config.php';
 
 $busqueda = trim($_GET['busqueda'] ?? '');
 $textoBusqueda = '%' . $busqueda . '%';

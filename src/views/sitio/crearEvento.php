@@ -157,7 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <header class="cabecera">
         <div class="contenedor-cabecera">
             <a href="index.php?ruta=home" class="logo-header">
-                <img src="public/img/ivento-logo.jpeg" alt="iVento">
+                <img src="public/img/ivento-logo-horizontal-blanco.png" alt="iVento">
             </a>
             <nav class="navegacion-principal">
                 <a href="index.php?ruta=home">Inicio</a>
@@ -334,9 +334,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         const datosCorte = document.getElementById('datos-corte');
         const iconoIvento = L.icon({
             iconUrl: 'public/img/ivento-marker.png',
-            iconSize: [48, 58],
-            iconAnchor: [24, 54],
-            popupAnchor: [0, -50]
+            iconSize: [36, 44],
+            iconAnchor: [18, 41],
+            popupAnchor: [0, -38]
         });
         let marcadorUbicacion = null;
         let lineaRecorrido = null;

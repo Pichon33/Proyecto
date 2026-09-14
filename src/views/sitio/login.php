@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <header class="cabecera">
         <div class="contenedor-cabecera">
             <a href="index.php?ruta=home" class="logo-header">
-                <img src="public/img/ivento-logo.jpeg" alt="iVento">
+                <img src="public/img/ivento-logo-horizontal-blanco.png" alt="iVento">
             </a>
             <div class="nav-buttons">
                 <a href="index.php?ruta=registro" class="boton-registrarse">Registrarse</a>
@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <a href="index.php?ruta=home">← Volver</a>
     </div>
     <main class="contenedor">
-        <img class="logo" src="public/img/ivento-logo.jpeg" alt="iVento">
+        <img class="logo" src="public/img/ivento-logo-horizontal.png" alt="iVento">
 
         <h2 class="h2">Inicia sesión</h2>
 

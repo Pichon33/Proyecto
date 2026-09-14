@@ -13,22 +13,22 @@ session_start();
     <header class="cabecera">
         <div class="contenedor-cabecera">
             <a href="index.php?ruta=home" class="logo-header">
-                <img src="public/img/ivento-logo.jpeg" alt="iVento">
+                <img src="public/img/ivento-logo-horizontal-blanco.png" alt="iVento">
             </a>
 
             <nav class="navegacion-principal">
                 <a href="index.php?ruta=home">Inicio</a>
                 <a href="index.php?ruta=mapa">Mapa</a>
 
-                <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'Administrador'): ?>
-                    <a href="index.php?ruta=admin" class="boton-nav">Administración</a>
-                <?php endif; ?>
-
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <a href="index.php?ruta=menu">Mi espacio</a>
                 <?php else: ?>
                     <a href="index.php?ruta=login">Ingresar</a>
                     <a href="index.php?ruta=registro" class="boton-nav secundario">Registrarse</a>
+                <?php endif; ?>
+
+                <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'Administrador'): ?>
+                    <a href="index.php?ruta=admin" class="boton-nav">Administración</a>
                 <?php endif; ?>
             </nav>
         </div>
@@ -52,6 +52,7 @@ session_start();
             </div>
 
             <aside class="tarjeta-portada">
+                <img class="logo-portada" src="public/img/ivento-icono-app.png" alt="Icono de iVento">
                 <h2>Todo en un solo lugar</h2>
                 <p>Centralizá la difusión de actividades locales sin tener que buscar en muchos lados.</p>
                 <ul class="lista-portada">

@@ -56,7 +56,7 @@ $eventos = $consulta->fetchAll(PDO::FETCH_ASSOC);
     <header class="cabecera">
         <div class="contenedor-cabecera">
             <a href="index.php?ruta=home" class="logo-header">
-                <img src="public/img/ivento-logo.jpeg" alt="iVento">
+                <img src="public/img/ivento-logo-horizontal-blanco.png" alt="iVento">
             </a>
             <nav class="navegacion-principal">
                 <a href="index.php?ruta=home">Inicio</a>

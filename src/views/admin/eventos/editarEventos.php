@@ -5,7 +5,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['rol'] != 'Administrador') {
     die("Acceso denegado");
 }
 
-require_once dirname(__DIR__, 3) . '/includes/config.php';
+require_once dirname(__DIR__, 4) . '/includes/config.php';
 
 $id = (int) $_GET['id'];
 
@@ -260,9 +260,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     const iconoIvento = L.icon({
         iconUrl: 'public/img/ivento-marker.png',
-        iconSize: [48, 58],
-        iconAnchor: [24, 54],
-        popupAnchor: [0, -50]
+        iconSize: [36, 44],
+        iconAnchor: [18, 41],
+        popupAnchor: [0, -38]
     });
 
     let marcador = null;

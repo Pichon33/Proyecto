@@ -19,7 +19,6 @@ return [
     'admin/eventos/crear' => 'admin/eventos/crearEventos.php',
     'admin/eventos/editar' => 'admin/eventos/editarEventos.php',
     'admin/eventos/eliminar' => 'admin/eventos/eliminarEventos.php',
-    'admin/eventos/eleminar' => 'admin/eventos/eleminarEventos.php',
     'admin/categorias' => 'admin/categorias/categorias.php',
     'admin/categorias/crear' => 'admin/categorias/crearCategorias.php',
     'admin/categorias/editar' => 'admin/categorias/editarCategorias.php',
