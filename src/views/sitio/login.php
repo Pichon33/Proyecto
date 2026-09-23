@@ -1,5 +1,7 @@
 <?php
 session_start();
+$urlBase = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
+$urlCanonica = $urlBase . '/index.php?ruta=login';
 
 require_once dirname(__DIR__, 3) . '/includes/config.php';
 require_once dirname(__DIR__, 2) . '/models/user.php';
@@ -48,6 +50,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar sesión</title>
+    <meta name="description" content="Iniciá sesión en iVento para acceder a tus eventos favoritos, tu perfil y las publicaciones de tu zona.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="<?php echo htmlspecialchars($urlCanonica); ?>">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Iniciar sesión | iVento">
+    <meta property="og:description" content="Accedé a tu cuenta de iVento para gestionar tus eventos y favoritos.">
+    <meta property="og:image" content="<?php echo htmlspecialchars($urlBase . '/public/img/ivento-logo-horizontal.png'); ?>">
+    <meta property="og:url" content="<?php echo htmlspecialchars($urlCanonica); ?>">
+    <meta property="og:locale" content="es_UY">
     <link rel="stylesheet" href="public/css/styles.css">
 </head>
 <body class="pagina-autenticacion">

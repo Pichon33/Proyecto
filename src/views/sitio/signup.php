@@ -1,5 +1,7 @@
 <?php
 session_start();
+$urlBase = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
+$urlCanonica = $urlBase . '/index.php?ruta=registro';
 
 require_once dirname(__DIR__, 3) . '/includes/config.php';
 require_once dirname(__DIR__, 2) . '/models/user.php';
@@ -52,6 +54,15 @@ function validarContrasena($contrasena) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrarse</title>
+    <meta name="description" content="Creá tu cuenta gratuita en iVento y empezá a descubrir y publicar eventos en Juan Lacaze y alrededores.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="<?php echo htmlspecialchars($urlCanonica); ?>">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Registrarse | iVento">
+    <meta property="og:description" content="Sumate a iVento: creá tu cuenta gratis y descubrí eventos cerca tuyo.">
+    <meta property="og:image" content="<?php echo htmlspecialchars($urlBase . '/public/img/ivento-logo-horizontal.png'); ?>">
+    <meta property="og:url" content="<?php echo htmlspecialchars($urlCanonica); ?>">
+    <meta property="og:locale" content="es_UY">
     <link rel="stylesheet" href="public/css/styles.css">
 </head>
 <body class="pagina-autenticacion">

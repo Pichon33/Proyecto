@@ -105,6 +105,7 @@ $inicial = strtoupper(substr($perfil['username'], 0, 1));
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <meta name="robots" content="noindex, nofollow">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi perfil | iVento</title>

@@ -1,5 +1,7 @@
 <?php
 session_start();
+$urlBase = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
+$urlCanonica = $urlBase . '/index.php?ruta=home';
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -7,6 +9,15 @@ session_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>iVento | Encontrá tu próximo plan</title>
+    <meta name="description" content="iVento centraliza la difusión de eventos, ferias y actividades recreativas en Juan Lacaze y alrededores. Descubrí qué hacer, dónde y cuándo.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="<?php echo htmlspecialchars($urlCanonica); ?>">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="iVento | Encontrá tu próximo plan">
+    <meta property="og:description" content="Eventos, ferias y actividades recreativas de Juan Lacaze y alrededores, todo en un mismo lugar.">
+    <meta property="og:image" content="<?php echo htmlspecialchars($urlBase . '/public/img/ivento-logo-horizontal.png'); ?>">
+    <meta property="og:url" content="<?php echo htmlspecialchars($urlCanonica); ?>">
+    <meta property="og:locale" content="es_UY">
     <link rel="stylesheet" href="public/css/styles.css">
 </head>
 <body class="pagina-inicio">
