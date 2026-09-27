@@ -21,14 +21,15 @@ $urlCanonica = $urlBase . '/index.php?ruta=home';
     <link rel="stylesheet" href="public/css/styles.css">
 </head>
 <body class="pagina-inicio">
+    <a class="enlace-saltar" href="#contenido">Ir al contenido</a>
     <header class="cabecera">
         <div class="contenedor-cabecera">
             <a href="index.php?ruta=home" class="logo-header">
                 <img src="public/img/ivento-logo-horizontal-blanco.png" alt="iVento">
             </a>
 
-            <nav class="navegacion-principal">
-                <a href="index.php?ruta=home">Inicio</a>
+            <nav class="navegacion-principal" aria-label="Navegación principal">
+                <a href="index.php?ruta=home" aria-current="page">Inicio</a>
                 <a href="index.php?ruta=mapa">Mapa</a>
 
                 <?php if (isset($_SESSION['user_id'])): ?>
@@ -45,31 +46,29 @@ $urlCanonica = $urlBase . '/index.php?ruta=home';
         </div>
     </header>
 
-    <main>
+    <main id="contenido" tabindex="-1">
         <section class="portada">
             <div class="texto-portada">
-                <span class="etiqueta-portada">Eventos, lugares y experiencias</span>
-                <h1>Encontrá tu próximo plan con iVento</h1>
-                <p class="descripcion-portada">iVento reúne eventos y actividades para que descubras qué hacer, dónde y cuándo de una manera sencilla.</p>
+                <span class="etiqueta-portada">Colonia, Uruguay</span>
+                <h1>Descubrí qué hacer <span>en Colonia</span></h1>
+                <p class="descripcion-portada">Música, ferias, cultura y actividades cerca de vos. Encontrá dónde son y cuándo ir, todo en iVento.</p>
 
                 <div class="grupo-botones">
-                    <?php if (isset($_SESSION['user_id'])): ?>
-                        <a href="index.php?ruta=mapa" class="boton principal">Explorar eventos</a>
-                    <?php else: ?>
-                        <a href="index.php?ruta=registro" class="boton principal">Crear cuenta</a>
-                        <a href="index.php?ruta=login" class="boton secundario">Ingresar</a>
+                    <a href="index.php?ruta=mapa" class="boton principal">Explorar eventos</a>
+                    <?php if (!isset($_SESSION['user_id'])): ?>
+                        <a href="index.php?ruta=registro" class="boton secundario">Crear cuenta</a>
                     <?php endif; ?>
                 </div>
             </div>
 
             <aside class="tarjeta-portada">
                 <img class="logo-portada" src="public/img/ivento-icono-app.png" alt="Icono de iVento">
-                <h2>Todo en un solo lugar</h2>
-                <p>Centralizá la difusión de actividades locales sin tener que buscar en muchos lados.</p>
+                <h2>Tu plan, con los detalles a mano</h2>
+                <p>La información que necesitás antes de salir.</p>
                 <ul class="lista-portada">
-                    <li>Eventos cercanos y claros</li>
-                    <li>Mapa fácil de usar</li>
-                    <li>Tu perfil y tus datos en orden</li>
+                    <li><strong>Qué y cuándo</strong><span>Actividades, fechas y horarios.</span></li>
+                    <li><strong>Dónde</strong><span>La ubicación de cada evento en el mapa.</span></li>
+                    <li><strong>Para quién</strong><span>Precio y edad mínima de cada propuesta.</span></li>
                 </ul>
             </aside>
         </section>
@@ -77,33 +76,33 @@ $urlCanonica = $urlBase . '/index.php?ruta=home';
         <section class="seccion-caracteristicas" id="caracteristicas">
             <div class="encabezado-seccion">
                 <span class="etiqueta-seccion">Cómo funciona</span>
-                <h2>Una forma simple de organizar tus salidas</h2>
-                <p>La idea es que encuentres un evento sin complicarte y tengas la información importante a mano.</p>
+                <h2>Encontrá un plan. Organizá tu salida.</h2>
+                <p>Explorá las propuestas de la zona y guardá las que te interesan.</p>
             </div>
 
             <div class="fila-tarjetas">
                 <article class="tarjeta">
-                    <div class="icono-tarjeta">🎉</div>
+                    <div class="icono-tarjeta" aria-hidden="true">🎉</div>
                     <h3>Descubrí</h3>
                     <p>Conocé actividades, ferias, música y propuestas de la zona.</p>
                 </article>
 
                 <article class="tarjeta">
-                    <div class="icono-tarjeta">📍</div>
+                    <div class="icono-tarjeta" aria-hidden="true">📍</div>
                     <h3>Ubicate</h3>
                     <p>Usá el mapa para saber dónde se realiza cada evento.</p>
                 </article>
 
                 <article class="tarjeta">
-                    <div class="icono-tarjeta">🗓️</div>
+                    <div class="icono-tarjeta" aria-hidden="true">🗓️</div>
                     <h3>Planificá</h3>
                     <p>Revisá la fecha, el tipo de evento y sus detalles.</p>
                 </article>
 
                 <article class="tarjeta">
-                    <div class="icono-tarjeta">👤</div>
-                    <h3>Tu espacio</h3>
-                    <p>Mantené actualizada la información básica de tu cuenta.</p>
+                    <div class="icono-tarjeta" aria-hidden="true">⭐</div>
+                    <h3>Guardá tus planes</h3>
+                    <p>Agregá eventos a favoritos para encontrarlos cuando quieras.</p>
                 </article>
             </div>
         </section>
@@ -111,50 +110,59 @@ $urlCanonica = $urlBase . '/index.php?ruta=home';
         <section class="seccion-acerca" id="nosotros">
             <div class="encabezado-seccion">
                 <span class="etiqueta-seccion">Sobre iVento</span>
-                <h2>Hecho para acercar a las personas a sus eventos</h2>
+                <h2>Más cerca de lo que pasa en tu comunidad</h2>
             </div>
-            <p>iVento es un servicio de ApexDigital SA, una sociedad anónima uruguaya. Nuestro objetivo es darle un espacio claro a la difusión de eventos y ayudar a que más personas encuentren experiencias cerca suyo.</p>
+            <p>iVento es un servicio de ApexDigital SA, una sociedad anónima uruguaya. Reunimos actividades locales para que más personas puedan conocerlas y participar.</p>
         </section>
 
         <section class="seccion-empresa" id="apexdigital">
             <div class="encabezado-seccion">
                 <span class="etiqueta-seccion">ApexDigital</span>
-                <h2>Una plataforma pensada para Juan Lacaze y sus alrededores</h2>
-                <p>ApexDigital surge para facilitar la difusión y el descubrimiento de eventos, fiestas, locales y actividades recreativas mediante una plataforma accesible y fácil de utilizar.</p>
+                <h2>Una propuesta local, pensada para crecer</h2>
+                <p>Desde Juan Lacaze y sus alrededores, buscamos acercar las actividades del departamento de Colonia a su comunidad.</p>
             </div>
 
             <div class="empresa-cuadrilla">
                 <article class="tarjeta">
                     <h3>Misión</h3>
-                    <p>Brindar una plataforma práctica para promocionar eventos y conectar a los organizadores con las personas interesadas.</p>
+                    <p>Conectar a quienes organizan actividades con las personas que quieren participar.</p>
                 </article>
 
                 <article class="tarjeta">
                     <h3>Visión</h3>
-                    <p>Ser una referencia regional para encontrar actividades sociales con una experiencia moderna, amigable y útil.</p>
+                    <p>Ser un lugar de referencia para descubrir actividades en la región.</p>
                 </article>
 
                 <article class="tarjeta">
                     <h3>Valores</h3>
-                    <p>Trabajamos con respeto, transparencia, responsabilidad social y capacidad de mejorar a partir de nuestros errores.</p>
+                    <p>Respeto, transparencia y compromiso con la comunidad. Aprender y mejorar en cada paso.</p>
                 </article>
             </div>
         </section>
 
         <section class="seccion-llamada">
             <div>
-                <h2>¿Listo para encontrar algo para hacer?</h2>
-                <p>Registrate y empezá a explorar los eventos disponibles.</p>
+                <h2>Tu próximo plan empieza acá</h2>
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    <p>Volvé al mapa y encontrá una actividad para vos.</p>
+                <?php else: ?>
+                    <p>Creá tu cuenta y guardá tus eventos favoritos.</p>
+                <?php endif; ?>
             </div>
-            <a href="index.php?ruta=registro" class="boton">Registrarse</a>
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <a href="index.php?ruta=mapa" class="boton">Explorar eventos</a>
+            <?php else: ?>
+                <a href="index.php?ruta=registro" class="boton">Crear cuenta</a>
+            <?php endif; ?>
         </section>
     </main>
 
     <footer class="pie-pagina">
         <div class="pie-contenedor">
             <p>&copy; 2026 iVento · ApexDigital SA</p>
-            <nav class="pie-enlaces">
-                <a href="#caracteristicas">Características</a>
+            <nav class="pie-enlaces" aria-label="Enlaces del pie de página">
+                <a href="#caracteristicas">Cómo funciona</a>
+                <a href="#nosotros">Sobre iVento</a>
                 <a href="#apexdigital">ApexDigital</a>
                 <a href="index.php?ruta=home">Inicio</a>
             </nav>

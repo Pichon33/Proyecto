@@ -79,7 +79,8 @@ $eventos = $consulta->fetchAll(PDO::FETCH_ASSOC);
             <div class="mensaje-exito"><?php echo htmlspecialchars($mensaje); ?></div>
         <?php endif; ?>
 
-        <form class="buscador-eventos" method="GET">
+        <form class="buscador-eventos" method="GET" action="index.php">
+            <input type="hidden" name="ruta" value="favoritos">
             <label>
                 Buscar por nombre
                 <input type="search" name="busqueda" value="<?php echo htmlspecialchars($busqueda); ?>" placeholder="Ej.: Carnaval">

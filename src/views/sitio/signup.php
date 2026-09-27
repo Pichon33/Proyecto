@@ -7,26 +7,40 @@ require_once dirname(__DIR__, 3) . '/includes/config.php';
 require_once dirname(__DIR__, 2) . '/models/user.php';
 
 $error = '';
+$usuario = '';
+$email = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $usuario = htmlspecialchars($_POST['username']);
-    $email = htmlspecialchars($_POST['email']);
-    $contrasena = $_POST['password'];
-    $confirmar = $_POST['confirm_password'];
+    $usuario = is_string($_POST['username'] ?? null) ? trim($_POST['username']) : '';
+    $email = is_string($_POST['email'] ?? null) ? trim($_POST['email']) : '';
+    $contrasena = is_string($_POST['password'] ?? null) ? $_POST['password'] : '';
+    $confirmar = is_string($_POST['confirm_password'] ?? null) ? $_POST['confirm_password'] : '';
 
-    if ($contrasena !== $confirmar) {
-        $error = 'Las contraseñas no coinciden';
+    if ($usuario === '') {
+        $error = 'Completá tu nombre de usuario.';
+    } elseif (mb_strlen($usuario) > 255) {
+        $error = 'El nombre de usuario puede tener hasta 255 caracteres.';
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error = 'Ingresá un correo válido.';
+    } elseif ($contrasena !== $confirmar) {
+        $error = 'Las contraseñas no coinciden. Escribí la misma en ambos campos.';
     } else if (!validarContrasena($contrasena)) {
-        $error = 'La contraseña no cumple los requisitos';
+        $error = 'La contraseña debe tener al menos 6 caracteres, una mayúscula, una minúscula y un número o uno de estos símbolos: !@#$%^&*.';
     } else {
         try {
             $usuarioObj = new User($pdo);
-            $usuarioObj->register($usuario, $contrasena, $email);
-            $_SESSION['mensaje'] = 'Registro exitoso. Inicia sesión ahora.';
+            $usuarioObj->register(htmlspecialchars($usuario), $contrasena, $email);
+            $_SESSION['mensaje'] = 'Registro exitoso. Ya podés iniciar sesión con tu correo y contraseña.';
             header('Location: index.php?ruta=login');
             exit;
+        } catch (PDOException $e) {
+            if (($e->errorInfo[1] ?? null) === 1062) {
+                $error = 'Ya existe una cuenta con ese correo. Iniciá sesión o usá otro correo.';
+            } else {
+                $error = 'No pudimos crear la cuenta. Intentá de nuevo en unos minutos.';
+            }
         } catch (Exception $e) {
-            $error = 'Error al registrar. Intenta de nuevo.';
+            $error = 'No pudimos crear la cuenta. Intentá de nuevo en unos minutos.';
         }
     }
 }
@@ -82,83 +96,80 @@ function validarContrasena($contrasena) {
 
     <main class="contenedor">
         <img class="logo" src="public/img/ivento-logo-horizontal.png" alt="iVento">
-        <h2 class="h2">Registrarse</h2>
+        <h1 class="titulo-formulario">Creá tu cuenta</h1>
+        <p class="introduccion-formulario">Completá estos datos para sumarte a iVento.</p>
 
         <hr class="hr">
 
         <?php if (!empty($error)): ?>
-            <div class="error">
+            <div class="error" id="error-formulario" role="alert" tabindex="-1">
                 <?php echo htmlspecialchars($error); ?>
             </div>
         <?php endif; ?>
 
         <form class="formulario" method="POST" action="index.php?ruta=registro">
-            <input
-                type="text"
-                name="username"
-                required
-                placeholder="Nombre de usuario"
-                id="usuario">
+            <div class="campo-formulario">
+                <label for="usuario">Nombre de usuario</label>
+                <input type="text" name="username" id="usuario" required maxlength="255"
+                    autocomplete="nickname" placeholder="Ej.: Ana"
+                    value="<?php echo htmlspecialchars($usuario, ENT_QUOTES, 'UTF-8'); ?>">
+            </div>
 
-            <input
-                type="email"
-                name="email"
-                required
-                placeholder="Correo electrónico"
-                id="email">
+            <div class="campo-formulario">
+                <label for="email">Correo electrónico</label>
+                <input type="email" name="email" id="email" required autocomplete="email"
+                    autocapitalize="none" spellcheck="false" placeholder="Ej.: nombre@correo.com"
+                    value="<?php echo htmlspecialchars($email, ENT_QUOTES, 'UTF-8'); ?>">
+            </div>
 
-            <input
-                type="password"
-                name="password"
-                required
-                placeholder="Contraseña"
-                id="contrasena"
-                onchange="validarContrasenas()"
-                oninput="validarContrasenas()">
+            <div class="campo-formulario">
+                <label for="contrasena">Contraseña</label>
+                <input type="password" name="password" id="contrasena" required minlength="6"
+                    autocomplete="new-password" aria-describedby="requisitos" data-contrasena
+                    onchange="validarContrasenas()" oninput="validarContrasenas()">
+            </div>
 
-            <div class="validacion" id="requisitos" style="display:none;">
+            <div class="validacion" id="requisitos">
+                <p class="titulo-requisitos">Tu contraseña debe incluir:</p>
                 <div class="validacion-item" id="largo">
-                    ✗ Mínimo 6 caracteres
+                    ○ Mínimo 6 caracteres
                 </div>
                 <div class="validacion-item" id="mayuscula">
-                    ✗ Una letra mayúscula
+                    ○ Una letra mayúscula
                 </div>
                 <div class="validacion-item" id="minuscula">
-                    ✗ Una letra minúscula
+                    ○ Una letra minúscula
                 </div>
                 <div class="validacion-item" id="numero">
-                    ✗ Un número o carácter especial (!@#$%^&*)
+                    ○ Un número o uno de estos símbolos: !@#$%^&amp;*
                 </div>
             </div>
 
-            <input
-                type="password"
-                name="confirm_password"
-                required
-                placeholder="Confirmar contraseña"
-                id="confirmar"
-                onchange="validarContrasenas()"
-                oninput="validarContrasenas()">
-
-            <div class="validacion" id="coincidencia" style="display:none;">
-                <div class="validacion-item" id="coincide">
-                    ✗ Las contraseñas deben coincidir
-                </div>
+            <div class="campo-formulario">
+                <label for="confirmar">Confirmar contraseña</label>
+                <input type="password" name="confirm_password" id="confirmar" required
+                    autocomplete="new-password" aria-describedby="coincide" data-contrasena
+                    onchange="validarContrasenas()" oninput="validarContrasenas()">
+                <p class="validacion-item ayuda-formulario" id="coincide" aria-live="polite">Repetí la misma contraseña.</p>
             </div>
 
+            <label class="opcion-contrasena" hidden>
+                <input type="checkbox" id="mostrarContrasenas"> Mostrar contraseñas
+            </label>
             <button class="boton" type="submit" id="button">Registrarse</button>
         </form>
 
         <div class="enlace-formulario">
-            ¿Ya tienes cuenta? <a href="index.php?ruta=login">Iniciar sesión</a>
+            ¿Ya tenés cuenta? <a href="index.php?ruta=login">Iniciá sesión</a>
         </div>
     </main>
 
     <script>
         function validarContrasenas() {
-            let contrasena = document.getElementById('contrasena').value;
-            let confirmar = document.getElementById('confirmar').value;
-            let button = document.getElementById('button');
+            let campoContrasena = document.getElementById('contrasena');
+            let campoConfirmar = document.getElementById('confirmar');
+            let contrasena = campoContrasena.value;
+            let confirmar = campoConfirmar.value;
 
             let largo = contrasena.length >= 6;
             let mayuscula = /[A-Z]/.test(contrasena);
@@ -166,30 +177,31 @@ function validarContrasena($contrasena) {
             let numero = /[0-9]|[!@#$%^&*]/.test(contrasena);
             let coincide = contrasena === confirmar && confirmar.length > 0;
 
-            document.getElementById('requisitos').style.display = contrasena.length > 0 ? 'block' : 'none';
-            document.getElementById('coincidencia').style.display = confirmar.length > 0 ? 'block' : 'none';
+            actualizarRequisito('largo', largo, contrasena !== '');
+            actualizarRequisito('mayuscula', mayuscula, contrasena !== '');
+            actualizarRequisito('minuscula', minuscula, contrasena !== '');
+            actualizarRequisito('numero', numero, contrasena !== '');
 
-            actualizarRequisito('largo', largo);
-            actualizarRequisito('mayuscula', mayuscula);
-            actualizarRequisito('minuscula', minuscula);
-            actualizarRequisito('numero', numero);
-            actualizarRequisito('coincide', coincide);
+            let mensaje = '';
+            if (!largo) mensaje = 'Usá al menos 6 caracteres.';
+            else if (!mayuscula) mensaje = 'Agregá una letra mayúscula.';
+            else if (!minuscula) mensaje = 'Agregá una letra minúscula.';
+            else if (!numero) mensaje = 'Agregá un número o uno de estos símbolos: !@#$%^&*.';
+            campoContrasena.setCustomValidity(contrasena === '' ? '' : mensaje);
+            campoConfirmar.setCustomValidity(confirmar !== '' && !coincide ? 'Escribí la misma contraseña en ambos campos.' : '');
 
-            let todoCorrecto = largo && mayuscula && minuscula && numero && coincide;
-            button.disabled = !todoCorrecto;
+            let ayuda = document.getElementById('coincide');
+            ayuda.textContent = confirmar === '' ? 'Repetí la misma contraseña.' : (coincide ? '✓ Las contraseñas coinciden.' : '✗ Las contraseñas no coinciden.');
+            ayuda.className = 'validacion-item ayuda-formulario' + (confirmar === '' ? '' : (coincide ? ' ok' : ' no-ok'));
         }
 
-        function actualizarRequisito(id, cumple) {
+        function actualizarRequisito(id, cumple, escrito) {
             let elemento = document.getElementById(id);
-            if (cumple) {
-                elemento.className = 'validacion-item ok';
-                elemento.textContent = elemento.textContent.replace('✗', '✓');
-            } else {
-                elemento.className = 'validacion-item no-ok';
-                elemento.textContent = elemento.textContent.replace('✓', '✗');
-            }
+            elemento.className = 'validacion-item' + (escrito ? (cumple ? ' ok' : ' no-ok') : '');
+            elemento.textContent = elemento.textContent.replace(/[○✓✗]/, escrito ? (cumple ? '✓' : '✗') : '○');
         }
     </script>
+    <script src="public/js/java.js"></script>
     <footer class="pie-pagina">
         <div class="pie-contenedor">
             <p>&copy; 2026 iVento · ApexDigital SA</p>

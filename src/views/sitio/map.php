@@ -1,11 +1,6 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['user_id'])) {
-    header('Location: index.php?ruta=login');
-    exit;
-}
-
 require_once dirname(__DIR__, 3) . '/includes/config.php';
 
 $consultaEventos = $pdo->query(
@@ -64,12 +59,18 @@ $cortesAprobados = $consultaCortes->fetchAll(PDO::FETCH_ASSOC);
             <a href="index.php?ruta=home" class="logo-header">
                 <img src="public/img/ivento-logo-horizontal-blanco.png" alt="iVento">
             </a>
-            <nav class="navegacion-principal">
+            <nav class="navegacion-principal" aria-label="Navegación principal">
                 <a href="index.php?ruta=home">Inicio</a>
-                <a href="index.php?ruta=menu">Mi espacio</a>
-                <a href="index.php?ruta=perfil">Perfil</a>
-                <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'Administrador'): ?>
-                    <a href="index.php?ruta=admin" class="boton-nav">Administración</a>
+                <a href="index.php?ruta=mapa" aria-current="page">Mapa</a>
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    <a href="index.php?ruta=menu">Mi espacio</a>
+                    <a href="index.php?ruta=perfil">Perfil</a>
+                    <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'Administrador'): ?>
+                        <a href="index.php?ruta=admin" class="boton-nav">Administración</a>
+                    <?php endif; ?>
+                <?php else: ?>
+                    <a href="index.php?ruta=login">Ingresar</a>
+                    <a href="index.php?ruta=registro" class="boton-nav secundario">Registrarse</a>
                 <?php endif; ?>
             </nav>
         </div>

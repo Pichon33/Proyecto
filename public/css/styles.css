@@ -34,6 +34,21 @@ a { color: inherit; }
 
 h1, h2, h3, p { margin-top: 0; }
 
+.enlace-saltar {
+    position: fixed;
+    top: 8px;
+    left: 16px;
+    z-index: 1100;
+    padding: 12px 18px;
+    border-radius: 7px;
+    background: white;
+    color: var(--morado-oscuro);
+    font-weight: bold;
+    transform: translateY(-160%);
+}
+.enlace-saltar:focus { transform: translateY(0); }
+.pagina-inicio a:focus-visible { outline: 3px solid var(--violeta); outline-offset: 4px; }
+
 .cabecera {
     position: sticky;
     top: 0;
@@ -51,6 +66,7 @@ h1, h2, h3, p { margin-top: 0; }
     gap: 20px;
 }
 
+.logo-header { flex-shrink: 0; border-radius: 7px; }
 .logo-header img { width: 150px; height: 52px; object-fit: contain; }
 
 .navegacion-principal, .nav-buttons {
@@ -59,16 +75,25 @@ h1, h2, h3, p { margin-top: 0; }
     align-items: center;
     justify-content: flex-end;
     flex-wrap: wrap;
-    gap: 14px;
+    gap: 6px;
 }
 
 .navegacion-principal a, .nav-buttons a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 9px 12px;
+    border-radius: 7px;
     color: white;
     text-decoration: none;
     font-size: 0.94rem;
+    white-space: nowrap;
 }
 
-.navegacion-principal a:hover { opacity: 0.8; }
+.navegacion-principal a:hover, .nav-buttons a:hover { background: rgba(255, 255, 255, 0.16); }
+.navegacion-principal a[aria-current="page"] { background: rgba(255, 255, 255, 0.12); text-decoration: underline; text-underline-offset: 5px; }
+.cabecera a:focus-visible { outline: 2px solid white; outline-offset: 3px; }
 
 .boton-nav, .boton-menu, .boton-registrarse, .boton-iniciar-sesion {
     padding: 9px 15px;
@@ -78,6 +103,7 @@ h1, h2, h3, p { margin-top: 0; }
 }
 
 .boton-nav.secundario { background: white; color: var(--morado-oscuro); }
+.boton-nav.secundario:hover { background: var(--lila); }
 
 .pagina-inicio main, .contenedor-bienvenida {
     width: min(1120px, calc(100% - 32px));
@@ -87,10 +113,10 @@ h1, h2, h3, p { margin-top: 0; }
 
 .portada {
     display: grid;
-    grid-template-columns: 1.3fr 0.8fr;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.9fr);
     align-items: center;
-    gap: 34px;
-    padding: 24px 0 50px;
+    gap: 48px;
+    padding: 16px 0 24px;
 }
 
 .texto-portada { display: flex; flex-direction: column; gap: 18px; }
@@ -113,6 +139,12 @@ h1, h2, h3, p { margin-top: 0; }
 }
 
 .descripcion-portada, .portada p, .encabezado-seccion p, .seccion-acerca p { color: var(--texto-suave); }
+
+.portada h1 { font-size: clamp(2.3rem, 4.4vw, 3.65rem); line-height: 1.12; letter-spacing: -0.035em; }
+.portada h1 span { color: var(--morado); }
+.portada .descripcion-portada { max-width: 48ch; margin-bottom: 6px; font-size: 1.125rem; line-height: 1.65; }
+.pagina-inicio .boton { min-height: 48px; padding: 12px 22px; font-size: 1rem; }
+.pagina-inicio section[id] { scroll-margin-top: 100px; }
 
 .grupo-botones { display: flex; flex-wrap: wrap; gap: 12px; }
 
@@ -142,32 +174,39 @@ h1, h2, h3, p { margin-top: 0; }
 }
 
 .tarjeta-portada {
-    padding: 27px;
+    padding: 32px;
     border: 0;
     color: white;
     background: linear-gradient(145deg, #060b25, #1d1554);
 }
-.logo-portada { width: 132px; height: 132px; margin: 0 auto 15px; object-fit: contain; }
-.tarjeta-portada h2 { color: white; }
+.logo-portada { width: 88px; height: 88px; margin: 0 0 20px; object-fit: contain; }
+.tarjeta-portada h2 { margin-bottom: 10px; color: white; font-size: 1.5rem; line-height: 1.3; }
 .tarjeta-portada p, .tarjeta-portada li { color: #dfe4ff; }
-.lista-portada { padding-left: 20px; }
-.lista-portada li { margin: 10px 0; }
+.tarjeta-portada > p { margin-bottom: 0; }
+.lista-portada { display: grid; gap: 16px; margin: 24px 0 0; padding: 0; list-style: none; }
+.lista-portada li { padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, 0.18); }
+.lista-portada strong { display: block; margin-bottom: 3px; color: white; }
+.lista-portada span { font-size: 0.94rem; }
 
-.seccion-caracteristicas, .seccion-acerca, .seccion-empresa, .seccion-llamada { margin-top: 42px; }
-.encabezado-seccion { max-width: 650px; margin-bottom: 25px; }
-.encabezado-seccion h2 { font-size: clamp(1.9rem, 4vw, 2.8rem); margin: 11px 0; }
+.seccion-caracteristicas, .seccion-acerca, .seccion-empresa, .seccion-llamada { margin-top: 64px; }
+.encabezado-seccion { max-width: 680px; margin-bottom: 28px; }
+.encabezado-seccion h2 { font-size: clamp(1.65rem, 3.2vw, 2.25rem); margin: 14px 0; line-height: 1.2; }
+.encabezado-seccion p { margin-bottom: 0; }
 
 .fila-tarjetas { display: grid; grid-template-columns: repeat(4, 1fr); gap: 17px; }
 .tarjeta { padding: 22px; box-shadow: none; }
-.tarjeta h3 { color: var(--morado-oscuro); }
-.tarjeta p { color: var(--texto-suave); font-size: 0.94rem; }
-.icono-tarjeta { font-size: 1.7rem; }
+.tarjeta h3 { margin-bottom: 10px; color: var(--morado-oscuro); font-size: 1.1rem; }
+.tarjeta p { margin-bottom: 0; color: var(--texto-suave); font-size: 1rem; line-height: 1.65; }
+.icono-tarjeta { display: grid; place-items: center; width: 48px; height: 48px; margin-bottom: 18px; border-radius: 12px; background: var(--lila); font-size: 1.5rem; }
 
-.seccion-acerca { padding: 30px; border-left: 4px solid var(--violeta); background: #f3edff; }
+.seccion-acerca { padding: 32px; border-left: 4px solid var(--violeta); border-radius: 0 12px 12px 0; background: #f3edff; }
+.seccion-acerca .encabezado-seccion { margin-bottom: 16px; }
+.seccion-acerca > p { max-width: 75ch; margin-bottom: 0; line-height: 1.7; }
 .empresa-cuadrilla { display: grid; grid-template-columns: repeat(3, 1fr); gap: 17px; }
 .seccion-llamada { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 30px; border-radius: 12px; color: white; background: linear-gradient(120deg, var(--morado-oscuro), var(--violeta)); }
 .seccion-llamada h2, .seccion-llamada p { color: white; }
 .seccion-llamada h2 { font-size: 1.8rem; }
+.seccion-llamada p { margin: 12px 0 0; }
 .seccion-llamada .boton { background: white; color: var(--morado); white-space: nowrap; }
 
 .pie-pagina {
@@ -191,6 +230,8 @@ h1, h2, h3, p { margin-top: 0; }
 .pie-enlaces { display: flex; flex-wrap: wrap; gap: 15px; }
 .pie-enlaces a { color: white; font-size: 0.92rem; text-decoration: none; }
 .pie-enlaces a:hover { text-decoration: underline; }
+.pagina-inicio .pie-enlaces { gap: 4px 12px; }
+.pagina-inicio .pie-enlaces a { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 4px; }
 
 .pagina-bienvenida, .pagina-autenticacion, .perfil-pagina { background: linear-gradient(180deg, #fbf9ff, #efe7ff); }
 
@@ -234,6 +275,22 @@ input:focus, textarea:focus { outline: 2px solid #c7acff; border-color: var(--vi
 .validacion-item.no-ok { color: #9a2541; }
 .enlace-formulario { margin-top: 18px; text-align: center; }
 .enlace-formulario a { color: var(--morado); font-weight: bold; }
+
+/* Acceso y registro: etiquetas visibles y ayudas junto a cada campo. */
+.titulo-formulario { color: var(--morado-oscuro); text-align: center; font-size: 1.8rem; line-height: 1.2; }
+.introduccion-formulario { margin-top: 10px; color: var(--texto-suave); text-align: center; }
+.pagina-autenticacion .formulario { gap: 16px; }
+.campo-formulario { display: grid; gap: 7px; min-width: 0; }
+.campo-formulario label { font-size: 0.95rem; font-weight: bold; }
+.pagina-autenticacion .formulario input:not([type="checkbox"]) { min-height: 46px; }
+.pagina-autenticacion .formulario .boton { min-height: 48px; }
+.pagina-autenticacion .enlace-formulario a { display: inline-block; }
+.pagina-autenticacion .error, .pagina-autenticacion .mensaje-exito { margin-bottom: 18px; padding: 14px; overflow-wrap: anywhere; }
+.pagina-autenticacion .validacion { padding: 12px 14px; }
+.titulo-requisitos { margin: 0 0 7px; font-size: 0.9rem; font-weight: bold; }
+.ayuda-formulario { margin: 0; color: var(--texto-suave); }
+.opcion-contrasena:not([hidden]) { display: flex; align-items: center; gap: 10px; min-height: 44px; cursor: pointer; font-size: 0.95rem; }
+.opcion-contrasena input { width: 18px; height: 18px; flex-shrink: 0; padding: 0; accent-color: var(--morado); }
 
 /* Perfil: la foto y los formularios tienen tamaños separados para no deformarse. */
 .perfil-contenedor { width: min(980px, calc(100% - 32px)); margin: 38px auto 60px; }
@@ -312,6 +369,7 @@ input:focus, textarea:focus { outline: 2px solid #c7acff; border-color: var(--vi
 
 @media (max-width: 800px) {
     .portada, .fila-tarjetas, .perfil-cuadrilla, .empresa-cuadrilla { grid-template-columns: 1fr; }
+    .portada { gap: 32px; }
     .fila-tarjetas { grid-template-columns: repeat(2, 1fr); }
     .contenedor-mapa-completo { flex-direction: column; }
     .barra-lateral-mapa { width: 100%; max-height: 290px; border-right: 0; border-bottom: 1px solid var(--borde); }
@@ -323,11 +381,24 @@ input:focus, textarea:focus { outline: 2px solid #c7acff; border-color: var(--vi
 }
 
 @media (max-width: 600px) {
-    .contenedor-cabecera { min-height: auto; padding: 10px 0; flex-wrap: wrap; }
-    .logo-header img { width: 130px; }
-    .navegacion-principal, .nav-buttons { margin-left: 0; justify-content: flex-start; gap: 10px; }
-    .navegacion-principal a { font-size: 0.85rem; }
-    .portada h1 { font-size: 2.45rem; }
+    /* En celular la cabecera acompaña el desplazamiento y deja más lugar al contenido. */
+    .cabecera { position: static; }
+    .contenedor-cabecera { min-height: auto; padding: 8px 0 12px; flex-wrap: wrap; gap: 6px 12px; }
+    .logo-header img { width: 130px; height: 44px; }
+    .navegacion-principal { flex-basis: 100%; margin-left: 0; justify-content: flex-start; gap: 4px; }
+    .navegacion-principal a { flex: 1 1 auto; padding: 9px 7px; font-size: 0.875rem; }
+    .nav-buttons { gap: 4px; }
+    .nav-buttons a { font-size: 0.875rem; }
+    .pagina-inicio main { padding: 28px 0 44px; }
+    .portada { padding: 0; }
+    .portada h1 { font-size: clamp(2.15rem, 9vw, 2.6rem); }
+    .portada .descripcion-portada { font-size: 1.05rem; }
+    .grupo-botones .boton { flex: 1 1 auto; }
+    .tarjeta-portada { padding: 24px; }
+    .seccion-caracteristicas, .seccion-acerca, .seccion-empresa, .seccion-llamada { margin-top: 44px; }
+    .seccion-acerca, .seccion-llamada { padding: 24px; }
+    .seccion-llamada .boton { width: 100%; }
+    .pagina-inicio section[id] { scroll-margin-top: 20px; }
     .fila-tarjetas, .cuadrilla-caracteristicas, .campos-perfil { grid-template-columns: 1fr; }
     .seccion-llamada { align-items: flex-start; flex-direction: column; }
     .pie-contenedor { align-items: flex-start; flex-direction: column; }
@@ -339,4 +410,8 @@ input:focus, textarea:focus { outline: 2px solid #c7acff; border-color: var(--vi
     .contenedor-formulario { padding: 28px 16px; }
     .mapa-selector { height: 300px; }
     .popup-evento { max-width: 220px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
 }

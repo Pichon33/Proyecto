@@ -42,7 +42,8 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <a class="boton-admin" href="index.php?ruta=admin/usuarios/crear">Nuevo usuario</a>
     </header>
 
-    <form id="formularioBusquedaUsuarios" class="buscador-admin" method="GET">
+    <form id="formularioBusquedaUsuarios" class="buscador-admin" method="GET" action="index.php">
+        <input type="hidden" name="ruta" value="admin/usuarios">
         <label for="busquedaUsuarios">Buscar por nombre de usuario</label>
         <input id="busquedaUsuarios" type="search" name="busqueda" value="<?= htmlspecialchars($busqueda) ?>" placeholder="Ej.: Santi" autocomplete="off">
     </form>
@@ -72,7 +73,7 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <td><?= htmlspecialchars($usuario['email']) ?></td>
                             <td><span class="rol-listado"><?= htmlspecialchars($usuario['rol']) ?></span></td>
                             <td>
-                                <a class="accion-editar" href="index.php?ruta=admin/usuarios/editar?id=<?= $usuario['id_usuario'] ?>">Editar</a>
+                                <a class="accion-editar" href="index.php?ruta=admin/usuarios/editar&amp;id=<?= $usuario['id_usuario'] ?>">Editar</a>
                                 <form class="accion-formulario" action="index.php?ruta=admin/usuarios/eliminar" method="POST" onsubmit="return confirm('¿Está seguro que desea eliminar este usuario?')">
                                     <input type="hidden" name="id" value="<?= $usuario['id_usuario'] ?>">
                                     <button class="accion-eliminar" type="submit">Eliminar</button>

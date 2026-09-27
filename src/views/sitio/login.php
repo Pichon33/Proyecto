@@ -8,6 +8,7 @@ require_once dirname(__DIR__, 2) . '/models/user.php';
 
 $error = '';
 $mensaje = '';
+$email = '';
 
 if (isset($_SESSION['mensaje'])) {
     $mensaje = $_SESSION['mensaje'];
@@ -15,31 +16,39 @@ if (isset($_SESSION['mensaje'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = htmlspecialchars($_POST['email']);
-    $contrasena = htmlspecialchars($_POST['password']);
+    $email = is_string($_POST['email'] ?? null) ? trim($_POST['email']) : '';
+    // La contraseña se compara tal como se escribió, sin escapar ni quitar espacios.
+    $contrasena = is_string($_POST['password'] ?? null) ? $_POST['password'] : '';
 
-    try {
-        $usuarioObj = new User($pdo);
-        $usuarioIniciado = $usuarioObj->login($contrasena, $email);
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error = 'Ingresá un correo válido.';
+    } elseif ($contrasena === '') {
+        $error = 'Completá la contraseña.';
+    } else {
+        try {
+            $usuarioObj = new User($pdo);
+            $usuarioIniciado = $usuarioObj->login($contrasena, $email);
 
-        if ($usuarioIniciado) {
-            $_SESSION['user_id'] = $usuarioIniciado['id_usuario'];
-            $_SESSION['username'] = $usuarioIniciado['username'];
-            $_SESSION['email'] = $usuarioIniciado['email'];
-            $rolesValidos = [
-                'usuario' => 'Usuario',
-                'organizador' => 'Organizador',
-                'administrador' => 'Administrador',
-                'autoridadmunicipal' => 'AutoridadMunicipal'
-            ];
-            $_SESSION['rol'] = $rolesValidos[strtolower($usuarioIniciado['rol'])] ?? 'Usuario';
-            header('Location: index.php?ruta=home');
-            exit;
-        } else {
-            $error = 'Credenciales inválidas';
+            if ($usuarioIniciado) {
+                session_regenerate_id(true);
+                $_SESSION['user_id'] = $usuarioIniciado['id_usuario'];
+                $_SESSION['username'] = $usuarioIniciado['username'];
+                $_SESSION['email'] = $usuarioIniciado['email'];
+                $rolesValidos = [
+                    'usuario' => 'Usuario',
+                    'organizador' => 'Organizador',
+                    'administrador' => 'Administrador',
+                    'autoridadmunicipal' => 'AutoridadMunicipal'
+                ];
+                $_SESSION['rol'] = $rolesValidos[strtolower($usuarioIniciado['rol'])] ?? 'Usuario';
+                header('Location: index.php?ruta=home');
+                exit;
+            } else {
+                $error = 'El correo o la contraseña no son correctos. Revisalos e intentá de nuevo.';
+            }
+        } catch (Exception $e) {
+            $error = 'No pudimos iniciar la sesión. Intentá de nuevo en unos minutos.';
         }
-    } catch (Exception $e) {
-        $error = 'Error al iniciar sesión';
     }
 }
 ?>
@@ -78,30 +87,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <main class="contenedor">
         <img class="logo" src="public/img/ivento-logo-horizontal.png" alt="iVento">
 
-        <h2 class="h2">Inicia sesión</h2>
+        <h1 class="titulo-formulario">Iniciá sesión</h1>
+        <p class="introduccion-formulario">Ingresá con tu correo y contraseña.</p>
 
         <hr class="hr">
 
         <?php if (!empty($mensaje)): ?>
-            <div class="mensaje-exito">
+            <div class="mensaje-exito" role="status">
                 <?php echo htmlspecialchars($mensaje); ?>
             </div>
         <?php endif; ?>
 
         <?php if (!empty($error)): ?>
-            <div class="error">
+            <div class="error" id="error-formulario" role="alert" tabindex="-1">
                 <?php echo htmlspecialchars($error); ?>
             </div>
         <?php endif; ?>
 
         <form class="formulario" method="POST" action="index.php?ruta=login">
-            <input type="email" name="email" required placeholder="Correo electrónico">
-            <input type="password" name="password" required placeholder="Contraseña">
-            <button class="boton" type="submit">Iniciar Sesión</button>
+            <div class="campo-formulario">
+                <label for="email">Correo electrónico</label>
+                <input type="email" name="email" id="email" required autocomplete="username"
+                    autocapitalize="none" spellcheck="false" placeholder="Ej.: nombre@correo.com"
+                    value="<?php echo htmlspecialchars($email, ENT_QUOTES, 'UTF-8'); ?>">
+            </div>
+            <div class="campo-formulario">
+                <label for="contrasena">Contraseña</label>
+                <input type="password" name="password" id="contrasena" required
+                    autocomplete="current-password" data-contrasena>
+            </div>
+            <label class="opcion-contrasena" hidden>
+                <input type="checkbox" id="mostrarContrasenas"> Mostrar contraseña
+            </label>
+            <button class="boton" type="submit">Iniciar sesión</button>
         </form>
 
         <div class="enlace-formulario">
-            ¿No tienes cuenta? <a href="index.php?ruta=registro">Registrarse</a>
+            ¿No tenés cuenta? <a href="index.php?ruta=registro">Creá tu cuenta</a>
         </div>
     </main>
     <footer class="pie-pagina">
@@ -114,5 +136,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </nav>
         </div>
     </footer>
+    <script src="public/js/java.js"></script>
 </body>
 </html>

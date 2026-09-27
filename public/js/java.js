@@ -1,3 +1,19 @@
+// Acceso y registro comparten la opción de mostrar la contraseña.
+document.addEventListener('DOMContentLoaded', function () {
+    const mostrar = document.getElementById('mostrarContrasenas');
+    if (mostrar) {
+        mostrar.parentElement.hidden = false;
+        mostrar.addEventListener('change', function () {
+            document.querySelectorAll('[data-contrasena]').forEach(function (campo) {
+                campo.type = mostrar.checked ? 'text' : 'password';
+            });
+        });
+    }
+
+    const error = document.getElementById('error-formulario');
+    if (error) error.focus();
+});
+
 document.addEventListener('DOMContentLoaded', function () {
     const avatarInput = document.getElementById('avatarInput');
     let avatarPreview = document.getElementById('avatarPreview');

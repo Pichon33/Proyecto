@@ -42,7 +42,8 @@ $ubicaciones = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <a class="boton-admin" href="index.php?ruta=admin/ubicaciones/crear">Nueva ubicación</a>
     </header>
 
-    <form id="formularioBusquedaUbicaciones" class="buscador-admin" method="GET">
+    <form id="formularioBusquedaUbicaciones" class="buscador-admin" method="GET" action="index.php">
+        <input type="hidden" name="ruta" value="admin/ubicaciones">
         <label for="busquedaUbicaciones">Buscar por nombre del lugar</label>
         <input id="busquedaUbicaciones" type="search" name="busqueda" value="<?= htmlspecialchars($busqueda) ?>" placeholder="Ej.: Plaza" autocomplete="off">
     </form>
@@ -74,7 +75,7 @@ $ubicaciones = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <td><?= htmlspecialchars($ubicacion['latitud']) ?></td>
                             <td><?= htmlspecialchars($ubicacion['longitud']) ?></td>
                             <td>
-                                <a class="accion-editar" href="index.php?ruta=admin/ubicaciones/editar?id=<?= $ubicacion['id_ubicacion'] ?>">Editar</a>
+                                <a class="accion-editar" href="index.php?ruta=admin/ubicaciones/editar&amp;id=<?= $ubicacion['id_ubicacion'] ?>">Editar</a>
                                 <form class="accion-formulario" action="index.php?ruta=admin/ubicaciones/eliminar" method="POST" onsubmit="return confirm('¿Está seguro que desea eliminar esta ubicación?')">
                                     <input type="hidden" name="id" value="<?= $ubicacion['id_ubicacion'] ?>">
                                     <button class="accion-eliminar" type="submit">Eliminar</button>

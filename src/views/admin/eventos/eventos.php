@@ -46,7 +46,8 @@ $eventos = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <a class="boton-admin" href="index.php?ruta=admin/eventos/crear">Nuevo evento</a>
     </header>
 
-    <form id="formularioBusquedaEventos" class="buscador-admin" method="GET">
+    <form id="formularioBusquedaEventos" class="buscador-admin" method="GET" action="index.php">
+        <input type="hidden" name="ruta" value="admin/eventos">
         <label for="busquedaEventos">Buscar por nombre del evento</label>
         <input id="busquedaEventos" type="search" name="busqueda" value="<?= htmlspecialchars($busqueda) ?>" placeholder="Ej.: Feria" autocomplete="off">
     </form>
@@ -82,7 +83,7 @@ $eventos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <td><?= htmlspecialchars($evento['ubicacion']) ?></td>
                             <td><?= htmlspecialchars($evento['latitud']) ?>, <?= htmlspecialchars($evento['longitud']) ?></td>
                             <td>
-                                <a class="accion-editar" href="index.php?ruta=admin/eventos/editar?id=<?= $evento['id_evento'] ?>">Editar</a>
+                                <a class="accion-editar" href="index.php?ruta=admin/eventos/editar&amp;id=<?= $evento['id_evento'] ?>">Editar</a>
                                 <form class="accion-formulario" action="index.php?ruta=admin/eventos/eliminar" method="POST" onsubmit="return confirm('¿Está seguro que desea eliminar este evento?')">
                                     <input type="hidden" name="id" value="<?= $evento['id_evento'] ?>">
                                     <button class="accion-eliminar" type="submit">Eliminar</button>
