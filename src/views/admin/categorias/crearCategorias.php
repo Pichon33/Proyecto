@@ -49,8 +49,9 @@ try {
     <meta charset="UTF-8">
     <title>Crear Categoría</title>
     <link rel="stylesheet" href="public/css/admin.css">
+    <link rel="stylesheet" href="public/css/tailwind.css">
 </head>
-<body class="admin-page">
+<body class="admin-page max-md:py-7 max-md:px-4">
 
 <h1>Nueva Categoría</h1>
 

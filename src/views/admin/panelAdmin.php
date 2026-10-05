@@ -19,9 +19,10 @@ if ($_SESSION['rol'] != 'Administrador') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de administración</title>
     <link rel="stylesheet" href="public/css/admin.css">
+    <link rel="stylesheet" href="public/css/tailwind.css">
 </head>
 <body class="pagina-admin">
-<div class="estructura-admin">
+<div class="estructura-admin max-lg:grid-cols-1">
     <aside class="barra-lateral">
         <h2 class="marca-admin">iVento</h2>
         <p class="rol-admin">Panel de administrador</p>
@@ -35,7 +36,7 @@ if ($_SESSION['rol'] != 'Administrador') {
             <a href="index.php?ruta=admin/cortes">Cortes de calle</a>
         </nav>
     </aside>
-    <main class="contenido-admin">
+    <main class="contenido-admin min-w-0 max-md:py-7 max-md:px-4">
         <header class="encabezado-admin">
             <h1>Panel de gestión</h1>
             <p>Administrá usuarios, eventos, categorías y ubicaciones desde un solo lugar.</p>

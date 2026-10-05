@@ -11,21 +11,22 @@ $rol = isset($_SESSION['rol']) ? $_SESSION['rol'] : 'Usuario';
 $puedeCrearEventos = in_array($rol, ['Administrador', 'Organizador'], true);
 ?>
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="motion-reduce:scroll-auto">
 <head>
     <meta name="robots" content="noindex, nofollow">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi espacio | iVento</title>
     <link rel="stylesheet" href="public/css/styles.css">
+    <link rel="stylesheet" href="public/css/tailwind.css">
 </head>
 <body class="pagina-bienvenida">
-    <header class="cabecera">
-        <div class="contenedor-cabecera">
-            <a href="index.php?ruta=home" class="logo-header">
+    <header class="cabecera max-sm:static">
+        <div class="contenedor-cabecera max-sm:min-h-0 max-sm:pt-2 max-sm:pb-3 max-sm:flex-wrap max-sm:gap-x-3 max-sm:gap-y-1.5">
+            <a href="index.php?ruta=home" class="logo-header max-sm:[&_img]:w-32.5 max-sm:[&_img]:h-11">
                 <img src="public/img/ivento-logo-horizontal-blanco.png" alt="iVento">
             </a>
-            <nav class="navegacion-principal">
+            <nav class="navegacion-principal max-sm:basis-full max-sm:ml-0 max-sm:justify-start max-sm:gap-1 max-sm:[&_a]:flex-auto max-sm:[&_a]:px-1.75 max-sm:[&_a]:py-2.25 max-sm:[&_a]:text-[0.875rem]">
                 <a href="index.php?ruta=home">Inicio</a>
                 <a href="index.php?ruta=mapa">Mapa</a>
                 <a href="index.php?ruta=perfil">Perfil</a>
@@ -46,7 +47,7 @@ $puedeCrearEventos = in_array($rol, ['Administrador', 'Organizador'], true);
             <p class="subtitulo-bienvenida">Elegí una opción para continuar usando iVento.</p>
         </section>
 
-        <section class="cuadrilla-caracteristicas">
+        <section class="cuadrilla-caracteristicas max-sm:grid-cols-1">
             <article class="tarjeta-caracteristica">
                 <div class="icono-caracteristica">📍</div>
                 <h2>Mapa de eventos</h2>
@@ -80,7 +81,7 @@ $puedeCrearEventos = in_array($rol, ['Administrador', 'Organizador'], true);
     </main>
 
     <footer class="pie-pagina">
-        <div class="pie-contenedor">
+        <div class="pie-contenedor max-sm:items-start max-sm:flex-col">
             <p>&copy; 2026 iVento · ApexDigital SA</p>
             <nav class="pie-enlaces">
                 <a href="index.php?ruta=home">Inicio</a>

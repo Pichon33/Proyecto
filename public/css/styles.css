@@ -1,3 +1,6 @@
+/* La identidad visual queda en components; Tailwind controla el responsive. */
+@layer theme, base, components, utilities;
+@layer components {
 :root {
     --morado: #5b21b6;
     --morado-oscuro: #32105f;
@@ -366,52 +369,4 @@ input:focus, textarea:focus { outline: 2px solid #c7acff; border-color: var(--vi
 .boton-favorito { padding: 10px 14px; border: 1px solid var(--morado); border-radius: 7px; background: white; color: var(--morado); cursor: pointer; font-weight: bold; white-space: nowrap; }
 .boton-favorito.activo { border-color: #d78300; background: #fff4d6; color: #8a5200; }
 .sin-resultados { padding: 25px; border-radius: 10px; background: white; color: var(--texto-suave); text-align: center; }
-
-@media (max-width: 800px) {
-    .portada, .fila-tarjetas, .perfil-cuadrilla, .empresa-cuadrilla { grid-template-columns: 1fr; }
-    .portada { gap: 32px; }
-    .fila-tarjetas { grid-template-columns: repeat(2, 1fr); }
-    .contenedor-mapa-completo { flex-direction: column; }
-    .barra-lateral-mapa { width: 100%; max-height: 290px; border-right: 0; border-bottom: 1px solid var(--borde); }
-    #mapa { min-height: 55vh; }
-
-    .barra-lateral-mapa { max-height: none; overflow: hidden; }
-    #lista-eventos { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 4px; }
-    .elemento-evento { min-width: 250px; margin-bottom: 0; }
-}
-
-@media (max-width: 600px) {
-    /* En celular la cabecera acompaña el desplazamiento y deja más lugar al contenido. */
-    .cabecera { position: static; }
-    .contenedor-cabecera { min-height: auto; padding: 8px 0 12px; flex-wrap: wrap; gap: 6px 12px; }
-    .logo-header img { width: 130px; height: 44px; }
-    .navegacion-principal { flex-basis: 100%; margin-left: 0; justify-content: flex-start; gap: 4px; }
-    .navegacion-principal a { flex: 1 1 auto; padding: 9px 7px; font-size: 0.875rem; }
-    .nav-buttons { gap: 4px; }
-    .nav-buttons a { font-size: 0.875rem; }
-    .pagina-inicio main { padding: 28px 0 44px; }
-    .portada { padding: 0; }
-    .portada h1 { font-size: clamp(2.15rem, 9vw, 2.6rem); }
-    .portada .descripcion-portada { font-size: 1.05rem; }
-    .grupo-botones .boton { flex: 1 1 auto; }
-    .tarjeta-portada { padding: 24px; }
-    .seccion-caracteristicas, .seccion-acerca, .seccion-empresa, .seccion-llamada { margin-top: 44px; }
-    .seccion-acerca, .seccion-llamada { padding: 24px; }
-    .seccion-llamada .boton { width: 100%; }
-    .pagina-inicio section[id] { scroll-margin-top: 20px; }
-    .fila-tarjetas, .cuadrilla-caracteristicas, .campos-perfil { grid-template-columns: 1fr; }
-    .seccion-llamada { align-items: flex-start; flex-direction: column; }
-    .pie-contenedor { align-items: flex-start; flex-direction: column; }
-    .contenedor { padding: 22px; }
-    .dos-columnas { grid-template-columns: 1fr; }
-    .buscador-eventos, .tarjeta-evento { align-items: stretch; flex-direction: column; }
-    .boton-favorito, .buscador-eventos .boton { width: 100%; }
-    .formulario-evento input, .formulario-evento select, .formulario-evento textarea, .campos-perfil input, .campos-perfil select { font-size: 16px; }
-    .contenedor-formulario { padding: 28px 16px; }
-    .mapa-selector { height: 300px; }
-    .popup-evento { max-width: 220px; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
 }

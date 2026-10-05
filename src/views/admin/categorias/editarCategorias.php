@@ -47,8 +47,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <title>Editar Categoría</title>
     <link rel="stylesheet" href="public/css/admin.css">
+    <link rel="stylesheet" href="public/css/tailwind.css">
 </head>
-<body class="admin-page">
+<body class="admin-page max-md:py-7 max-md:px-4">
 
 <a class="volver-admin" href="index.php?ruta=admin/categorias">← Volver a categorías</a>
 
@@ -56,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <p>Actualizá el nombre y el tipo que verá el resto de la plataforma.</p>
 
 <form method="POST" class="formulario-admin">
-    <div class="formulario-admin-grid">
+    <div class="formulario-admin-grid max-md:grid-cols-1">
         <div class="campo-admin">
             <label for="nombre">Nombre</label>
             <input

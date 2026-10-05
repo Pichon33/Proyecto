@@ -44,22 +44,23 @@ $consultaCortes = $pdo->query(
 $cortesAprobados = $consultaCortes->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="motion-reduce:scroll-auto">
 <head>
     <meta name="robots" content="noindex, nofollow">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mapa de eventos | iVento</title>
     <link rel="stylesheet" href="public/css/styles.css">
+    <link rel="stylesheet" href="public/css/tailwind.css">
     <link rel="stylesheet" href="public/assets/map/leaflet.css">
 </head>
 <body class="mapa-pagina">
-    <header class="cabecera">
-        <div class="contenedor-cabecera">
-            <a href="index.php?ruta=home" class="logo-header">
+    <header class="cabecera max-sm:static">
+        <div class="contenedor-cabecera max-sm:min-h-0 max-sm:pt-2 max-sm:pb-3 max-sm:flex-wrap max-sm:gap-x-3 max-sm:gap-y-1.5">
+            <a href="index.php?ruta=home" class="logo-header max-sm:[&_img]:w-32.5 max-sm:[&_img]:h-11">
                 <img src="public/img/ivento-logo-horizontal-blanco.png" alt="iVento">
             </a>
-            <nav class="navegacion-principal" aria-label="Navegación principal">
+            <nav class="navegacion-principal max-sm:basis-full max-sm:ml-0 max-sm:justify-start max-sm:gap-1 max-sm:[&_a]:flex-auto max-sm:[&_a]:px-1.75 max-sm:[&_a]:py-2.25 max-sm:[&_a]:text-[0.875rem]" aria-label="Navegación principal">
                 <a href="index.php?ruta=home">Inicio</a>
                 <a href="index.php?ruta=mapa" aria-current="page">Mapa</a>
                 <?php if (isset($_SESSION['user_id'])): ?>
@@ -76,12 +77,12 @@ $cortesAprobados = $consultaCortes->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </header>
 
-    <main class="contenedor-mapa-completo">
-        <aside class="barra-lateral-mapa">
+    <main class="contenedor-mapa-completo max-md:flex-col">
+        <aside class="barra-lateral-mapa max-md:w-full max-md:max-h-none max-md:overflow-hidden max-md:border-r-0 max-md:border-b max-md:border-b-[var(--borde)]">
             <h2>Eventos cercanos</h2>
-            <div id="lista-eventos"></div>
+            <div id="lista-eventos" class="max-md:flex max-md:gap-3 max-md:overflow-x-auto max-md:pb-1"></div>
         </aside>
-        <div id="mapa" aria-label="Mapa de eventos"></div>
+        <div class="max-md:min-h-[55vh]" id="mapa" aria-label="Mapa de eventos"></div>
     </main>
 
     <script src="public/assets/map/leaflet.js"></script>
@@ -170,7 +171,7 @@ $cortesAprobados = $consultaCortes->fetchAll(PDO::FETCH_ASSOC);
             const edad = Number(evento.edad_minima || 0) > 0 ? '+' + evento.edad_minima + ' años' : 'Todas las edades';
             const imagen = evento.imagen ? '<img src="' + textoSeguro(evento.imagen) + '" alt="Portada de ' + textoSeguro(evento.nombre) + '">' : '';
 
-            return '<div class="popup-evento">' + imagen +
+            return '<div class="popup-evento max-sm:max-w-[220px]">' + imagen +
                 '<span class="etiqueta-tipo">' + textoSeguro(evento.tipo_publicacion || 'Evento') + '</span>' +
                 '<h3>' + textoSeguro(evento.nombre) + '</h3>' +
                 '<p>' + textoSeguro(evento.descripcion) + '</p>' +
@@ -186,7 +187,7 @@ $cortesAprobados = $consultaCortes->fetchAll(PDO::FETCH_ASSOC);
 
             eventos.forEach(function (evento, indice) {
                 const tarjeta = document.createElement('article');
-                tarjeta.className = 'elemento-evento';
+                tarjeta.className = 'elemento-evento max-md:min-w-[250px] max-md:mb-0';
                 tarjeta.innerHTML = '<h3>' + textoSeguro(evento.nombre) + '</h3><p>' + textoSeguro(evento.descripcion) + '</p><p><strong>' + textoSeguro(evento.fecha) + '</strong></p><span class="tipo-evento">' + textoSeguro(evento.tipo_publicacion || evento.tipo) + '</span>';
 
                 tarjeta.addEventListener('click', function () {

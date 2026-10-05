@@ -1,3 +1,6 @@
+/* La identidad visual queda en components; Tailwind controla el responsive. */
+@layer theme, base, components, utilities;
+@layer components {
 * {
     box-sizing: border-box;
 }
@@ -245,20 +248,7 @@ body {
     resize: vertical;
 }
 
-@media (max-width: 980px) {
-    .estructura-admin {
-        grid-template-columns: 1fr;
-    }
 
-    .barra-lateral {
-        border-right: none;
-        border-bottom: 1px solid #d8e9f3;
-    }
-
-    .contenido-admin {
-        padding: 28px 22px;
-    }
-}
 
 /* Estilo compartido para las pantallas de administración. */
 :root {
@@ -727,30 +717,4 @@ body {
     font-size: 0.78rem;
     font-weight: 700;
 }
-
-@media (max-width: 800px) {
-    .contenido-admin,
-    .admin-page {
-        padding: 28px 16px;
-    }
-
-    .formulario-admin-grid,
-    .coordenadas-admin {
-        grid-template-columns: 1fr;
-    }
-
-    .mapa-admin {
-        height: 320px;
-    }
-
-    .encabezado-listado {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
-    .admin-page .buscador-admin {
-        align-items: stretch;
-        flex-direction: column;
-        gap: 7px;
-    }
 }

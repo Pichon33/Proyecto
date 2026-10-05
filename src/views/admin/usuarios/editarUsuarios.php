@@ -43,8 +43,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <title>Editar Usuario</title>
     <link rel="stylesheet" href="public/css/admin.css">
+    <link rel="stylesheet" href="public/css/tailwind.css">
 </head>
-<body class="admin-page">
+<body class="admin-page max-md:py-7 max-md:px-4">
 
 <a class="volver-admin" href="index.php?ruta=admin/usuarios">← Volver a usuarios</a>
 
@@ -52,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <p>Modificá sus datos y el nivel de acceso dentro de iVento.</p>
 
 <form method="POST" class="formulario-admin">
-    <div class="formulario-admin-grid">
+    <div class="formulario-admin-grid max-md:grid-cols-1">
         <div class="campo-admin">
             <label for="username">Nombre de usuario</label>
             <input id="username" type="text" name="username" value="<?= htmlspecialchars($usuario['username']) ?>" required>

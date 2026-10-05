@@ -1,0 +1,14 @@
+/* Sin Preflight: conservamos los estilos de iVento y de Leaflet. */
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities) source(none);
+
+@source "./views";
+@source "../public/js";
+
+/* Los límites anteriores eran 600, 800 y 980 px inclusive. */
+@theme {
+    --breakpoint-sm: 601px;
+    --breakpoint-md: 801px;
+    --breakpoint-lg: 981px;
+}

@@ -37,8 +37,9 @@ $cortes = $consulta->fetchAll(PDO::FETCH_ASSOC);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cortes de calle | iVento</title>
     <link rel="stylesheet" href="public/css/admin.css">
+    <link rel="stylesheet" href="public/css/tailwind.css">
 </head>
-<body class="admin-page">
+<body class="admin-page max-md:py-7 max-md:px-4">
     <main class="listado-admin">
         <?php if ($_SESSION['rol'] === 'Administrador'): ?>
             <a class="volver-admin" href="index.php?ruta=admin">← Volver al panel</a>
@@ -46,7 +47,7 @@ $cortes = $consulta->fetchAll(PDO::FETCH_ASSOC);
             <a class="volver-admin" href="index.php?ruta=menu">← Volver a mi espacio</a>
         <?php endif; ?>
 
-        <header class="encabezado-listado">
+        <header class="encabezado-listado max-md:items-start max-md:flex-col">
             <div>
                 <span class="etiqueta-admin">Gestión municipal</span>
                 <h1>Cortes de calle</h1>

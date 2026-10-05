@@ -26,13 +26,14 @@ $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <title>Categorías</title>
     <link rel="stylesheet" href="public/css/admin.css">
+    <link rel="stylesheet" href="public/css/tailwind.css">
 </head>
-<body class="admin-page">
+<body class="admin-page max-md:py-7 max-md:px-4">
 
 <main class="listado-admin">
     <a class="volver-admin" href="index.php?ruta=admin">← Volver al panel</a>
 
-    <header class="encabezado-listado">
+    <header class="encabezado-listado max-md:items-start max-md:flex-col">
         <div>
             <span class="etiqueta-admin">Administración</span>
             <h1>Categorías</h1>
@@ -42,7 +43,7 @@ $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <a class="boton-admin" href="index.php?ruta=admin/categorias/crear">Nueva categoría</a>
     </header>
 
-    <form id="formularioBusquedaCategorias" class="buscador-admin" method="GET" action="index.php">
+    <form id="formularioBusquedaCategorias" class="buscador-admin max-md:items-stretch max-md:flex-col max-md:gap-[7px]" method="GET" action="index.php">
         <input type="hidden" name="ruta" value="admin/categorias">
         <label for="busquedaCategorias">Buscar por nombre de categoría</label>
         <input id="busquedaCategorias" type="search" name="busqueda" value="<?= htmlspecialchars($busqueda) ?>" placeholder="Ej.: Música" autocomplete="off">

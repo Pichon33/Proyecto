@@ -4,3 +4,6 @@
 
 # Copias comprimidas locales
 *.zip
+
+# CLI independiente de Tailwind (se instala con tailwind.cmd install)
+/tools/tailwindcss.exe

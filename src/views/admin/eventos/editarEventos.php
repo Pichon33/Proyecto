@@ -114,9 +114,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Evento</title>
     <link rel="stylesheet" href="public/css/admin.css">
+    <link rel="stylesheet" href="public/css/tailwind.css">
     <link rel="stylesheet" href="public/assets/map/leaflet.css">
 </head>
-<body class="admin-page">
+<body class="admin-page max-md:py-7 max-md:px-4">
 
 <a class="volver-admin" href="index.php?ruta=admin/eventos">← Volver a eventos</a>
 
@@ -128,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <?php endif; ?>
 
 <form method="POST" class="formulario-admin">
-    <div class="formulario-admin-grid">
+    <div class="formulario-admin-grid max-md:grid-cols-1">
         <div class="campo-admin">
             <label for="titulo">Título</label>
             <input id="titulo" type="text" name="titulo" value="<?= htmlspecialchars($evento['titulo']) ?>" required>
@@ -218,7 +219,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <label>Ubicación precisa</label>
             <p class="nota-admin">Hacé clic o tocá el mapa para modificar la latitud y longitud.</p>
 
-            <div class="coordenadas-admin">
+            <div class="coordenadas-admin max-md:grid-cols-1">
                 <div>
                     <label for="latitud">Latitud</label>
                     <input id="latitud" type="number" name="latitud" min="-35.5" max="-30" step="any" value="<?= htmlspecialchars($evento['latitud']) ?>" required>
@@ -230,7 +231,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
             </div>
 
-            <div id="mapa-admin" class="mapa-admin"></div>
+            <div id="mapa-admin" class="mapa-admin max-md:h-80"></div>
         </div>
     </div>
 

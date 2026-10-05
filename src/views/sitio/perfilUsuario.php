@@ -103,21 +103,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $inicial = strtoupper(substr($perfil['username'], 0, 1));
 ?>
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="motion-reduce:scroll-auto">
 <head>
     <meta name="robots" content="noindex, nofollow">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi perfil | iVento</title>
     <link rel="stylesheet" href="public/css/styles.css">
+    <link rel="stylesheet" href="public/css/tailwind.css">
 </head>
 <body class="perfil-pagina">
-    <header class="cabecera">
-        <div class="contenedor-cabecera">
-            <a href="index.php?ruta=home" class="logo-header">
+    <header class="cabecera max-sm:static">
+        <div class="contenedor-cabecera max-sm:min-h-0 max-sm:pt-2 max-sm:pb-3 max-sm:flex-wrap max-sm:gap-x-3 max-sm:gap-y-1.5">
+            <a href="index.php?ruta=home" class="logo-header max-sm:[&_img]:w-32.5 max-sm:[&_img]:h-11">
                 <img src="public/img/ivento-logo-horizontal-blanco.png" alt="iVento">
             </a>
-            <nav class="navegacion-principal">
+            <nav class="navegacion-principal max-sm:basis-full max-sm:ml-0 max-sm:justify-start max-sm:gap-1 max-sm:[&_a]:flex-auto max-sm:[&_a]:px-1.75 max-sm:[&_a]:py-2.25 max-sm:[&_a]:text-[0.875rem]">
                 <a href="index.php?ruta=home">Inicio</a>
                 <a href="index.php?ruta=mapa">Mapa</a>
                 <a href="index.php?ruta=menu">Mi espacio</a>
@@ -140,7 +141,7 @@ $inicial = strtoupper(substr($perfil['username'], 0, 1));
             <div class="error"><?php echo htmlspecialchars($error); ?></div>
         <?php endif; ?>
 
-        <div class="perfil-cuadrilla">
+        <div class="perfil-cuadrilla max-md:grid-cols-1">
             <aside class="perfil-tarjeta perfil-resumen">
                 <?php if (!empty($perfil['avatar'])): ?>
                     <img id="avatarPreview" class="avatar-perfil" src="<?php echo htmlspecialchars($perfil['avatar']); ?>" alt="Foto de perfil">
@@ -159,7 +160,7 @@ $inicial = strtoupper(substr($perfil['username'], 0, 1));
                 <form id="profileForm" method="POST" enctype="multipart/form-data">
                     <input id="avatarInput" class="avatar-input" type="file" name="avatar" accept="image/png, image/jpeg, image/webp">
 
-                    <div class="campos-perfil">
+                    <div class="campos-perfil max-sm:grid-cols-1 max-sm:[&_input]:text-base max-sm:[&_select]:text-base">
                         <label class="campo-perfil">
                             Nombre de usuario
                             <input type="text" name="nombre" value="<?php echo htmlspecialchars($perfil['username']); ?>" disabled required>
@@ -203,7 +204,7 @@ $inicial = strtoupper(substr($perfil['username'], 0, 1));
     </main>
 
     <footer class="pie-pagina">
-        <div class="pie-contenedor">
+        <div class="pie-contenedor max-sm:items-start max-sm:flex-col">
             <p>&copy; 2026 iVento · ApexDigital SA</p>
             <nav class="pie-enlaces">
                 <a href="index.php?ruta=home">Inicio</a>

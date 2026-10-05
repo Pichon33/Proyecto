@@ -36,8 +36,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <title>Editar Ubicación</title>
     <link rel="stylesheet" href="public/css/admin.css">
+    <link rel="stylesheet" href="public/css/tailwind.css">
 </head>
-<body class="admin-page">
+<body class="admin-page max-md:py-7 max-md:px-4">
 
 <a class="volver-admin" href="index.php?ruta=admin/ubicaciones">← Volver a ubicaciones</a>
 
@@ -45,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <p>Actualizá el lugar y las coordenadas que utilizan los eventos asociados.</p>
 
 <form method="POST" class="formulario-admin">
-    <div class="formulario-admin-grid">
+    <div class="formulario-admin-grid max-md:grid-cols-1">
         <div class="campo-admin">
             <label for="nombre_lugar">Nombre del lugar</label>
             <input id="nombre_lugar" type="text" name="nombre_lugar" value="<?= htmlspecialchars($ubicacion['nombre_lugar']) ?>" required>

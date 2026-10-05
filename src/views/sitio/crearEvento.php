@@ -145,22 +145,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="motion-reduce:scroll-auto">
 <head>
     <meta name="robots" content="noindex, nofollow">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crear publicación | iVento</title>
     <link rel="stylesheet" href="public/css/styles.css">
+    <link rel="stylesheet" href="public/css/tailwind.css">
     <link rel="stylesheet" href="public/assets/map/leaflet.css">
 </head>
 <body class="pagina-formulario">
-    <header class="cabecera">
-        <div class="contenedor-cabecera">
-            <a href="index.php?ruta=home" class="logo-header">
+    <header class="cabecera max-sm:static">
+        <div class="contenedor-cabecera max-sm:min-h-0 max-sm:pt-2 max-sm:pb-3 max-sm:flex-wrap max-sm:gap-x-3 max-sm:gap-y-1.5">
+            <a href="index.php?ruta=home" class="logo-header max-sm:[&_img]:w-32.5 max-sm:[&_img]:h-11">
                 <img src="public/img/ivento-logo-horizontal-blanco.png" alt="iVento">
             </a>
-            <nav class="navegacion-principal">
+            <nav class="navegacion-principal max-sm:basis-full max-sm:ml-0 max-sm:justify-start max-sm:gap-1 max-sm:[&_a]:flex-auto max-sm:[&_a]:px-1.75 max-sm:[&_a]:py-2.25 max-sm:[&_a]:text-[0.875rem]">
                 <a href="index.php?ruta=home">Inicio</a>
                 <a href="index.php?ruta=mapa">Mapa</a>
                 <a href="index.php?ruta=menu">Mi espacio</a>
@@ -169,7 +170,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </header>
 
-    <main class="contenedor-formulario">
+    <main class="contenedor-formulario max-sm:py-7 max-sm:px-4">
         <section class="encabezado-pagina">
             <span class="etiqueta-portada">Organización</span>
             <h1>Crear publicación</h1>
@@ -184,8 +185,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="error"><?php echo htmlspecialchars($error); ?></div>
         <?php endif; ?>
 
-        <form class="formulario-evento" method="POST" enctype="multipart/form-data">
-            <div class="dos-columnas">
+        <form class="formulario-evento max-sm:[&_input]:text-base max-sm:[&_select]:text-base max-sm:[&_textarea]:text-base" method="POST" enctype="multipart/form-data">
+            <div class="dos-columnas max-sm:grid-cols-1">
                 <label>
                     Tipo de publicación
                     <select name="tipo_publicacion" required>
@@ -213,7 +214,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <textarea name="descripcion" placeholder="Contá de qué se trata, qué ofrece o qué se va a realizar."></textarea>
             </label>
 
-            <div class="dos-columnas">
+            <div class="dos-columnas max-sm:grid-cols-1">
                 <label>
                     Fecha de inicio
                     <input type="date" name="fecha" required>
@@ -224,7 +225,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </label>
             </div>
 
-            <div class="dos-columnas">
+            <div class="dos-columnas max-sm:grid-cols-1">
                 <label>
                     Fecha de finalización
                     <input type="date" name="fecha_fin">
@@ -235,7 +236,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </label>
             </div>
 
-            <div class="dos-columnas">
+            <div class="dos-columnas max-sm:grid-cols-1">
                 <label>
                     Precio de entrada (UYU)
                     <input type="number" name="precio_uyu" min="0" step="0.01" value="0">
@@ -246,7 +247,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </label>
             </div>
 
-            <div class="dos-columnas">
+            <div class="dos-columnas max-sm:grid-cols-1">
                 <label>
                     Lugar
                     <input type="text" name="lugar" placeholder="Ej.: Plaza de Deportes" required>
@@ -262,10 +263,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="file" name="imagen" accept="image/png, image/jpeg, image/webp">
             </label>
 
-            <div id="mapa-selector" class="mapa-selector" aria-label="Selector de ubicación"></div>
+            <div id="mapa-selector" class="mapa-selector max-sm:h-[300px]" aria-label="Selector de ubicación"></div>
             <p id="ayuda-mapa" class="ayuda-mapa">Tocá o hacé clic en el mapa para marcar la ubicación obligatoria.</p>
 
-            <div class="dos-columnas">
+            <div class="dos-columnas max-sm:grid-cols-1">
                 <label>
                     Latitud
                     <input id="latitud" type="number" name="latitud" step="any" readonly required>
@@ -305,7 +306,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </main>
 
     <footer class="pie-pagina">
-        <div class="pie-contenedor">
+        <div class="pie-contenedor max-sm:items-start max-sm:flex-col">
             <p>&copy; 2026 iVento · ApexDigital SA</p>
             <nav class="pie-enlaces">
                 <a href="index.php?ruta=home">Inicio</a>

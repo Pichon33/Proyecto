@@ -4,7 +4,7 @@ $urlBase = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 
 $urlCanonica = $urlBase . '/index.php?ruta=home';
 ?>
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="motion-reduce:scroll-auto">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,16 +19,17 @@ $urlCanonica = $urlBase . '/index.php?ruta=home';
     <meta property="og:url" content="<?php echo htmlspecialchars($urlCanonica); ?>">
     <meta property="og:locale" content="es_UY">
     <link rel="stylesheet" href="public/css/styles.css">
+    <link rel="stylesheet" href="public/css/tailwind.css">
 </head>
-<body class="pagina-inicio">
+<body class="pagina-inicio max-sm:[&_main]:pt-7 max-sm:[&_main]:pb-11 max-sm:[&_section[id]]:scroll-mt-5">
     <a class="enlace-saltar" href="#contenido">Ir al contenido</a>
-    <header class="cabecera">
-        <div class="contenedor-cabecera">
-            <a href="index.php?ruta=home" class="logo-header">
+    <header class="cabecera max-sm:static">
+        <div class="contenedor-cabecera max-sm:min-h-0 max-sm:pt-2 max-sm:pb-3 max-sm:flex-wrap max-sm:gap-x-3 max-sm:gap-y-1.5">
+            <a href="index.php?ruta=home" class="logo-header max-sm:[&_img]:w-32.5 max-sm:[&_img]:h-11">
                 <img src="public/img/ivento-logo-horizontal-blanco.png" alt="iVento">
             </a>
 
-            <nav class="navegacion-principal" aria-label="Navegación principal">
+            <nav class="navegacion-principal max-sm:basis-full max-sm:ml-0 max-sm:justify-start max-sm:gap-1 max-sm:[&_a]:flex-auto max-sm:[&_a]:px-1.75 max-sm:[&_a]:py-2.25 max-sm:[&_a]:text-[0.875rem]" aria-label="Navegación principal">
                 <a href="index.php?ruta=home" aria-current="page">Inicio</a>
                 <a href="index.php?ruta=mapa">Mapa</a>
 
@@ -47,13 +48,13 @@ $urlCanonica = $urlBase . '/index.php?ruta=home';
     </header>
 
     <main id="contenido" tabindex="-1">
-        <section class="portada">
+        <section class="portada max-md:grid-cols-1 max-md:gap-8 max-sm:p-0 max-sm:[&_h1]:text-[clamp(2.15rem,9vw,2.6rem)]">
             <div class="texto-portada">
                 <span class="etiqueta-portada">Colonia, Uruguay</span>
                 <h1>Descubrí qué hacer <span>en Colonia</span></h1>
-                <p class="descripcion-portada">Música, ferias, cultura y actividades cerca de vos. Encontrá dónde son y cuándo ir, todo en iVento.</p>
+                <p class="descripcion-portada max-sm:text-[1.05rem]">Música, ferias, cultura y actividades cerca de vos. Encontrá dónde son y cuándo ir, todo en iVento.</p>
 
-                <div class="grupo-botones">
+                <div class="grupo-botones max-sm:[&_.boton]:flex-auto">
                     <a href="index.php?ruta=mapa" class="boton principal">Explorar eventos</a>
                     <?php if (!isset($_SESSION['user_id'])): ?>
                         <a href="index.php?ruta=registro" class="boton secundario">Crear cuenta</a>
@@ -61,7 +62,7 @@ $urlCanonica = $urlBase . '/index.php?ruta=home';
                 </div>
             </div>
 
-            <aside class="tarjeta-portada">
+            <aside class="tarjeta-portada max-sm:p-6">
                 <img class="logo-portada" src="public/img/ivento-icono-app.png" alt="Icono de iVento">
                 <h2>Tu plan, con los detalles a mano</h2>
                 <p>La información que necesitás antes de salir.</p>
@@ -73,14 +74,14 @@ $urlCanonica = $urlBase . '/index.php?ruta=home';
             </aside>
         </section>
 
-        <section class="seccion-caracteristicas" id="caracteristicas">
+        <section class="seccion-caracteristicas max-sm:mt-11" id="caracteristicas">
             <div class="encabezado-seccion">
                 <span class="etiqueta-seccion">Cómo funciona</span>
                 <h2>Encontrá un plan. Organizá tu salida.</h2>
                 <p>Explorá las propuestas de la zona y guardá las que te interesan.</p>
             </div>
 
-            <div class="fila-tarjetas">
+            <div class="fila-tarjetas max-md:grid-cols-2 max-sm:grid-cols-1">
                 <article class="tarjeta">
                     <div class="icono-tarjeta" aria-hidden="true">🎉</div>
                     <h3>Descubrí</h3>
@@ -107,7 +108,7 @@ $urlCanonica = $urlBase . '/index.php?ruta=home';
             </div>
         </section>
 
-        <section class="seccion-acerca" id="nosotros">
+        <section class="seccion-acerca max-sm:mt-11 max-sm:p-6" id="nosotros">
             <div class="encabezado-seccion">
                 <span class="etiqueta-seccion">Sobre iVento</span>
                 <h2>Más cerca de lo que pasa en tu comunidad</h2>
@@ -115,14 +116,14 @@ $urlCanonica = $urlBase . '/index.php?ruta=home';
             <p>iVento es un servicio de ApexDigital SA, una sociedad anónima uruguaya. Reunimos actividades locales para que más personas puedan conocerlas y participar.</p>
         </section>
 
-        <section class="seccion-empresa" id="apexdigital">
+        <section class="seccion-empresa max-sm:mt-11" id="apexdigital">
             <div class="encabezado-seccion">
                 <span class="etiqueta-seccion">ApexDigital</span>
                 <h2>Una propuesta local, pensada para crecer</h2>
                 <p>Desde Juan Lacaze y sus alrededores, buscamos acercar las actividades del departamento de Colonia a su comunidad.</p>
             </div>
 
-            <div class="empresa-cuadrilla">
+            <div class="empresa-cuadrilla max-md:grid-cols-1">
                 <article class="tarjeta">
                     <h3>Misión</h3>
                     <p>Conectar a quienes organizan actividades con las personas que quieren participar.</p>
@@ -140,7 +141,7 @@ $urlCanonica = $urlBase . '/index.php?ruta=home';
             </div>
         </section>
 
-        <section class="seccion-llamada">
+        <section class="seccion-llamada max-sm:mt-11 max-sm:p-6 max-sm:items-start max-sm:flex-col max-sm:[&_.boton]:w-full">
             <div>
                 <h2>Tu próximo plan empieza acá</h2>
                 <?php if (isset($_SESSION['user_id'])): ?>
@@ -158,7 +159,7 @@ $urlCanonica = $urlBase . '/index.php?ruta=home';
     </main>
 
     <footer class="pie-pagina">
-        <div class="pie-contenedor">
+        <div class="pie-contenedor max-sm:items-start max-sm:flex-col">
             <p>&copy; 2026 iVento · ApexDigital SA</p>
             <nav class="pie-enlaces" aria-label="Enlaces del pie de página">
                 <a href="#caracteristicas">Cómo funciona</a>

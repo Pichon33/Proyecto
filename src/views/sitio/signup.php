@@ -63,7 +63,7 @@ function validarContrasena($contrasena) {
 ?>
 
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="motion-reduce:scroll-auto">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -78,14 +78,15 @@ function validarContrasena($contrasena) {
     <meta property="og:url" content="<?php echo htmlspecialchars($urlCanonica); ?>">
     <meta property="og:locale" content="es_UY">
     <link rel="stylesheet" href="public/css/styles.css">
+    <link rel="stylesheet" href="public/css/tailwind.css">
 </head>
 <body class="pagina-autenticacion">
-    <header class="cabecera">
-        <div class="contenedor-cabecera">
-            <a href="index.php?ruta=home" class="logo-header">
+    <header class="cabecera max-sm:static">
+        <div class="contenedor-cabecera max-sm:min-h-0 max-sm:pt-2 max-sm:pb-3 max-sm:flex-wrap max-sm:gap-x-3 max-sm:gap-y-1.5">
+            <a href="index.php?ruta=home" class="logo-header max-sm:[&_img]:w-32.5 max-sm:[&_img]:h-11">
                 <img src="public/img/ivento-logo-horizontal-blanco.png" alt="iVento">
             </a>
-            <div class="nav-buttons">
+            <div class="nav-buttons max-sm:gap-1 max-sm:[&_a]:text-[0.875rem]">
                 <a href="index.php?ruta=login" class="boton-iniciar-sesion">Ingresar</a>
             </div>
         </div>
@@ -94,7 +95,7 @@ function validarContrasena($contrasena) {
         <a href="index.php?ruta=home">← Volver</a>
     </div>
 
-    <main class="contenedor">
+    <main class="contenedor max-sm:p-[22px]">
         <img class="logo" src="public/img/ivento-logo-horizontal.png" alt="iVento">
         <h1 class="titulo-formulario">Creá tu cuenta</h1>
         <p class="introduccion-formulario">Completá estos datos para sumarte a iVento.</p>
@@ -203,7 +204,7 @@ function validarContrasena($contrasena) {
     </script>
     <script src="public/js/java.js"></script>
     <footer class="pie-pagina">
-        <div class="pie-contenedor">
+        <div class="pie-contenedor max-sm:items-start max-sm:flex-col">
             <p>&copy; 2026 iVento · ApexDigital SA</p>
             <nav class="pie-enlaces">
                 <a href="index.php?ruta=home">Inicio</a>
