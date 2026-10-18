@@ -1,6 +1,6 @@
 <?php
 session_start();
-$urlBase = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
+$urlBase = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/');
 $urlCanonica = $urlBase . '/index.php?ruta=home';
 ?>
 <!DOCTYPE html>
@@ -19,33 +19,12 @@ $urlCanonica = $urlBase . '/index.php?ruta=home';
     <meta property="og:url" content="<?php echo htmlspecialchars($urlCanonica); ?>">
     <meta property="og:locale" content="es_UY">
     <link rel="stylesheet" href="public/css/styles.css">
-    <link rel="stylesheet" href="public/css/tailwind.css">
+    <link rel="stylesheet" href="public/css/tailwind.css?v=<?= filemtime(dirname(__DIR__,3).'/public/css/tailwind.css') ?>">
+    <script src="public/js/tema.js?v=<?= filemtime(dirname(__DIR__,3).'/public/js/tema.js') ?>"></script>
 </head>
 <body class="pagina-inicio max-sm:[&_main]:pt-7 max-sm:[&_main]:pb-11 max-sm:[&_section[id]]:scroll-mt-5">
     <a class="enlace-saltar" href="#contenido">Ir al contenido</a>
-    <header class="cabecera max-sm:static">
-        <div class="contenedor-cabecera max-sm:min-h-0 max-sm:pt-2 max-sm:pb-3 max-sm:flex-wrap max-sm:gap-x-3 max-sm:gap-y-1.5">
-            <a href="index.php?ruta=home" class="logo-header max-sm:[&_img]:w-32.5 max-sm:[&_img]:h-11">
-                <img src="public/img/ivento-logo-horizontal-blanco.png" alt="iVento">
-            </a>
-
-            <nav class="navegacion-principal max-sm:basis-full max-sm:ml-0 max-sm:justify-start max-sm:gap-1 max-sm:[&_a]:flex-auto max-sm:[&_a]:px-1.75 max-sm:[&_a]:py-2.25 max-sm:[&_a]:text-[0.875rem]" aria-label="Navegación principal">
-                <a href="index.php?ruta=home" aria-current="page">Inicio</a>
-                <a href="index.php?ruta=mapa">Mapa</a>
-
-                <?php if (isset($_SESSION['user_id'])): ?>
-                    <a href="index.php?ruta=menu">Mi espacio</a>
-                <?php else: ?>
-                    <a href="index.php?ruta=login">Ingresar</a>
-                    <a href="index.php?ruta=registro" class="boton-nav secundario">Registrarse</a>
-                <?php endif; ?>
-
-                <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'Administrador'): ?>
-                    <a href="index.php?ruta=admin" class="boton-nav">Administración</a>
-                <?php endif; ?>
-            </nav>
-        </div>
-    </header>
+    <?php require dirname(__DIR__,3).'/includes/navegacion.php'; ?>
 
     <main id="contenido" tabindex="-1">
         <section class="portada max-md:grid-cols-1 max-md:gap-8 max-sm:p-0 max-sm:[&_h1]:text-[clamp(2.15rem,9vw,2.6rem)]">
@@ -158,16 +137,6 @@ $urlCanonica = $urlBase . '/index.php?ruta=home';
         </section>
     </main>
 
-    <footer class="pie-pagina">
-        <div class="pie-contenedor max-sm:items-start max-sm:flex-col">
-            <p>&copy; 2026 iVento · ApexDigital SA</p>
-            <nav class="pie-enlaces" aria-label="Enlaces del pie de página">
-                <a href="#caracteristicas">Cómo funciona</a>
-                <a href="#nosotros">Sobre iVento</a>
-                <a href="#apexdigital">ApexDigital</a>
-                <a href="index.php?ruta=home">Inicio</a>
-            </nav>
-        </div>
-    </footer>
+    <?php require dirname(__DIR__,3).'/includes/pie.php'; ?>
 </body>
 </html>

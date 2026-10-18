@@ -1,72 +1,53 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 session_start();
-
-if (!isset($_SESSION['user_id']) || $_SESSION['rol'] != 'Administrador') {
-    die("Acceso denegado");
-}
-
 require_once dirname(__DIR__, 4) . '/includes/config.php';
+exigirAdministracion();
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-    $nombre = $_POST['nombre'];
-    $tipo = $_POST['tipo'];
-
-    $stmt = $pdo->prepare("
-        INSERT INTO Categoria(nombre,tipo)
-        VALUES (?,?)
-    ");
-
-try {
-
-    $stmt = $pdo->prepare("
-        INSERT INTO Categoria(nombre,tipo)
-        VALUES (?,?)
-    ");
-
-    $stmt->execute([$nombre,$tipo]);
-
-    echo "Categoria creada correctamente";
-    echo '<div> <a href="index.php?ruta=admin/categorias">Volver al panel</a> </div>';
-    exit();
-
-} catch(PDOException $e){
-
-    echo $e->getMessage();
-    exit();
-
-}
+$error='';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $nombre=datoFormulario('nombre'); $tipo=datoFormulario('tipo');
+    if ($nombre === '' || $tipo === '' || mb_strlen($nombre)>100 || mb_strlen($tipo)>100) {
+        $error='Completá nombre y tipo, con hasta 100 caracteres cada uno.';
+    } else {
+        try {
+            $stmt=$pdo->prepare('INSERT INTO Categoria(nombre,tipo) VALUES(?,?)');
+            $stmt->execute([$nombre,$tipo]);
+            header('Location: index.php?ruta=admin/categorias',true,303); exit;
+        } catch (PDOException $e) { $error='No se pudieron guardar los datos. Revisalos e intentá nuevamente.'; }
+    }
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex, nofollow">
     <meta charset="UTF-8">
     <title>Crear Categoría</title>
     <link rel="stylesheet" href="public/css/admin.css">
-    <link rel="stylesheet" href="public/css/tailwind.css">
+    <link rel="stylesheet" href="public/css/tailwind.css?v=<?= filemtime(dirname(__DIR__,4).'/public/css/tailwind.css') ?>">
+    <script src="public/js/tema.js?v=<?= filemtime(dirname(__DIR__,4).'/public/js/tema.js') ?>"></script>
 </head>
 <body class="admin-page max-md:py-7 max-md:px-4">
 
 <h1>Nueva Categoría</h1>
+<?php mostrarErrorFormulario($error); ?>
 
-<form method="POST">
+<form method="POST" class="iv-admin-form">
+    <?= campoCsrf() ?>
     <label>Nombre</label>
-    <br>
+
     <input type="text" name="nombre" required>
 
-    <br><br>
+
 
     <label>Tipo</label>
-    <br>
+
     <input type="text" name="tipo" required>
 
-    <br><br>
+
 
     <button type="submit">
         Guardar

@@ -1,5 +1,8 @@
 <?php
 session_start();
+$_SESSION['csrf'] ??= bin2hex(random_bytes(32));
+require_once dirname(__DIR__, 3) . '/includes/config.php';
+require_once dirname(__DIR__, 3) . '/includes/seguridad.php';
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: index.php?ruta=login');
@@ -9,17 +12,7 @@ if (!isset($_SESSION['user_id'])) {
 require_once dirname(__DIR__, 3) . '/includes/config.php';
 
 $idUsuario = (int) $_SESSION['user_id'];
-$ciudades = [
-    'Agraciada', 'Artilleros', 'Azul', 'Blancarena', 'Brisas del Plata', 'Britópolis',
-    'Campana', 'Carmelo', 'Cerro Carmelo', 'Chico Torino', 'Colonia Arrué',
-    'Colonia Cosmopolita', 'Colonia del Sacramento', 'Colonia Española', 'Colonia Estrella',
-    'Colonia Valdense', 'Conchillas', 'Cufré', 'El Caño', 'El Ensueño', 'Fomento',
-    'Florencio Sánchez', 'Juan González', 'Juan Lacaze', 'La Estanzuela', 'La Paz',
-    'Los Pinos', 'Miguelete', 'Nueva Helvecia', 'Nueva Palmira', 'Ombúes de Lavalle',
-    'Parant', 'Polancos', 'Puerto Conchillas', 'Real de San Carlos', 'Riachuelo',
-    'Rincón del Rey', 'Rosario', 'San Pedro', 'San Roque', 'Santa Ana', 'Santa Regina',
-    'Sarandí de Campana', 'Semillero', 'Tarariras', 'Víboras y Vacas', 'Zagarzazú', 'Zanja Honda'
-];
+$ciudades = require dirname(__DIR__, 3) . '/includes/ciudades.php';
 
 $consultaPerfil = $pdo->prepare(
     'SELECT u.username, u.email, p.ubicacion, p.avatar, p.telefono
@@ -40,30 +33,46 @@ $mensaje = '';
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nombre = trim($_POST['nombre'] ?? '');
-    $correo = trim($_POST['correo'] ?? '');
-    $telefono = trim($_POST['telefono'] ?? '');
-    $ciudad = trim($_POST['ciudad'] ?? '');
+    if (!hash_equals($_SESSION['csrf'], is_string($_POST['csrf'] ?? null) ? $_POST['csrf'] : '')) {
+        http_response_code(403);
+        exit('La sesión cambió. Recargá la página e intentá nuevamente.');
+    }
+    $nombre = datoFormulario('nombre');
+    $correo = datoFormulario('correo');
+    $telefono = datoFormulario('telefono');
+    $ciudad = datoFormulario('ciudad');
     $avatar = $perfil['avatar'];
+    $errorCorreo='';
+    if ($correo!==$perfil['email']) {
+        try {
+            $seguridad=seguridadContrasena($idUsuario,is_string($_POST['password']??null)?$_POST['password']:'');
+            if ($seguridad['dos_pasos']) { throw new RuntimeException('Primero desactivá los dos pasos desde Seguridad para cambiar tu correo.'); }
+        } catch (PDOException $e) { $errorCorreo='No se pudo comprobar tu cuenta. Intentá nuevamente.'; }
+        catch (RuntimeException $e) { $errorCorreo=$e->getMessage(); }
+    }
 
     if ($nombre === '' || !filter_var($correo, FILTER_VALIDATE_EMAIL)) {
         $error = 'Completá un nombre y un correo válido.';
+    } elseif (mb_strlen($nombre) > 255 || mb_strlen($correo) > 255 || mb_strlen($telefono) > 20) {
+        $error = 'El nombre y el correo admiten hasta 255 caracteres; el teléfono, hasta 20.';
     } elseif ($ciudad !== '' && !in_array($ciudad, $ciudades, true)) {
         $error = 'Seleccioná una ciudad válida del departamento de Colonia.';
+    } elseif ($errorCorreo!=='') {
+        $error = $errorCorreo;
     } else {
         if (!empty($_FILES['avatar']['name'])) {
             $tiposPermitidos = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
-            $tipo = mime_content_type($_FILES['avatar']['tmp_name']);
+            $tipo = $_FILES['avatar']['error'] === UPLOAD_ERR_OK ? mime_content_type($_FILES['avatar']['tmp_name']) : '';
 
-            if (!isset($tiposPermitidos[$tipo])) {
-                $error = 'La foto debe ser JPG, PNG o WEBP.';
+            if (!isset($tiposPermitidos[$tipo]) || $_FILES['avatar']['size'] > 5 * 1024 * 1024 || getimagesize($_FILES['avatar']['tmp_name']) === false) {
+                $error = 'La foto debe ser JPG, PNG o WEBP y pesar hasta 5 MB.';
             } else {
                 $carpeta = dirname(__DIR__, 3) . '/public/img/perfiles';
                 if (!is_dir($carpeta)) {
                     mkdir($carpeta, 0755, true);
                 }
 
-                $nombreArchivo = 'perfil_' . $idUsuario . '_' . time() . '.' . $tiposPermitidos[$tipo];
+                $nombreArchivo = 'perfil_' . $idUsuario . '_' . bin2hex(random_bytes(12)) . '.' . $tiposPermitidos[$tipo];
                 $destino = $carpeta . '/' . $nombreArchivo;
 
                 if (move_uploaded_file($_FILES['avatar']['tmp_name'], $destino)) {
@@ -76,6 +85,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($error === '') {
             try {
+                $pdo->beginTransaction();
+                seguridadCambioCorreo($idUsuario,$correo);
                 $actualizarUsuario = $pdo->prepare('UPDATE Usuario SET username = ?, email = ? WHERE id_usuario = ?');
                 $actualizarUsuario->execute([$nombre, $correo, $idUsuario]);
 
@@ -88,19 +99,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         avatar = VALUES(avatar)'
                 );
                 $actualizarPerfil->execute([$idUsuario, $telefono, $ciudad, $avatar]);
+                $pdo->commit();
 
                 $_SESSION['username'] = $nombre;
                 $_SESSION['email'] = $correo;
+                $_SESSION['auth_version']=(int)seguridadCuenta($idUsuario)['version'];
                 $perfil = ['username' => $nombre, 'email' => $correo, 'ubicacion' => $ciudad, 'avatar' => $avatar, 'telefono' => $telefono];
                 $mensaje = 'Los datos del perfil se guardaron correctamente.';
             } catch (PDOException $e) {
+                if ($pdo->inTransaction()) { $pdo->rollBack(); }
+                if (isset($destino) && is_file($destino)) { unlink($destino); }
                 $error = 'No se pudieron guardar los datos. Revisá que el correo no esté siendo usado.';
+            } catch (RuntimeException $e) {
+                if ($pdo->inTransaction()) { $pdo->rollBack(); }
+                if (isset($destino) && is_file($destino)) { unlink($destino); }
+                $error=$e->getMessage();
             }
         }
     }
 }
 
-$inicial = strtoupper(substr($perfil['username'], 0, 1));
+$inicial = mb_strtoupper(mb_substr($perfil['username'], 0, 1));
+$avatarDisponible = !empty($perfil['avatar']) && is_file(dirname(__DIR__,3).'/'.$perfil['avatar']);
 ?>
 <!DOCTYPE html>
 <html lang="es" class="motion-reduce:scroll-auto">
@@ -110,110 +130,69 @@ $inicial = strtoupper(substr($perfil['username'], 0, 1));
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi perfil | iVento</title>
     <link rel="stylesheet" href="public/css/styles.css">
-    <link rel="stylesheet" href="public/css/tailwind.css">
+    <link rel="stylesheet" href="public/css/tailwind.css?v=<?= filemtime(dirname(__DIR__,3).'/public/css/tailwind.css') ?>">
+    <script src="public/js/tema.js?v=<?= filemtime(dirname(__DIR__,3).'/public/js/tema.js') ?>"></script>
 </head>
-<body class="perfil-pagina">
-    <header class="cabecera max-sm:static">
-        <div class="contenedor-cabecera max-sm:min-h-0 max-sm:pt-2 max-sm:pb-3 max-sm:flex-wrap max-sm:gap-x-3 max-sm:gap-y-1.5">
-            <a href="index.php?ruta=home" class="logo-header max-sm:[&_img]:w-32.5 max-sm:[&_img]:h-11">
-                <img src="public/img/ivento-logo-horizontal-blanco.png" alt="iVento">
-            </a>
-            <nav class="navegacion-principal max-sm:basis-full max-sm:ml-0 max-sm:justify-start max-sm:gap-1 max-sm:[&_a]:flex-auto max-sm:[&_a]:px-1.75 max-sm:[&_a]:py-2.25 max-sm:[&_a]:text-[0.875rem]">
-                <a href="index.php?ruta=home">Inicio</a>
-                <a href="index.php?ruta=mapa">Mapa</a>
-                <a href="index.php?ruta=menu">Mi espacio</a>
-            </nav>
-        </div>
-    </header>
-
-    <main class="perfil-contenedor">
-        <section class="perfil-encabezado">
-            <span class="etiqueta-portada">Tu cuenta</span>
-            <h1>Mi perfil</h1>
-            <p>Actualizá tus datos personales cuando lo necesites.</p>
-        </section>
-
-        <?php if ($mensaje !== ''): ?>
-            <div class="mensaje-exito"><?php echo htmlspecialchars($mensaje); ?></div>
-        <?php endif; ?>
-
-        <?php if ($error !== ''): ?>
-            <div class="error"><?php echo htmlspecialchars($error); ?></div>
-        <?php endif; ?>
-
-        <div class="perfil-cuadrilla max-md:grid-cols-1">
-            <aside class="perfil-tarjeta perfil-resumen">
-                <?php if (!empty($perfil['avatar'])): ?>
-                    <img id="avatarPreview" class="avatar-perfil" src="<?php echo htmlspecialchars($perfil['avatar']); ?>" alt="Foto de perfil">
+<body class="iv-app iv-con-navegacion">
+    <a class="enlace-saltar" href="#contenido">Ir al contenido</a>
+    <?php require dirname(__DIR__,3).'/includes/navegacion.php'; ?>
+    <main id="contenido" class="mx-auto w-full max-w-4xl px-4 py-6 sm:px-6 sm:py-8">
+        <a href="index.php?ruta=perfil" class="iv-back">← Mi perfil</a>
+        <header class="mb-5 mt-4">
+            <span class="iv-kicker">Tu cuenta, a tu manera</span>
+            <h1 class="iv-title">Editar perfil</h1>
+            <p class="iv-muted mb-0">Actualizá tu foto y tus datos personales.</p>
+        </header>
+        <?php if ($mensaje !== ''): ?><div class="iv-feedback iv-feedback-ok mb-4" role="status"><?= htmlspecialchars($mensaje) ?></div><?php endif; ?>
+        <?php if ($error !== ''): ?><div class="iv-feedback iv-feedback-error mb-4" role="alert"><?= htmlspecialchars($error) ?></div><?php endif; ?>
+        <form id="profileForm" class="iv-panel p-4 sm:p-6" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="csrf" value="<?= htmlspecialchars($_SESSION['csrf']) ?>">
+            <section id="foto-perfil" class="iv-profile-photo scroll-mt-24" aria-label="Foto de perfil">
+                <?php if ($avatarDisponible): ?>
+                    <img id="avatarPreview" class="iv-edit-avatar" src="<?= htmlspecialchars($perfil['avatar']) ?>" alt="Foto de perfil">
                 <?php else: ?>
-                    <div id="avatarPreview" class="avatar-iniciales" aria-label="Perfil sin foto"><?php echo $inicial; ?></div>
+                    <div id="avatarPreview" class="iv-edit-avatar" aria-label="Perfil sin foto"><?= htmlspecialchars($inicial) ?></div>
                 <?php endif; ?>
-                <label for="avatarInput" class="cambiar-foto">Elegir foto</label>
-                <h2 id="profileNameLabel"><?php echo htmlspecialchars($perfil['username']); ?></h2>
-                <p>Usuario de iVento</p>
-            </aside>
-
-            <section class="perfil-formulario">
-                <h2>Datos personales</h2>
-                <p>Elegí una foto y guardá los cambios para que queden en tu cuenta.</p>
-
-                <form id="profileForm" method="POST" enctype="multipart/form-data">
-                    <input id="avatarInput" class="avatar-input" type="file" name="avatar" accept="image/png, image/jpeg, image/webp">
-
-                    <div class="campos-perfil max-sm:grid-cols-1 max-sm:[&_input]:text-base max-sm:[&_select]:text-base">
-                        <label class="campo-perfil">
-                            Nombre de usuario
-                            <input type="text" name="nombre" value="<?php echo htmlspecialchars($perfil['username']); ?>" disabled required>
-                        </label>
-                        <label class="campo-perfil">
-                            Correo electrónico
-                            <input type="email" name="correo" value="<?php echo htmlspecialchars($perfil['email']); ?>" disabled required>
-                        </label>
-                        <label class="campo-perfil">
-                            Teléfono
-                            <input type="tel" name="telefono" value="<?php echo htmlspecialchars($perfil['telefono'] ?? ''); ?>" placeholder="Ej.: 099 123 456" disabled>
-                        </label>
-                        <label class="campo-perfil">
-                            Ciudad
-                            <select name="ciudad" disabled>
-                                <option value="">Seleccioná una ciudad</option>
-                                <?php foreach ($ciudades as $ciudad): ?>
-                                    <option value="<?php echo htmlspecialchars($ciudad); ?>" <?php echo $perfil['ubicacion'] === $ciudad ? 'selected' : ''; ?>>
-                                        <?php echo htmlspecialchars($ciudad); ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </label>
+                <div class="min-w-0">
+                    <h2 id="profileNameLabel" class="m-0 break-words text-base font-semibold"><?= htmlspecialchars($perfil['username']) ?></h2>
+                    <div class="relative mt-2 inline-flex rounded-xl focus-within:ring-2 focus-within:ring-violet-400">
+                        <input id="avatarInput" class="sr-only" type="file" name="avatar" accept="image/png,image/jpeg,image/webp" aria-label="Cambiar foto de perfil">
+                        <label for="avatarInput" class="iv-btn-light px-3 text-sm">Cambiar foto</label>
                     </div>
-
-                    <div class="acciones-perfil">
-                        <button id="editProfile" class="boton" type="button">Editar datos</button>
-                        <button id="saveProfile" class="boton" type="submit" hidden>Guardar cambios</button>
-                        <button id="cancelProfile" class="boton-secundario" type="button" hidden>Cancelar</button>
-                    </div>
-                </form>
-
-                <a href="index.php?ruta=salir" class="boton-cerrar-perfil">Cerrar sesión</a>
+                    <p class="iv-muted mb-0 mt-2 text-xs">JPG, PNG o WebP · hasta 5 MB</p>
+                </div>
             </section>
-        </div>
-
-        <section class="perfil-ayuda">
-            <h2>¿Necesitás ayuda?</h2>
-            <p>Escribinos a <strong>apexdigitaleventos@gmail.com</strong> y te responderemos a la brevedad.</p>
-        </section>
+            <p id="error-avatar" class="iv-feedback iv-feedback-error hidden" role="alert"></p>
+            <h2 class="iv-section-title mt-6 text-base">Datos personales</h2>
+            <div class="grid min-w-0 gap-4 sm:grid-cols-2">
+                <label class="iv-label">Nombre de usuario
+                    <input class="iv-input" type="text" id="nombre-perfil" name="nombre" value="<?= htmlspecialchars($perfil['username']) ?>" maxlength="255" autocomplete="nickname" required>
+                </label>
+                <label class="iv-label">Correo electrónico
+                    <input class="iv-input" type="email" id="correo-perfil" name="correo" value="<?= htmlspecialchars($perfil['email']) ?>" autocomplete="email" autocapitalize="none" spellcheck="false" required>
+                </label>
+                <label class="iv-label">Teléfono <span class="sr-only">opcional</span>
+                    <input class="iv-input" type="tel" name="telefono" value="<?= htmlspecialchars($perfil['telefono'] ?? '') ?>" autocomplete="tel" placeholder="Ej.: 099 123 456">
+                </label>
+                <label class="iv-label">Ciudad
+                    <select class="iv-input" name="ciudad" autocomplete="address-level2">
+                        <option value="">Seleccioná una ciudad</option>
+                        <?php foreach ($ciudades as $ciudad): ?><option value="<?= htmlspecialchars($ciudad) ?>" <?= $perfil['ubicacion'] === $ciudad ? 'selected' : '' ?>><?= htmlspecialchars($ciudad) ?></option><?php endforeach; ?>
+                    </select>
+                </label>
+                <label class="iv-label sm:col-span-2">Contraseña actual <span class="iv-muted text-xs">Solo si cambiás tu correo</span>
+                    <input class="iv-input" type="password" name="password" autocomplete="current-password" placeholder="Necesaria para confirmar un correo nuevo">
+                    <span class="iv-muted text-xs">La nueva dirección quedará sin verificar. Administrá los dos pasos en <a class="underline" href="index.php?ruta=seguridad">Seguridad</a>.</span>
+                </label>
+            </div>
+            <div class="mt-6 grid gap-2 border-t border-slate-200 pt-5 sm:flex sm:justify-end dark:border-indigo-300/15">
+                <button class="iv-btn-light sm:order-first" type="reset">Descartar cambios</button>
+                <button id="saveProfile" class="iv-btn max-sm:order-first" type="submit">Guardar cambios</button>
+            </div>
+        </form>
+        <p class="iv-muted mt-5 text-center text-xs">¿Necesitás ayuda? <a class="underline underline-offset-4" href="mailto:apexdigitaleventos@gmail.com">Contactanos</a></p>
     </main>
-
-    <footer class="pie-pagina">
-        <div class="pie-contenedor max-sm:items-start max-sm:flex-col">
-            <p>&copy; 2026 iVento · ApexDigital SA</p>
-            <nav class="pie-enlaces">
-                <a href="index.php?ruta=home">Inicio</a>
-                <a href="index.php?ruta=menu">Mi espacio</a>
-                <a href="index.php?ruta=mapa">Mapa</a>
-            </nav>
-        </div>
-    </footer>
-
-    <script src="public/js/java.js"></script>
+    <?php $mostrarNavegacionInferior = true; $pagina = 'perfil'; require dirname(__DIR__,3).'/includes/pie.php'; ?>
+    <script src="public/js/java.js?v=<?= filemtime(dirname(__DIR__,3).'/public/js/java.js') ?>"></script>
 </body>
 </html>

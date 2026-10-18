@@ -10,6 +10,8 @@ try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
-    die("Error en la base de datos: " . $e->getMessage());
+    error_log((string)$e);
+    http_response_code(503);
+    exit('No se pudo conectar con la base de datos. Intentá nuevamente en unos minutos.');
 }
 ?>

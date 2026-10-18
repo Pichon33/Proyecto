@@ -1,9 +1,2 @@
-# Bloquea el acceso web directo a este directorio.
-# El código fuente solo debe ser invocado internamente a traves de index.php.
-<IfModule mod_authz_core.c>
-    Require all denied
-</IfModule>
-<IfModule !mod_authz_core.c>
-    Order allow,deny
-    Deny from all
-</IfModule>
+# Las vistas y modelos se ejecutan únicamente a través de index.php.
+Require all denied

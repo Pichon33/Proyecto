@@ -7,3 +7,13 @@
 
 # CLI independiente de Tailwind (se instala con tailwind.cmd install)
 /tools/tailwindcss.exe
+
+# Credenciales SMTP: completar solo en la computadora/servidor.
+/database/correo.local.php
+
+# Configuración privada y evidencias locales (pueden mostrar datos de cuentas).
+*.local.php
+.env
+.env.*
+!.env.example
+/tests/*.png

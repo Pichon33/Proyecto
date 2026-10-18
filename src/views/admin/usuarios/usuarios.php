@@ -1,13 +1,10 @@
 <?php
 session_start();
-
-if (!isset($_SESSION['user_id']) || $_SESSION['rol'] != 'Administrador') {
-    die("Acceso denegado");
-}
-
 require_once dirname(__DIR__, 4) . '/includes/config.php';
+exigirAdministracion();
 
-$busqueda = trim($_GET['busqueda'] ?? '');
+
+$busqueda = is_string($_GET['busqueda'] ?? null) ? mb_substr(trim($_GET['busqueda']),0,255) : '';
 $textoBusqueda = '%' . $busqueda . '%';
 
 $stmt = $pdo->prepare(
@@ -22,13 +19,16 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex, nofollow">
     <meta charset="UTF-8">
     <title>Usuarios</title>
     <link rel="stylesheet" href="public/css/admin.css">
-    <link rel="stylesheet" href="public/css/tailwind.css">
+    <link rel="stylesheet" href="public/css/tailwind.css?v=<?= filemtime(dirname(__DIR__,4).'/public/css/tailwind.css') ?>">
+    <script src="public/js/tema.js?v=<?= filemtime(dirname(__DIR__,4).'/public/js/tema.js') ?>"></script>
 </head>
 <body class="admin-page max-md:py-7 max-md:px-4">
+<?php mostrarErrorFormulario($_SESSION['error_admin'] ?? ''); unset($_SESSION['error_admin']); ?>
 
 <main class="listado-admin">
     <a class="volver-admin" href="index.php?ruta=admin">← Volver al panel</a>
@@ -76,6 +76,7 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <td>
                                 <a class="accion-editar" href="index.php?ruta=admin/usuarios/editar&amp;id=<?= $usuario['id_usuario'] ?>">Editar</a>
                                 <form class="accion-formulario" action="index.php?ruta=admin/usuarios/eliminar" method="POST" onsubmit="return confirm('¿Está seguro que desea eliminar este usuario?')">
+    <?= campoCsrf() ?>
                                     <input type="hidden" name="id" value="<?= $usuario['id_usuario'] ?>">
                                     <button class="accion-eliminar" type="submit">Eliminar</button>
                                 </form>

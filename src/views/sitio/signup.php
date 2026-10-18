@@ -1,10 +1,11 @@
 <?php
 session_start();
-$urlBase = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
+$urlBase = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/');
 $urlCanonica = $urlBase . '/index.php?ruta=registro';
 
 require_once dirname(__DIR__, 3) . '/includes/config.php';
 require_once dirname(__DIR__, 2) . '/models/user.php';
+require_once dirname(__DIR__, 3) . '/includes/seguridad.php';
 
 $error = '';
 $usuario = '';
@@ -16,7 +17,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $contrasena = is_string($_POST['password'] ?? null) ? $_POST['password'] : '';
     $confirmar = is_string($_POST['confirm_password'] ?? null) ? $_POST['confirm_password'] : '';
 
-    if ($usuario === '') {
+    if (!csrfValido($_POST['csrf'] ?? null)) {
+        http_response_code(403);
+        $error = 'La sesión cambió. Recargá el formulario e intentá nuevamente.';
+    } elseif ($usuario === '') {
         $error = 'Completá tu nombre de usuario.';
     } elseif (mb_strlen($usuario) > 255) {
         $error = 'El nombre de usuario puede tener hasta 255 caracteres.';
@@ -24,12 +28,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Ingresá un correo válido.';
     } elseif ($contrasena !== $confirmar) {
         $error = 'Las contraseñas no coinciden. Escribí la misma en ambos campos.';
+    } elseif (strlen($contrasena) > 72) {
+        $error = 'La contraseña es demasiado larga. Usá una más corta (hasta 72 bytes).';
     } else if (!validarContrasena($contrasena)) {
         $error = 'La contraseña debe tener al menos 6 caracteres, una mayúscula, una minúscula y un número o uno de estos símbolos: !@#$%^&*.';
     } else {
         try {
+            limitarFormularioAcceso('registro',$email);
             $usuarioObj = new User($pdo);
-            $usuarioObj->register(htmlspecialchars($usuario), $contrasena, $email);
+            $usuarioObj->register($usuario, $contrasena, $email);
             $_SESSION['mensaje'] = 'Registro exitoso. Ya podés iniciar sesión con tu correo y contraseña.';
             header('Location: index.php?ruta=login');
             exit;
@@ -39,27 +46,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 $error = 'No pudimos crear la cuenta. Intentá de nuevo en unos minutos.';
             }
+        } catch (RuntimeException $e) {
+            $error = $e->getMessage();
         } catch (Exception $e) {
             $error = 'No pudimos crear la cuenta. Intentá de nuevo en unos minutos.';
         }
     }
 }
 
-function validarContrasena($contrasena) {
-    if (strlen($contrasena) < 6) {
-        return false;
-    }
-    if (!preg_match('/[A-Z]/', $contrasena)) {
-        return false;
-    }
-    if (!preg_match('/[a-z]/', $contrasena)) {
-        return false;
-    }
-    if (!preg_match('/[0-9]|[!@#$%^&*]/', $contrasena)) {
-        return false;
-    }
-    return true;
-}
 ?>
 
 <!DOCTYPE html>
@@ -78,29 +72,21 @@ function validarContrasena($contrasena) {
     <meta property="og:url" content="<?php echo htmlspecialchars($urlCanonica); ?>">
     <meta property="og:locale" content="es_UY">
     <link rel="stylesheet" href="public/css/styles.css">
-    <link rel="stylesheet" href="public/css/tailwind.css">
+    <link rel="stylesheet" href="public/css/tailwind.css?v=<?= filemtime(dirname(__DIR__,3).'/public/css/tailwind.css') ?>">
+    <script src="public/js/tema.js?v=<?= filemtime(dirname(__DIR__,3).'/public/js/tema.js') ?>"></script>
 </head>
-<body class="pagina-autenticacion">
-    <header class="cabecera max-sm:static">
-        <div class="contenedor-cabecera max-sm:min-h-0 max-sm:pt-2 max-sm:pb-3 max-sm:flex-wrap max-sm:gap-x-3 max-sm:gap-y-1.5">
-            <a href="index.php?ruta=home" class="logo-header max-sm:[&_img]:w-32.5 max-sm:[&_img]:h-11">
-                <img src="public/img/ivento-logo-horizontal-blanco.png" alt="iVento">
-            </a>
-            <div class="nav-buttons max-sm:gap-1 max-sm:[&_a]:text-[0.875rem]">
-                <a href="index.php?ruta=login" class="boton-iniciar-sesion">Ingresar</a>
-            </div>
-        </div>
-    </header>
+<body class="iv-app pagina-autenticacion">
+    <?php require dirname(__DIR__,3).'/includes/navegacion.php'; ?>
     <div class="enlace-volver">
         <a href="index.php?ruta=home">← Volver</a>
     </div>
 
-    <main class="contenedor max-sm:p-[22px]">
-        <img class="logo" src="public/img/ivento-logo-horizontal.png" alt="iVento">
+    <main class="iv-auth-card">
+        <div class="iv-logo-tematico"><img class="iv-logo-claro" src="public/img/ivento-logo-horizontal.png" alt="iVento"><img class="iv-logo-oscuro" src="public/img/ivento-logo-horizontal-blanco.png" alt="iVento"></div>
         <h1 class="titulo-formulario">Creá tu cuenta</h1>
         <p class="introduccion-formulario">Completá estos datos para sumarte a iVento.</p>
 
-        <hr class="hr">
+
 
         <?php if (!empty($error)): ?>
             <div class="error" id="error-formulario" role="alert" tabindex="-1">
@@ -109,6 +95,7 @@ function validarContrasena($contrasena) {
         <?php endif; ?>
 
         <form class="formulario" method="POST" action="index.php?ruta=registro">
+            <?= campoCsrf() ?>
             <div class="campo-formulario">
                 <label for="usuario">Nombre de usuario</label>
                 <input type="text" name="username" id="usuario" required maxlength="255"
@@ -157,7 +144,7 @@ function validarContrasena($contrasena) {
             <label class="opcion-contrasena" hidden>
                 <input type="checkbox" id="mostrarContrasenas"> Mostrar contraseñas
             </label>
-            <button class="boton" type="submit" id="button">Registrarse</button>
+            <button class="iv-btn w-full" type="submit" id="button">Registrarse</button>
         </form>
 
         <div class="enlace-formulario">
@@ -202,16 +189,7 @@ function validarContrasena($contrasena) {
             elemento.textContent = elemento.textContent.replace(/[○✓✗]/, escrito ? (cumple ? '✓' : '✗') : '○');
         }
     </script>
-    <script src="public/js/java.js"></script>
-    <footer class="pie-pagina">
-        <div class="pie-contenedor max-sm:items-start max-sm:flex-col">
-            <p>&copy; 2026 iVento · ApexDigital SA</p>
-            <nav class="pie-enlaces">
-                <a href="index.php?ruta=home">Inicio</a>
-                <a href="index.php?ruta=login">Ingresar</a>
-                <a href="index.php?ruta=registro">Registrarse</a>
-            </nav>
-        </div>
-    </footer>
+    <script src="public/js/java.js?v=<?= filemtime(dirname(__DIR__,3).'/public/js/java.js') ?>"></script>
+    <?php require dirname(__DIR__,3).'/includes/pie.php'; ?>
 </body>
 </html>

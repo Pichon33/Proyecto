@@ -1,13 +1,10 @@
 <?php
 session_start();
-
-if (!isset($_SESSION['user_id']) || $_SESSION['rol'] != 'Administrador') {
-    die("Acceso denegado");
-}
-
 require_once dirname(__DIR__, 4) . '/includes/config.php';
+exigirAdministracion();
 
-$id = (int) $_GET['id'];
+
+$id = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT) ?: 0;
 
 $stmtEvento = $pdo->prepare(
     "SELECT e.*, u.nombre_lugar, u.direccion, e.latitud AS latitud, e.longitud AS longitud
@@ -33,28 +30,45 @@ $stmtUbicaciones = $pdo->query(
 );
 $ubicaciones = $stmtUbicaciones->fetchAll(PDO::FETCH_ASSOC);
 
+date_default_timezone_set('America/Montevideo');
+$hoy=date('Y-m-d');
+$limiteFecha=(new DateTimeImmutable('today'))->modify('+1 year')->format('Y-m-d');
+$minInicio=min($hoy,$evento['fecha']);
+$minFin=min($hoy,$evento['fecha_fin']?:$hoy);
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $titulo = trim($_POST['titulo']);
-    $descripcion = trim($_POST['descripcion']);
-    $fecha = $_POST['fecha'];
-    $hora = $_POST['hora'];
-    $fecha_fin = $_POST['fecha_fin'] !== '' ? $_POST['fecha_fin'] : null;
-    $hora_fin = $_POST['hora_fin'] !== '' ? $_POST['hora_fin'] : null;
-    $tipo_publicacion = $_POST['tipo_publicacion'];
-    $precio_uyu = str_replace(',', '.', trim($_POST['precio_uyu']));
-    $edad_minima = (int) $_POST['edad_minima'];
-    $estado = trim($_POST['estado']);
-    $imagen = trim($_POST['imagen']);
-    $id_categoria = (int) $_POST['id_categoria'];
-    $id_ubicacion = (int) $_POST['id_ubicacion'];
-    $latitud = str_replace(',', '.', trim($_POST['latitud']));
-    $longitud = str_replace(',', '.', trim($_POST['longitud']));
+    $titulo = datoFormulario('titulo');
+    $descripcion = datoFormulario('descripcion');
+    $fecha = datoFormulario('fecha');
+    $hora = datoFormulario('hora');
+    $fecha_fin = datoFormulario('fecha_fin') ?: null;
+    $hora_fin = datoFormulario('hora_fin') ?: null;
+    $tipo_publicacion = datoFormulario('tipo_publicacion');
+    $precio_uyu = str_replace(',', '.', datoFormulario('precio_uyu'));
+    $edad_minima = filter_var(datoFormulario('edad_minima'), FILTER_VALIDATE_INT);
+    $estado = datoFormulario('estado');
+    $imagen = datoFormulario('imagen');
+    $id_categoria = filter_var($_POST['id_categoria'] ?? null,FILTER_VALIDATE_INT) ?: 0;
+    $id_ubicacion = filter_var($_POST['id_ubicacion'] ?? null,FILTER_VALIDATE_INT) ?: 0;
+    $latitud = str_replace(',', '.', datoFormulario('latitud'));
+    $longitud = str_replace(',', '.', datoFormulario('longitud'));
 
-    if (!in_array($tipo_publicacion, ['Evento', 'Negocio'], true) || !in_array($estado, ['Pendiente', 'Aprobado', 'Rechazado'], true)) {
+    $inicioValido=DateTimeImmutable::createFromFormat('!Y-m-d',$fecha);
+    $finValido=$fecha_fin ? DateTimeImmutable::createFromFormat('!Y-m-d',$fecha_fin) : null;
+    $historica=$fecha===$evento['fecha'] && $fecha_fin===($evento['fecha_fin']?:null);
+    if (!$inicioValido || $inicioValido->format('Y-m-d')!==$fecha || (!$historica && $fecha<$hoy) || $fecha>$limiteFecha ||
+        ($fecha_fin && (!$finValido || $finValido->format('Y-m-d')!==$fecha_fin || (!$historica && $fecha_fin<$hoy) || $fecha_fin>$limiteFecha))) {
+        $error='Las nuevas fechas deben estar entre hoy y dentro de un año. Podés conservar la fecha histórica original.';
+    } elseif ($titulo === '' || mb_strlen($titulo)>150 || $descripcion === '' || mb_strlen($imagen)>255) {
+        $error = 'Completá título y descripción; revisá la longitud de la imagen.';
+    } elseif (!preg_match('/^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/',$hora) || ($hora_fin !== null && !preg_match('/^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/',$hora_fin))) {
+        $error = 'Revisá las horas de inicio y finalización.';
+    } elseif (!in_array($id_categoria,array_column($categorias,'id_categoria')) || !in_array($id_ubicacion,array_column($ubicaciones,'id_ubicacion'))) {
+        $error = 'Seleccioná una categoría y una ubicación existentes.';
+    } elseif (!in_array($tipo_publicacion, ['Evento', 'Negocio'], true) || !in_array($estado, ['Pendiente', 'Aprobado', 'Rechazado'], true)) {
         $error = 'Seleccioná un tipo de publicación y un estado válidos.';
-    } elseif (!is_numeric($precio_uyu) || (float) $precio_uyu < 0 || $edad_minima < 0 || $edad_minima > 120) {
+    } elseif (!is_numeric($precio_uyu) || (float) $precio_uyu < 0 || (float)$precio_uyu > 99999999 || $edad_minima === false || $edad_minima < 0 || $edad_minima > 120) {
         $error = 'Revisá el precio y la edad mínima.';
     } elseif (($fecha_fin === null) !== ($hora_fin === null)) {
         $error = 'Completá la fecha y hora de finalización juntas, o dejá ambas vacías.';
@@ -114,8 +128,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Evento</title>
     <link rel="stylesheet" href="public/css/admin.css">
-    <link rel="stylesheet" href="public/css/tailwind.css">
+    <link rel="stylesheet" href="public/css/tailwind.css?v=<?= filemtime(dirname(__DIR__,4).'/public/css/tailwind.css') ?>">
     <link rel="stylesheet" href="public/assets/map/leaflet.css">
+    <script src="public/js/tema.js?v=<?= filemtime(dirname(__DIR__,4).'/public/js/tema.js') ?>"></script>
 </head>
 <body class="admin-page max-md:py-7 max-md:px-4">
 
@@ -129,6 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <?php endif; ?>
 
 <form method="POST" class="formulario-admin">
+    <?= campoCsrf() ?>
     <div class="formulario-admin-grid max-md:grid-cols-1">
         <div class="campo-admin">
             <label for="titulo">Título</label>
@@ -150,7 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         <div class="campo-admin">
             <label for="fecha">Fecha de inicio</label>
-            <input id="fecha" type="date" name="fecha" value="<?= htmlspecialchars($evento['fecha']) ?>" required>
+            <input id="fecha" type="date" name="fecha" min="<?= htmlspecialchars($minInicio) ?>" max="<?= htmlspecialchars($limiteFecha) ?>" value="<?= htmlspecialchars($evento['fecha']) ?>" required>
         </div>
 
         <div class="campo-admin">
@@ -160,7 +176,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         <div class="campo-admin">
             <label for="fecha_fin">Fecha de finalización</label>
-            <input id="fecha_fin" type="date" name="fecha_fin" value="<?= htmlspecialchars($evento['fecha_fin'] ?? '') ?>">
+            <input id="fecha_fin" type="date" name="fecha_fin" min="<?= htmlspecialchars($minFin) ?>" max="<?= htmlspecialchars($limiteFecha) ?>" value="<?= htmlspecialchars($evento['fecha_fin'] ?? '') ?>">
         </div>
 
         <div class="campo-admin">
@@ -219,19 +235,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <label>Ubicación precisa</label>
             <p class="nota-admin">Hacé clic o tocá el mapa para modificar la latitud y longitud.</p>
 
-            <div class="coordenadas-admin max-md:grid-cols-1">
-                <div>
-                    <label for="latitud">Latitud</label>
-                    <input id="latitud" type="number" name="latitud" min="-35.5" max="-30" step="any" value="<?= htmlspecialchars($evento['latitud']) ?>" required>
-                </div>
-
-                <div>
-                    <label for="longitud">Longitud</label>
-                    <input id="longitud" type="number" name="longitud" min="-59" max="-53" step="any" value="<?= htmlspecialchars($evento['longitud']) ?>" required>
-                </div>
-            </div>
-
-            <div id="mapa-admin" class="mapa-admin max-md:h-80"></div>
+            <input id="latitud" type="hidden" name="latitud" value="<?= htmlspecialchars($evento['latitud']) ?>">
+            <input id="longitud" type="hidden" name="longitud" value="<?= htmlspecialchars($evento['longitud']) ?>">
+            <div id="mapa-admin" class="mapa-admin max-md:h-80"></div><p id="coordenadas-info" class="nota-admin text-xs" aria-live="polite"></p>
         </div>
     </div>
 
@@ -261,10 +267,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }).addTo(mapa);
 
     const iconoIvento = L.icon({
-        iconUrl: 'public/img/ivento-marker.png',
-        iconSize: [36, 44],
-        iconAnchor: [18, 41],
-        popupAnchor: [0, -38]
+        iconUrl: 'public/img/ivento-pin.png',
+        iconSize: [72, 72],
+        iconAnchor: [36, 64],
+        popupAnchor: [0, -58]
     });
 
     let marcador = null;
@@ -277,6 +283,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             return;
         }
 
+        document.getElementById('coordenadas-info').textContent = 'Latitud (Y): '+latitud.toFixed(6)+' · Longitud (X): '+longitud.toFixed(6);
         const punto = [latitud, longitud];
 
         if (marcador) {

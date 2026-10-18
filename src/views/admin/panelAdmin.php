@@ -1,14 +1,7 @@
 <?php
 session_start();
-
-if (!isset($_SESSION['user_id'])) {
-    header("Location: index.php?ruta=login");
-    exit();
-}
-
-if ($_SESSION['rol'] != 'Administrador') {
-    die("Acceso denegado");
-}
+require_once dirname(__DIR__, 3) . '/includes/config.php';
+exigirAdministracion();
 ?>
 
 <!DOCTYPE html>
@@ -19,7 +12,8 @@ if ($_SESSION['rol'] != 'Administrador') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de administración</title>
     <link rel="stylesheet" href="public/css/admin.css">
-    <link rel="stylesheet" href="public/css/tailwind.css">
+    <link rel="stylesheet" href="public/css/tailwind.css?v=<?= filemtime(dirname(__DIR__,3).'/public/css/tailwind.css') ?>">
+    <script src="public/js/tema.js?v=<?= filemtime(dirname(__DIR__,3).'/public/js/tema.js') ?>"></script>
 </head>
 <body class="pagina-admin">
 <div class="estructura-admin max-lg:grid-cols-1">
@@ -34,6 +28,7 @@ if ($_SESSION['rol'] != 'Administrador') {
             <a href="index.php?ruta=admin/categorias">Categorías</a>
             <a href="index.php?ruta=admin/ubicaciones">Ubicaciones</a>
             <a href="index.php?ruta=admin/cortes">Cortes de calle</a>
+            <a href="index.php?ruta=moderacion">Reportes de la comunidad</a>
         </nav>
     </aside>
     <main class="contenido-admin min-w-0 max-md:py-7 max-md:px-4">

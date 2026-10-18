@@ -1,51 +1,56 @@
 <?php
 session_start();
-
-if (!isset($_SESSION['user_id']) || $_SESSION['rol'] != 'Administrador') {
-    die("Acceso denegado");
-}
-
 require_once dirname(__DIR__, 4) . '/includes/config.php';
+exigirAdministracion();
 
-$id = (int) $_GET['id'];
+
+$id = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT) ?: 0;
 
 $stmt = $pdo->prepare("SELECT * FROM Ubicacion WHERE id_ubicacion = ?");
 $stmt->execute([$id]);
 $ubicacion = $stmt->fetch(PDO::FETCH_ASSOC);
+if (!$ubicacion) { http_response_code(404); exit('Registro no encontrado.'); }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $nombre_lugar = trim($_POST['nombre_lugar']);
-    $direccion = trim($_POST['direccion']);
-    $latitud = trim($_POST['latitud']);
-    $longitud = trim($_POST['longitud']);
 
-    $update = $pdo->prepare(
-        "UPDATE Ubicacion SET nombre_lugar = ?, direccion = ?, latitud = ?, longitud = ? WHERE id_ubicacion = ?"
-    );
-
-    $update->execute([$nombre_lugar, $direccion, $latitud, $longitud, $id]);
-    header("Location: index.php?ruta=admin/ubicaciones");
-    exit();
+$error='';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $nombre_lugar=datoFormulario('nombre_lugar'); $direccion=datoFormulario('direccion');
+    $latitud=filter_var(datoFormulario('latitud'),FILTER_VALIDATE_FLOAT); $longitud=filter_var(datoFormulario('longitud'),FILTER_VALIDATE_FLOAT);
+    if ($nombre_lugar === '' || mb_strlen($nombre_lugar)>150 || $direccion === '' || mb_strlen($direccion)>255) {
+        $error='Completá un lugar de hasta 150 caracteres y una dirección de hasta 255.';
+    } elseif ($latitud===false || $longitud===false || abs($latitud)>90 || abs($longitud)>180) {
+        $error='Ingresá coordenadas válidas: latitud entre −90 y 90; longitud entre −180 y 180.';
+    } else {
+        try {
+            $stmt=$pdo->prepare('UPDATE Ubicacion SET nombre_lugar=?,direccion=?,latitud=?,longitud=? WHERE id_ubicacion=?');
+            $stmt->execute([$nombre_lugar,$direccion,$latitud,$longitud,$id]);
+            header('Location: index.php?ruta=admin/ubicaciones',true,303); exit;
+        } catch (PDOException $e) { $error='No se pudieron guardar los datos. Revisalos e intentá nuevamente.'; }
+    }
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex, nofollow">
     <meta charset="UTF-8">
     <title>Editar Ubicación</title>
     <link rel="stylesheet" href="public/css/admin.css">
-    <link rel="stylesheet" href="public/css/tailwind.css">
+    <link rel="stylesheet" href="public/css/tailwind.css?v=<?= filemtime(dirname(__DIR__,4).'/public/css/tailwind.css') ?>">
+    <script src="public/js/tema.js?v=<?= filemtime(dirname(__DIR__,4).'/public/js/tema.js') ?>"></script>
 </head>
 <body class="admin-page max-md:py-7 max-md:px-4">
 
 <a class="volver-admin" href="index.php?ruta=admin/ubicaciones">← Volver a ubicaciones</a>
 
 <h1>Editar ubicación</h1>
+<?php mostrarErrorFormulario($error); ?>
 <p>Actualizá el lugar y las coordenadas que utilizan los eventos asociados.</p>
 
 <form method="POST" class="formulario-admin">
+    <?= campoCsrf() ?>
     <div class="formulario-admin-grid max-md:grid-cols-1">
         <div class="campo-admin">
             <label for="nombre_lugar">Nombre del lugar</label>

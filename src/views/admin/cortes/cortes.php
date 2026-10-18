@@ -1,11 +1,8 @@
 <?php
 session_start();
-
-if (!isset($_SESSION['user_id']) || !in_array($_SESSION['rol'], ['Administrador', 'AutoridadMunicipal'], true)) {
-    die('Acceso denegado');
-}
-
 require_once dirname(__DIR__, 4) . '/includes/config.php';
+exigirAdministracion(true);
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $idCorte = (int) ($_POST['id_corte'] ?? 0);
@@ -37,7 +34,8 @@ $cortes = $consulta->fetchAll(PDO::FETCH_ASSOC);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cortes de calle | iVento</title>
     <link rel="stylesheet" href="public/css/admin.css">
-    <link rel="stylesheet" href="public/css/tailwind.css">
+    <link rel="stylesheet" href="public/css/tailwind.css?v=<?= filemtime(dirname(__DIR__,4).'/public/css/tailwind.css') ?>">
+    <script src="public/js/tema.js?v=<?= filemtime(dirname(__DIR__,4).'/public/js/tema.js') ?>"></script>
 </head>
 <body class="admin-page max-md:py-7 max-md:px-4">
     <main class="listado-admin">
@@ -86,11 +84,13 @@ $cortes = $consulta->fetchAll(PDO::FETCH_ASSOC);
                                 <td>
                                     <?php if ($corte['estado'] === 'Pendiente'): ?>
                                         <form class="accion-formulario" method="POST">
+    <?= campoCsrf() ?>
                                             <input type="hidden" name="id_corte" value="<?= $corte['id_corte'] ?>">
                                             <input type="hidden" name="estado" value="Aprobado">
                                             <button class="accion-editar" type="submit">Aprobar</button>
                                         </form>
                                         <form class="accion-formulario" method="POST">
+    <?= campoCsrf() ?>
                                             <input type="hidden" name="id_corte" value="<?= $corte['id_corte'] ?>">
                                             <input type="hidden" name="estado" value="Rechazado">
                                             <button class="accion-eliminar" type="submit">Rechazar</button>
