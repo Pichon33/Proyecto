@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body class="admin-page max-md:py-7 max-md:px-4">
 
-<a class="volver-admin" href="index.php?ruta=admin/usuarios">← Volver a usuarios</a>
+<a class="volver-admin" href="index.php?ruta=admin/usuarios"><?= iconoSvg('volver') ?> Volver a usuarios</a>
 
 <h1>Editar usuario</h1>
 <?php mostrarErrorFormulario($error); ?>

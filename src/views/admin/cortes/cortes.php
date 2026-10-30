@@ -5,13 +5,14 @@ exigirAdministracion(true);
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $idCorte = (int) ($_POST['id_corte'] ?? 0);
+    $idCorte = filter_var($_POST['id_corte'] ?? null,FILTER_VALIDATE_INT);
     $estado = $_POST['estado'] ?? '';
-
-    if ($idCorte > 0 && in_array($estado, ['Aprobado', 'Rechazado'], true)) {
-        $actualizar = $pdo->prepare('UPDATE CorteCalle SET estado = ? WHERE id_corte = ?');
-        $actualizar->execute([$estado, $idCorte]);
-    }
+    if ($idCorte===false || $idCorte<1 || !in_array($estado,['Aprobado','Rechazado'],true)) { http_response_code(400); exit('Solicitud o estado inválido.'); }
+    $consultaCorte=$pdo->prepare('SELECT 1 FROM CorteCalle WHERE id_corte=?');
+    $consultaCorte->execute([$idCorte]);
+    if(!$consultaCorte->fetchColumn()) { http_response_code(404); exit('Solicitud no encontrada.'); }
+    $actualizar = $pdo->prepare('UPDATE CorteCalle SET estado = ? WHERE id_corte = ?');
+    $actualizar->execute([$estado, $idCorte]);
 
     header('Location: index.php?ruta=admin/cortes');
     exit;
@@ -40,9 +41,9 @@ $cortes = $consulta->fetchAll(PDO::FETCH_ASSOC);
 <body class="admin-page max-md:py-7 max-md:px-4">
     <main class="listado-admin">
         <?php if ($_SESSION['rol'] === 'Administrador'): ?>
-            <a class="volver-admin" href="index.php?ruta=admin">← Volver al panel</a>
+            <a class="volver-admin" href="index.php?ruta=admin"><?= iconoSvg('volver') ?> Volver al panel</a>
         <?php else: ?>
-            <a class="volver-admin" href="index.php?ruta=menu">← Volver a mi espacio</a>
+            <a class="volver-admin" href="index.php?ruta=menu"><?= iconoSvg('volver') ?> Volver a mi espacio</a>
         <?php endif; ?>
 
         <header class="encabezado-listado max-md:items-start max-md:flex-col">

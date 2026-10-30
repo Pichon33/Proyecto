@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body class="iv-app pagina-autenticacion">
     <?php require dirname(__DIR__,3).'/includes/navegacion.php'; ?>
     <div class="enlace-volver">
-        <a href="index.php?ruta=home">← Volver</a>
+        <a href="index.php?ruta=home"><?= iconoSvg('volver') ?> Volver</a>
     </div>
 
     <main class="iv-auth-card">
@@ -120,16 +120,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="validacion" id="requisitos">
                 <p class="titulo-requisitos">Tu contraseña debe incluir:</p>
                 <div class="validacion-item" id="largo">
-                    ○ Mínimo 6 caracteres
+                    Mínimo 6 caracteres
                 </div>
                 <div class="validacion-item" id="mayuscula">
-                    ○ Una letra mayúscula
+                    Una letra mayúscula
                 </div>
                 <div class="validacion-item" id="minuscula">
-                    ○ Una letra minúscula
+                    Una letra minúscula
                 </div>
                 <div class="validacion-item" id="numero">
-                    ○ Un número o uno de estos símbolos: !@#$%^&amp;*
+                    Un número o uno de estos símbolos: !@#$%^&amp;*
                 </div>
             </div>
 
@@ -179,14 +179,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             campoConfirmar.setCustomValidity(confirmar !== '' && !coincide ? 'Escribí la misma contraseña en ambos campos.' : '');
 
             let ayuda = document.getElementById('coincide');
-            ayuda.textContent = confirmar === '' ? 'Repetí la misma contraseña.' : (coincide ? '✓ Las contraseñas coinciden.' : '✗ Las contraseñas no coinciden.');
+            ayuda.textContent = confirmar === '' ? 'Repetí la misma contraseña.' : (coincide ? 'Las contraseñas coinciden.' : 'Las contraseñas no coinciden.');
             ayuda.className = 'validacion-item ayuda-formulario' + (confirmar === '' ? '' : (coincide ? ' ok' : ' no-ok'));
         }
 
         function actualizarRequisito(id, cumple, escrito) {
             let elemento = document.getElementById(id);
             elemento.className = 'validacion-item' + (escrito ? (cumple ? ' ok' : ' no-ok') : '');
-            elemento.textContent = elemento.textContent.replace(/[○✓✗]/, escrito ? (cumple ? '✓' : '✗') : '○');
+            elemento.dataset.estado = escrito ? (cumple ? 'completo' : 'pendiente') : 'sin-revisar';
+            elemento.setAttribute('aria-label', (cumple && escrito ? 'Cumplido: ' : 'Pendiente: ') + elemento.textContent.trim());
         }
     </script>
     <script src="public/js/java.js?v=<?= filemtime(dirname(__DIR__,3).'/public/js/java.js') ?>"></script>

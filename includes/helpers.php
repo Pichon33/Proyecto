@@ -49,3 +49,10 @@ function datoFormulario(string $nombre): string {
 function mostrarErrorFormulario(string $error): void {
     if ($error !== '') { echo '<p class="error" role="alert">'.htmlspecialchars($error, ENT_QUOTES, 'UTF-8').'</p>'; }
 }
+
+// Iconos SVG locales: mismo trazo en PHP y JavaScript, sin fuentes externas.
+function iconoSvg(string $nombre, string $clase = "iv-svg"): string {
+    $nombre = preg_replace("/[^a-z-]/", "", $nombre);
+    $clase = htmlspecialchars($clase, ENT_QUOTES, "UTF-8");
+    return '<svg class="'.$clase.'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="public/img/iconos.svg?v=2#'.$nombre.'"></use></svg>';
+}

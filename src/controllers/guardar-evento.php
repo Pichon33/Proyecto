@@ -27,7 +27,7 @@ $titulo=texto($datos['titulo']??'',150); $descripcion=texto($datos['descripcion'
 $fecha=texto($datos['fecha']??'',10); $hora=texto($datos['hora']??'',8);
 $fechaFin=texto($datos['fecha_fin']??'',10); $horaFin=texto($datos['hora_fin']??'',8);
 $tipo=texto($datos['tipo_publicacion']??'Evento',30);
-$categoria=(int)($datos['categoria']??0); $lugar=texto($datos['lugar']??'',150); $direccion=texto($datos['direccion']??'',255);
+$categoria=entero($datos['categoria']??null,'Seleccioná una categoría válida.'); $lugar=texto($datos['lugar']??'',150); $direccion=texto($datos['direccion']??'',255);
 $lat=filter_var($datos['latitud']??'',FILTER_VALIDATE_FLOAT); $lng=filter_var($datos['longitud']??'',FILTER_VALIDATE_FLOAT);
 $precio=filter_var($datos['precio_uyu']??0,FILTER_VALIDATE_FLOAT); $edad=filter_var($datos['edad_minima']??0,FILTER_VALIDATE_INT);
 $cupo=($datos['cupo']??'')==='' || $datos['cupo']===null ? null : filter_var($datos['cupo'],FILTER_VALIDATE_INT);
@@ -77,7 +77,7 @@ for ($n=0;$n<$cantidad;$n++) {
     $fechasPublicacion[]=[$dia,$fin];
 }
 $imagen=$original['imagen']??'';
-if (!empty($_FILES['imagen']['name'])) { $imagen=guardarImagen('imagen'); }
+if (!empty($_FILES['imagen']['name'])) { $imagen=$imagenNueva=guardarImagen('imagen'); }
 
 $pdo->beginTransaction();
 if ($id) {
@@ -88,10 +88,10 @@ if ($id) {
 }
 $nuevos=[];
 foreach ($fechasPublicacion as [$dia,$fin]) {
-    if ($id) { $ubicacion=$original['id_ubicacion'];
-        // No modificar ubicaciones que puedan estar compartidas por otro evento.
-        consulta('INSERT INTO Ubicacion(nombre_lugar,direccion,latitud,longitud) VALUES(?,?,?,?)',[$lugar,$direccion,$lat,$lng]); $ubicacion=(int)$pdo->lastInsertId();
-    } else { consulta('INSERT INTO Ubicacion(nombre_lugar,direccion,latitud,longitud) VALUES(?,?,?,?)',[$lugar,$direccion,$lat,$lng]); $ubicacion=(int)$pdo->lastInsertId(); }
+    // Reutilizar el lugar si no cambió. Si cambió, conservar los lugares de otros eventos.
+    $mismoLugar=$id && $lugar===$original['nombre_lugar'] && $direccion===$original['direccion'] && $lat===(float)$original['lat'] && $lng===(float)$original['lng'];
+    if ($mismoLugar) { $ubicacion=(int)$original['id_ubicacion']; }
+    else { consulta('INSERT INTO Ubicacion(nombre_lugar,direccion,latitud,longitud) VALUES(?,?,?,?)',[$lugar,$direccion,$lat,$lng]); $ubicacion=(int)$pdo->lastInsertId(); }
     $estado=esAdmin()?'Aprobado':'Pendiente';
     if ($accion==='duplicar') { $estado='Pendiente'; }
     $valores=[$titulo,$descripcion,$dia,$hora,$fin?:null,$horaFin?:null,$tipo,$precio,$edad,$estado,$imagen,$lat,$lng,$categoria,$ubicacion];
@@ -108,4 +108,5 @@ foreach ($fechasPublicacion as [$dia,$fin]) {
 }
 if ($id) { promocionarEspera(['id_evento'=>$id,'cupo'=>$cupo]); avisarParticipantes($id,'Se actualizó el evento: '.$titulo); }
 $pdo->commit();
+$imagenConfirmada=true;
 $respuesta=['ok'=>true,'id'=>$nuevos[0],'cantidad'=>count($nuevos),'mensaje'=>$estado==='Aprobado'?'Publicación guardada.':'Publicación guardada y pendiente de aprobación.'];

@@ -1,5 +1,6 @@
 <?php
 if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
+require_once dirname(__DIR__,3).'/includes/config.php';
 $pagina = isset($_GET['ruta']) && is_string($_GET['ruta']) ? $_GET['ruta'] : 'mapa';
 $privadas = ['menu','perfil','favoritos','comunidad','entradas','notificaciones','crear-evento','editar-evento','moderacion'];
 if (in_array($pagina,$privadas,true) && !isset($_SESSION['user_id'])) { header('Location: index.php?ruta=login'); exit; }
@@ -28,7 +29,7 @@ $titulo = $titulos[$pagina] ?? 'iVento';
     </main>
     <?php $mostrarNavegacionInferior = !in_array($pagina, ['crear-evento','editar-evento'], true); require dirname(__DIR__,3).'/includes/pie.php'; ?>
     <div id="aviso" role="status" aria-live="polite" class="iv-toast hidden"></div>
-    <dialog id="dialogo" class="iv-dialog" aria-label="Acción de iVento"><form method="dialog"><button class="iv-icon ml-auto" aria-label="Cerrar diálogo">✕</button></form><div id="dialogo-contenido"></div></dialog>
+    <dialog id="dialogo" class="iv-dialog" aria-label="Acción de iVento"><form method="dialog"><button class="iv-icon ml-auto" aria-label="Cerrar diálogo"><?= iconoSvg('cerrar') ?></button></form><div id="dialogo-contenido"></div></dialog>
     <script src="public/assets/map/leaflet.js"></script>
     <?php if ($pagina === 'entradas'): ?><script src="public/assets/qrcode.js"></script><?php endif; ?>
     <?php if (in_array($pagina, ['crear-evento','editar-evento'], true)): ?><script src="public/js/crear-evento.js?v=<?= filemtime(dirname(__DIR__,3).'/public/js/crear-evento.js') ?>"></script><?php endif; ?>

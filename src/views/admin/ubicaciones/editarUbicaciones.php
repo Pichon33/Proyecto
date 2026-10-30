@@ -22,10 +22,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error='Ingresá coordenadas válidas: latitud entre −90 y 90; longitud entre −180 y 180.';
     } else {
         try {
+            $pdo->beginTransaction();
             $stmt=$pdo->prepare('UPDATE Ubicacion SET nombre_lugar=?,direccion=?,latitud=?,longitud=? WHERE id_ubicacion=?');
             $stmt->execute([$nombre_lugar,$direccion,$latitud,$longitud,$id]);
+            // Evento conserva coordenadas propias por compatibilidad: mantener ambas copias iguales.
+            $stmt=$pdo->prepare('UPDATE Evento SET latitud=?,longitud=? WHERE id_ubicacion=?');
+            $stmt->execute([$latitud,$longitud,$id]);
+            $pdo->commit();
             header('Location: index.php?ruta=admin/ubicaciones',true,303); exit;
-        } catch (PDOException $e) { $error='No se pudieron guardar los datos. Revisalos e intentá nuevamente.'; }
+        } catch (PDOException $e) { if($pdo->inTransaction())$pdo->rollBack(); $error='No se pudieron guardar los datos. Revisalos e intentá nuevamente.'; }
     }
 }
 ?>
@@ -43,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body class="admin-page max-md:py-7 max-md:px-4">
 
-<a class="volver-admin" href="index.php?ruta=admin/ubicaciones">← Volver a ubicaciones</a>
+<a class="volver-admin" href="index.php?ruta=admin/ubicaciones"><?= iconoSvg('volver') ?> Volver a ubicaciones</a>
 
 <h1>Editar ubicación</h1>
 <?php mostrarErrorFormulario($error); ?>

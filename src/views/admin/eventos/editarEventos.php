@@ -134,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 <body class="admin-page max-md:py-7 max-md:px-4">
 
-<a class="volver-admin" href="index.php?ruta=admin/eventos">← Volver a eventos</a>
+<a class="volver-admin" href="index.php?ruta=admin/eventos"><?= iconoSvg('volver') ?> Volver a eventos</a>
 
 <h1>Editar evento</h1>
 <p>Revisá sus datos y elegí la ubicación exacta desde el mapa.</p>

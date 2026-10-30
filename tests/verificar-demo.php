@@ -23,6 +23,13 @@ try {
         if($actual!==$cantidad) throw new RuntimeException("$tabla: $actual != $cantidad");
         echo "$tabla: $actual OK\n";
     }
+    if((int)$pdo->query("SELECT COUNT(*) FROM Participacion WHERE estado NOT IN ('voy','interesa','espera','no-voy')")->fetchColumn()!==0) throw new RuntimeException('La Demo contiene estados de participación que la aplicación no reconoce');
+    echo "Estados de participación compatibles con la agenda: OK\n";
+    $pdo->exec("UPDATE Participacion SET estado='interesado' WHERE estado='interesa' LIMIT 1");
+    ejecutarDemo($pdo,file_get_contents(__DIR__.'/../database/funciones_sociales.sql'));
+    ejecutarDemo($pdo,file_get_contents(__DIR__.'/../database/funciones_sociales.sql'));
+    if((int)$pdo->query("SELECT COUNT(*) FROM Participacion WHERE estado='interesa'")->fetchColumn()!==10 || (int)$pdo->query("SELECT COUNT(*) FROM Participacion WHERE estado='voy'")->fetchColumn()!==10) throw new RuntimeException('La migración no conserva las participaciones existentes');
+    echo "Migración repetible del estado antiguo sin perder participaciones: OK\n";
     if((int)$pdo->query("SELECT COUNT(*) FROM Evento WHERE fecha>'2026-10-18'")->fetchColumn()!==8) throw new RuntimeException('Fechas incorrectas');
     if((int)$pdo->query("SELECT COUNT(*) FROM EventoExtra WHERE ciudad='Juan Lacaze'")->fetchColumn()!==10) throw new RuntimeException('Ciudades incorrectas');
     if((int)$pdo->query("SELECT COUNT(*) FROM Usuario WHERE email='conservar@example.invalid'")->fetchColumn()!==1) throw new RuntimeException('Cuenta previa eliminada');

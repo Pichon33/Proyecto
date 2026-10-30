@@ -220,8 +220,16 @@ Al publicar, configurar `url_base` en `database/correo.local.php` con la URL HTT
 real del proyecto (o usar `IVENTO_URL_BASE`).
 
 El catálogo Eventos pagina de a 12 y filtra desde SQL. El ranking calcula puntos
-antes de limitar los resultados a diez perfiles. La suite general contiene 165
+antes de limitar los resultados a diez perfiles. La suite general contiene 191
 comprobaciones, incluidas privacidad y paginación.
+
+La revisión del 28–29/10/2026 está documentada en
+[tests/revision-20261029.md](tests/revision-20261029.md): errores corregidos,
+pruebas de regresión y comprobaciones móviles. La integración posterior de Bruno,
+los iconos SVG locales y el modo oscuro están documentados en
+[tests/diseno-bruno-20261029.md](tests/diseno-bruno-20261029.md).
+`tests/` y `tools/` bloquean el acceso web; sus pruebas y herramientas se ejecutan
+desde la terminal. Los informes se leen como archivos locales o en el repositorio.
 
 Para respaldar datos e imágenes en XAMPP: `powershell -NoProfile -File tools/respaldar.ps1`.
 Guarda el ZIP fuera del servidor web, en Documentos/iVento-respaldos, y comprueba

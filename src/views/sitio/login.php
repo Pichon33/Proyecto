@@ -101,7 +101,7 @@ $esperaEnvio=$pendiente ? seguridadEsperaEnvio($_SESSION['auth_login']['usuario'
 <body class="iv-app pagina-autenticacion">
     <?php require dirname(__DIR__,3).'/includes/navegacion.php'; ?>
     <div class="enlace-volver">
-        <a href="index.php?ruta=home">← Volver</a>
+        <a href="index.php?ruta=home"><?= iconoSvg('volver') ?> Volver</a>
     </div>
     <main class="iv-auth-card">
         <div class="iv-logo-tematico"><img class="iv-logo-claro" src="public/img/ivento-logo-horizontal.png" alt="iVento"><img class="iv-logo-oscuro" src="public/img/ivento-logo-horizontal-blanco.png" alt="iVento"></div>

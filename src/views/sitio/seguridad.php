@@ -71,7 +71,7 @@ $esperaEnvio=$pendiente ? seguridadEsperaEnvio($id) : 0;
 <body class="iv-app iv-con-navegacion">
 <?php require dirname(__DIR__,3).'/includes/navegacion.php'; ?>
 <main class="mx-auto w-full max-w-2xl px-4 py-6 sm:px-6 sm:py-8">
-    <a class="iv-back" href="index.php?ruta=perfil">← Mi perfil</a>
+    <a class="iv-back" href="index.php?ruta=perfil"><?= iconoSvg('volver') ?> Mi perfil</a>
     <header class="mb-5 mt-5">
         <span class="iv-kicker">Tu cuenta, protegida</span>
         <h1 class="iv-title">Seguridad</h1>

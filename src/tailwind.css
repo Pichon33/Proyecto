@@ -11,7 +11,7 @@
 /* Leaflet carga CSS sin capas. Estas reglas también van fuera de las capas para
    que sus enlaces azules y fondos blancos no tapen el tema de iVento. */
 .iv-app .leaflet-popup-content-wrapper, .iv-app .leaflet-popup-tip {
-    @apply bg-white text-slate-800 dark:bg-[#0d1731] dark:text-slate-100;
+    @apply bg-white text-slate-800 dark:bg-iv-surface dark:text-slate-100;
 }
 .iv-app .leaflet-popup-content { @apply font-sans text-sm leading-relaxed; }
 .iv-app .leaflet-popup-content p { @apply my-3 text-slate-600 dark:text-slate-300; }
@@ -22,6 +22,10 @@
 
 /* Los límites anteriores eran 600, 800 y 980 px inclusive. */
 @theme {
+    --color-iv-canvas: #161c2d;
+    --color-iv-surface: #202a40;
+    --color-iv-field: #192237;
+    --color-iv-raised: #2a3550;
     --breakpoint-sm: 601px;
     --breakpoint-md: 801px;
     --breakpoint-lg: 981px;
@@ -30,16 +34,16 @@
 @layer components {
     [hidden] { display: none !important; }
     /* Componentes pequeños compartidos. Todo el diseño nuevo se compila con Tailwind. */
-    .iv-app { @apply bg-slate-50 text-slate-800 dark:bg-[#050c21] dark:text-slate-100; }
+    .iv-app { @apply bg-slate-50 text-slate-800 dark:bg-iv-canvas dark:text-slate-100; }
     .iv-header { @apply relative z-[1001] bg-gradient-to-r from-[#080f2c] via-[#101a42] to-[#25145b] text-white shadow-sm; }
     .iv-nav-link { @apply inline-flex min-h-11 items-center justify-center gap-1 rounded-xl px-3 py-2 text-sm font-semibold text-white no-underline transition hover:bg-white/15; }
-    .iv-panel { @apply min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-indigo-300/15 dark:bg-[#0d1731]; }
+    .iv-panel { @apply min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-indigo-300/15 dark:bg-iv-surface; }
     .iv-btn { @apply inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-xl border-0 bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white no-underline transition hover:bg-violet-700 disabled:cursor-wait disabled:opacity-50; }
     .iv-btn-light { @apply inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 no-underline transition hover:bg-slate-100 dark:border-indigo-300/20 dark:bg-indigo-400/10 dark:text-indigo-100 dark:hover:bg-indigo-400/20; }
-    .iv-icon { @apply flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 no-underline shadow-sm dark:border-indigo-300/20 dark:bg-[#14203e] dark:text-white; }
+    .iv-icon { @apply flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 no-underline shadow-sm dark:border-indigo-300/20 dark:bg-iv-raised dark:text-white; }
     .iv-icon svg { @apply h-5 w-5; }
-    .iv-input { @apply box-border min-h-11 w-full min-w-0 rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-base font-normal text-slate-800 outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-300/30 dark:border-indigo-300/25 dark:bg-[#09142c] dark:text-slate-100; }
-    .iv-input { @apply min-h-12 border-slate-200 bg-slate-50/80 px-4 shadow-xs transition-[border-color,box-shadow,background-color] duration-150 placeholder:text-slate-400 hover:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-500/10 dark:border-indigo-300/20 dark:bg-[#09142c] dark:placeholder:text-slate-500 dark:hover:border-violet-400/50 dark:focus:bg-[#101b36] motion-reduce:transition-none; }
+    .iv-input { @apply box-border min-h-11 w-full min-w-0 rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-base font-normal text-slate-800 outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-300/30 dark:border-indigo-300/25 dark:bg-iv-field dark:text-slate-100; }
+    .iv-input { @apply min-h-12 border-slate-200 bg-slate-50/80 px-4 shadow-xs transition-[border-color,box-shadow,background-color] duration-150 placeholder:text-slate-400 hover:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-500/10 dark:border-indigo-300/20 dark:bg-iv-field dark:placeholder:text-slate-400 dark:hover:border-violet-400/50 dark:focus:bg-[#101b36] motion-reduce:transition-none; }
     textarea.iv-input { @apply leading-relaxed; resize: vertical; }
     select.iv-input { @apply cursor-pointer pr-9; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='none' stroke='%239494b8' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='m7 10 5 5 5-5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
     .iv-input[type=file] { @apply p-2 text-sm; }
@@ -48,17 +52,17 @@
     .iv-label { @apply flex min-w-0 flex-col gap-2 text-sm font-semibold; }
     .iv-label:focus-within { @apply text-violet-700 dark:text-violet-200; }
     .iv-steps { @apply grid grid-cols-3 gap-2 scroll-mt-4; }
-    .iv-steps > div { @apply flex min-w-0 flex-col items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-2 py-2 text-center text-xs text-slate-500 sm:flex-row sm:text-sm dark:border-indigo-300/15 dark:bg-[#0d1731] dark:text-slate-400; }
+    .iv-steps > div { @apply flex min-w-0 flex-col items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-2 py-2 text-center text-xs text-slate-500 sm:flex-row sm:text-sm dark:border-indigo-300/15 dark:bg-iv-surface dark:text-slate-400; }
     .iv-steps span { @apply flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-100 font-bold dark:bg-indigo-400/10; }
     .iv-steps [data-estado=actual] { @apply border-violet-500 bg-violet-50 text-violet-700 dark:bg-violet-500/10 dark:text-violet-200; }
     .iv-steps [data-estado=actual] span, .iv-steps [data-estado=completo] span { @apply bg-violet-600 text-white; }
-    .iv-step-actions { @apply sticky bottom-[max(8px,env(safe-area-inset-bottom))] z-[1002] flex gap-3 rounded-2xl border border-slate-200 bg-white/95 p-3 shadow-lg backdrop-blur lg:bottom-3 dark:border-indigo-300/20 dark:bg-[#0d1731]/95; }
+    .iv-step-actions { @apply sticky bottom-[max(8px,env(safe-area-inset-bottom))] z-[1002] flex gap-3 rounded-2xl border border-slate-200 bg-white/95 p-3 shadow-lg backdrop-blur lg:bottom-3 dark:border-indigo-300/20 dark:bg-iv-surface/95; }
     .iv-step-actions button { @apply min-w-28; }
     .iv-form-options { @apply rounded-xl border border-slate-200 bg-slate-50/60 p-3 dark:border-indigo-300/15 dark:bg-indigo-400/5; }
     .iv-form-options summary { @apply cursor-pointer text-sm font-semibold; }
     .iv-form-options summary span { @apply ml-2 text-xs font-normal text-slate-500 dark:text-slate-400; }
     .iv-street-field { @apply relative min-w-0; }
-    .iv-street-options { @apply absolute inset-x-0 top-full z-[1003] mt-1 max-h-56 overflow-y-auto overscroll-contain rounded-xl border border-slate-200 bg-white p-1 shadow-xl dark:border-indigo-300/25 dark:bg-[#14203e]; }
+    .iv-street-options { @apply absolute inset-x-0 top-full z-[1003] mt-1 max-h-56 overflow-y-auto overscroll-contain rounded-xl border border-slate-200 bg-white p-1 shadow-xl dark:border-indigo-300/25 dark:bg-iv-raised; }
     .iv-street-options [role=option] { @apply min-h-11 cursor-pointer rounded-lg px-3 py-3 text-sm hover:bg-violet-50 dark:hover:bg-indigo-400/15; }
     .iv-street-options [aria-selected=true] { @apply bg-violet-100 text-violet-800 dark:bg-violet-500/25 dark:text-white; }
     .iv-editor-panel { @apply overflow-hidden rounded-xl border border-slate-200 dark:border-indigo-300/20; }
@@ -67,7 +71,7 @@
     .iv-editor-info { @apply space-y-2 p-3; }
     .iv-editor-info output { @apply block leading-relaxed; }
     .iv-brand-pin { filter: drop-shadow(0 2px 3px rgb(0 0 0 / 0.35)); }
-    .iv-editor-dialog { @apply fixed inset-0 box-border m-0 h-dvh max-h-none w-full max-w-none border-0 bg-slate-50 p-0 text-slate-800 dark:bg-[#050c21] dark:text-slate-100; }
+    .iv-editor-dialog { @apply fixed inset-0 box-border m-0 h-dvh max-h-none w-full max-w-none border-0 bg-slate-50 p-0 text-slate-800 dark:bg-iv-canvas dark:text-slate-100; }
     .iv-editor-dialog[open] { @apply flex flex-col; }
     .iv-editor-dialog::backdrop { @apply bg-slate-950/70; }
     .iv-editor-dialog-heading { @apply flex shrink-0 items-center justify-between gap-3 border-b border-slate-200 px-4 pt-[max(12px,env(safe-area-inset-top))] pb-3 dark:border-indigo-300/20; }
@@ -86,11 +90,11 @@
     .iv-footer-enlaces { @apply col-span-2 flex flex-wrap items-center gap-x-5; }
     .iv-footer-enlaces a { @apply inline-flex min-h-7 items-center text-[11px] no-underline hover:text-violet-600 dark:hover:text-violet-300; }
     .iv-con-navegacion { @apply max-lg:pb-[calc(56px+env(safe-area-inset-bottom))]; }
-    .iv-bottom-nav { @apply fixed inset-x-0 bottom-0 z-[1050] grid grid-cols-4 border-t border-slate-200 bg-white/95 px-3 pt-1 pb-[max(4px,env(safe-area-inset-bottom))] shadow-lg backdrop-blur lg:hidden dark:border-indigo-300/15 dark:bg-[#080f25]/95; }
+    .iv-bottom-nav { @apply fixed inset-x-0 bottom-0 z-[1050] grid grid-cols-4 border-t border-slate-200 bg-white/95 px-3 pt-1 pb-[max(4px,env(safe-area-inset-bottom))] shadow-lg backdrop-blur lg:hidden dark:border-indigo-300/15 dark:bg-iv-canvas/95; }
     .iv-bottom-nav a { @apply flex min-h-11 flex-col items-center justify-center gap-1 rounded-lg text-[11px] font-medium text-slate-500 no-underline dark:text-slate-400; }
     .iv-bottom-nav svg { @apply h-5 w-5; }
     .iv-bottom-nav a[aria-current=page] { @apply text-violet-600 dark:text-violet-300; }
-    .iv-event-card { @apply relative min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:shadow-md dark:border-indigo-300/15 dark:bg-[#0d1731]; }
+    .iv-event-card { @apply relative min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:shadow-md dark:border-indigo-300/15 dark:bg-iv-surface; }
     .iv-card-compact { @apply relative h-40 min-w-0 overflow-hidden rounded-xl bg-indigo-950 text-white shadow-md sm:h-44; }
     .iv-card-compact .iv-card-cover { @apply absolute inset-0 h-full w-full object-cover; }
     .iv-card-compact .iv-card-overlay { @apply absolute inset-0 bg-gradient-to-t from-[#05091e] via-[#05091e]/60 to-transparent; }
@@ -105,19 +109,20 @@
     .iv-map-layout.iv-eventos-cerrados #mapa { @apply h-[max(280px,calc(100dvh-280px))] lg:h-[650px]; }
     .iv-eventos-desplegable { @apply grid grid-rows-[1fr] opacity-100 transition-[grid-template-rows,opacity] duration-200 motion-reduce:transition-none; }
     .iv-eventos-cerrados .iv-eventos-desplegable { @apply grid-rows-[0fr] opacity-0; }
-    .iv-eventos-panel { @apply min-w-0 self-start overflow-hidden rounded-2xl bg-white px-3 pt-1 shadow-sm dark:bg-[#0d1731]; }
+    .iv-eventos-panel { @apply min-w-0 self-start overflow-hidden rounded-2xl bg-white px-3 pt-1 shadow-sm dark:bg-iv-surface; }
     .iv-fold-button { @apply flex h-8 w-full cursor-pointer items-center justify-center rounded-xl border-0 bg-transparent text-violet-700 transition-colors hover:bg-violet-50 dark:text-violet-300 dark:hover:bg-indigo-400/10 motion-reduce:transition-none; }
     .iv-fold-button svg { @apply h-6 w-6 transition-transform duration-200 motion-reduce:transition-none; }
     .iv-fold-button[aria-expanded=false] svg { @apply rotate-180; }
     .iv-map-shell.is-fullscreen { @apply fixed inset-0 z-[1100] rounded-none; }
     .iv-map-shell.is-fullscreen #mapa { @apply h-full; }
-    .iv-map-shell .iv-btn-light { @apply bg-white text-slate-700 dark:bg-[#0d1731] dark:text-slate-100; }
-    .iv-map-legend { @apply absolute right-3 top-3 z-[800] rounded-xl border border-slate-200 bg-white/95 p-2.5 text-[10px] text-slate-600 shadow-md backdrop-blur dark:border-indigo-300/20 dark:bg-[#0d1731]/95 dark:text-slate-200; }
+    .iv-map-shell .iv-btn-light { @apply bg-white text-slate-700 dark:bg-iv-surface dark:text-slate-100; }
+    .iv-map-legend { @apply absolute right-3 top-3 z-[800] rounded-xl border border-slate-200 bg-white/95 p-2.5 text-[10px] text-slate-600 shadow-md backdrop-blur dark:border-indigo-300/20 dark:bg-iv-surface/95 dark:text-slate-200; }
     .iv-map-legend label { @apply mb-1.5 flex cursor-pointer items-center gap-1.5 last:mb-0; }
     .iv-map-legend input { @apply h-3 w-3 accent-violet-600; }
     .iv-pin { @apply flex h-9 w-9 items-center justify-center rounded-full border-[3px] border-white text-base font-bold text-white shadow-lg; }
+    .iv-pin svg { @apply pointer-events-none; }
     .iv-toast { @apply fixed bottom-24 left-1/2 z-[3000] w-[calc(100%-32px)] max-w-md -translate-x-1/2 rounded-xl bg-slate-900 px-5 py-3 text-center text-sm text-white shadow-xl lg:bottom-7; }
-    .iv-dialog { @apply fixed inset-0 z-[2500] box-border max-h-[85dvh] w-[calc(100%-32px)] max-w-lg overflow-y-auto rounded-2xl border border-slate-200 bg-white p-5 text-slate-800 shadow-xl backdrop:bg-slate-950/60 dark:border-indigo-300/20 dark:bg-[#0d1731] dark:text-white; }
+    .iv-dialog { @apply fixed inset-0 z-[2500] box-border max-h-[85dvh] w-[calc(100%-32px)] max-w-lg overflow-y-auto rounded-2xl border border-slate-200 bg-white p-5 text-slate-800 shadow-xl backdrop:bg-slate-950/60 dark:border-indigo-300/20 dark:bg-iv-surface dark:text-white; }
     .iv-stars { @apply flex gap-1; }
     .iv-stars button { @apply min-h-11 min-w-9 cursor-pointer border-0 bg-transparent text-2xl text-slate-400; }
     .iv-stars button.seleccionada { @apply text-amber-500; }
@@ -129,16 +134,16 @@
     .iv-profile-icon { @apply flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-white text-violet-700 no-underline transition-colors hover:bg-violet-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500 dark:border-indigo-300/10 dark:bg-indigo-400/10 dark:text-violet-200 dark:hover:bg-indigo-400/20; }
     .iv-profile-identity { @apply flex items-center gap-4 py-2 sm:gap-6; }
     .iv-profile-avatar { @apply h-24 w-24 rounded-full bg-gradient-to-br from-sky-400 to-violet-600 p-1 sm:h-32 sm:w-32; }
-    .iv-profile-avatar > span { @apply border-4 border-white text-3xl dark:border-[#0d1731]; }
-    .iv-profile-camera { @apply absolute -bottom-1 -right-1 flex h-11 w-11 items-center justify-center rounded-full border-4 border-slate-50 bg-violet-100 text-violet-700 no-underline hover:bg-violet-200 focus-visible:outline-2 focus-visible:outline-violet-500 dark:border-[#050c21] dark:bg-[#24204d] dark:text-violet-200; }
+    .iv-profile-avatar > span { @apply border-4 border-white text-3xl dark:border-iv-surface; }
+    .iv-profile-camera { @apply absolute -bottom-1 -right-1 flex h-11 w-11 items-center justify-center rounded-full border-4 border-slate-50 bg-violet-100 text-violet-700 no-underline hover:bg-violet-200 focus-visible:outline-2 focus-visible:outline-violet-500 dark:border-iv-canvas dark:bg-[#24204d] dark:text-violet-200; }
     .iv-profile-level { @apply inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-sky-600 to-violet-600 px-3 py-1.5 text-xs font-semibold text-white no-underline hover:brightness-110; }
-    .iv-profile-stats { @apply mt-5 grid grid-cols-4 divide-x divide-slate-200 overflow-hidden rounded-2xl border border-slate-200 bg-white py-4 dark:divide-indigo-300/15 dark:border-indigo-300/15 dark:bg-[#0d1731]; }
+    .iv-profile-stats { @apply mt-5 grid grid-cols-4 divide-x divide-slate-200 overflow-hidden rounded-2xl border border-slate-200 bg-white py-4 dark:divide-indigo-300/15 dark:border-indigo-300/15 dark:bg-iv-surface; }
     .iv-profile-stats > * { @apply flex min-w-0 flex-col items-center gap-1 px-1 text-center no-underline; }
     .iv-profile-stats svg { @apply mb-1 h-6 w-6 text-violet-600 dark:text-violet-300; }
     .iv-profile-stats strong { @apply text-xl font-bold leading-tight text-slate-900 sm:text-2xl dark:text-white; }
     .iv-profile-stats span { @apply text-[11px] leading-4 text-slate-500 sm:text-xs dark:text-slate-400; }
     .iv-profile-stats a { @apply hover:bg-violet-50 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-violet-500 dark:hover:bg-violet-400/10; }
-    .iv-profile-card { @apply min-w-0 rounded-2xl border border-slate-200 bg-white px-4 pb-4 pt-3 sm:px-5 dark:border-indigo-300/15 dark:bg-[#0d1731]; }
+    .iv-profile-card { @apply min-w-0 rounded-2xl border border-slate-200 bg-white px-4 pb-4 pt-3 sm:px-5 dark:border-indigo-300/15 dark:bg-iv-surface; }
     .iv-profile-card-heading { @apply mb-2 flex min-w-0 items-center justify-between gap-1; }
     .iv-profile-card-heading h2 { @apply m-0 flex min-w-0 items-center gap-3 text-base font-semibold sm:text-lg; }
     .iv-profile-card-heading h2 svg { @apply h-6 w-6 shrink-0 text-violet-600 dark:text-violet-300; }
@@ -151,19 +156,19 @@
     .iv-profile-row strong { @apply break-all text-sm font-semibold; }
     .iv-profile-interest { @apply inline-flex max-w-full items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-3 py-2 text-xs font-medium break-words text-violet-800 dark:border-indigo-300/20 dark:bg-indigo-400/10 dark:text-violet-200; }
     .iv-profile-interest svg { @apply shrink-0; }
-    [data-tema=oscuro] { --morado:#a78bfa; --morado-oscuro:#c4b5fd; --violeta:#8b5cf6; --lila:#192442; --lila-claro:#050c21; --texto:#edf2ff; --texto-suave:#a5b2cc; --borde:#2b3656; --blanco:#0d1731; }
-    [data-tema=oscuro] body { @apply bg-[#050c21] bg-none text-slate-100; }
-    [data-tema=oscuro] :is(.tarjeta,.tarjeta-portada,.tarjeta-caracteristica,.perfil-tarjeta,.contenedor,.formulario-evento,.tarjeta-evento,.seccion-acerca,.tabla-contenedor,.contenido-admin) { @apply border-indigo-300/20 bg-[#0d1731] text-slate-100; }
-    [data-tema=oscuro] :is(input,select,textarea) { @apply border-indigo-300/25 bg-[#09142c] text-slate-100; }
-    [data-tema=oscuro] :is(.pie-pagina,.perfil-ayuda,.seccion-empresa) { @apply border-indigo-300/20 bg-[#080f25] text-slate-300; }
+    [data-tema=oscuro] { --morado:#c4b5fd; --morado-oscuro:#f1f3fb; --violeta:#a78bfa; --lila:#2a3550; --lila-claro:#161c2d; --texto:#edf1f8; --texto-suave:#c0cadd; --borde:#3a4764; --blanco:#202a40; }
+    [data-tema=oscuro] body { @apply bg-iv-canvas bg-none text-slate-100; }
+    [data-tema=oscuro] :is(.tarjeta,.tarjeta-portada,.tarjeta-caracteristica,.perfil-tarjeta,.contenedor,.formulario-evento,.tarjeta-evento,.seccion-acerca,.tabla-contenedor,.contenido-admin) { @apply border-indigo-300/20 bg-iv-surface text-slate-100; }
+    [data-tema=oscuro] :is(input,select,textarea) { @apply border-indigo-300/25 bg-iv-field text-slate-100; }
+    [data-tema=oscuro] :is(.pie-pagina,.perfil-ayuda,.seccion-empresa) { @apply border-indigo-300/20 bg-iv-canvas text-slate-300; }
     [data-tema=oscuro] :is(.boton,.boton-guardar,.boton-menu,.seccion-llamada) { @apply bg-violet-700 text-white; }
-    [data-tema=oscuro] :is(.admin-page,.admin-layout,.estructura-admin) { @apply bg-[#050c21] bg-none text-slate-100; }
-    [data-tema=oscuro] :is(.barra-lateral,.tarjeta-admin,.formulario-admin,.panel-tabla-admin,.buscador-admin,.tabla-admin,.tabla-listado,.panel-tabla-cabecera) { @apply border-indigo-300/20 bg-[#0d1731] bg-none text-slate-100; }
+    [data-tema=oscuro] :is(.admin-page,.admin-layout,.estructura-admin) { @apply bg-iv-canvas bg-none text-slate-100; }
+    [data-tema=oscuro] :is(.barra-lateral,.tarjeta-admin,.formulario-admin,.panel-tabla-admin,.buscador-admin,.tabla-admin,.tabla-listado,.panel-tabla-cabecera) { @apply border-indigo-300/20 bg-iv-surface bg-none text-slate-100; }
     [data-tema=oscuro] :is(.admin-page,.pagina-admin) :is(h1,h2,h3,label,td) { @apply text-slate-100; }
     [data-tema=oscuro] :is(.admin-page,.pagina-admin) :is(p,.nota-admin,.rol-admin) { @apply text-slate-400; }
-    [data-tema=oscuro] :is(.admin-page,.pagina-admin) :is(th,tr:nth-child(even)) { @apply border-indigo-300/20 bg-[#15203e] text-slate-200; }
+    [data-tema=oscuro] :is(.admin-page,.pagina-admin) :is(th,tr:nth-child(even)) { @apply border-indigo-300/20 bg-iv-raised text-slate-200; }
     [data-tema=oscuro] .navegacion-admin a { @apply text-indigo-200; }
-    [data-tema=oscuro] .campo-perfil input:disabled { @apply bg-[#09142c] text-slate-300; }
+    [data-tema=oscuro] .campo-perfil input:disabled { @apply bg-iv-field text-slate-300; }
     [data-tema=oscuro] .estado-perfil { @apply text-teal-300; }
     .iv-app :is(a,button,input,select,textarea):focus-visible { @apply outline-2 outline-offset-2 outline-violet-500; }
 }
@@ -186,12 +191,12 @@
     .iv-logo-oscuro { @apply hidden dark:block; }
     .iv-back, .enlace-volver a { @apply inline-flex min-h-11 items-center text-sm font-medium text-slate-500 no-underline hover:text-violet-600 dark:text-slate-400 dark:hover:text-violet-300; }
     .pagina-autenticacion .enlace-volver { @apply mx-auto mt-2 mb-0 w-[calc(100%-32px)] max-w-[440px]; }
-    .pagina-autenticacion .iv-auth-card { @apply mx-auto mt-1 mb-6 w-[calc(100%-32px)] max-w-[440px] flex-none rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7 dark:border-indigo-300/15 dark:bg-[#0d1731]; }
+    .pagina-autenticacion .iv-auth-card { @apply mx-auto mt-1 mb-6 w-[calc(100%-32px)] max-w-[440px] flex-none rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7 dark:border-indigo-300/15 dark:bg-iv-surface; }
     .iv-auth-card .titulo-formulario { @apply mb-2 text-left text-2xl font-bold tracking-tight text-slate-900 dark:text-white; }
     .iv-auth-card .introduccion-formulario { @apply mt-0 mb-6 text-left text-sm leading-6 text-slate-500 dark:text-slate-400; }
     .iv-auth-card .formulario { @apply gap-4; }
     .iv-auth-card .campo-formulario label { @apply text-sm font-semibold; }
-    .iv-auth-card input:not([type=checkbox]) { @apply min-h-12 rounded-xl border-slate-300 bg-slate-50/60 px-3 text-base text-slate-900 placeholder:text-slate-400 focus:border-violet-500 focus:outline-2 focus:outline-offset-1 focus:outline-violet-300/40 dark:border-indigo-300/20 dark:bg-[#09142c] dark:text-slate-100; }
+    .iv-auth-card input:not([type=checkbox]) { @apply min-h-12 rounded-xl border-slate-300 bg-slate-50/60 px-3 text-base text-slate-900 placeholder:text-slate-400 focus:border-violet-500 focus:outline-2 focus:outline-offset-1 focus:outline-violet-300/40 dark:border-indigo-300/20 dark:bg-iv-field dark:text-slate-100; }
     .iv-auth-card .validacion { @apply rounded-xl bg-slate-50 px-3 py-2.5 text-slate-500 dark:bg-indigo-400/5 dark:text-slate-400; }
     .iv-auth-card .titulo-requisitos, .iv-auth-card .validacion-item { @apply text-xs leading-5; }
     .iv-auth-card .validacion-item.ok { @apply text-emerald-700 dark:text-emerald-300; }
@@ -207,14 +212,14 @@
     .iv-auth-card .mensaje-exito { @apply bg-emerald-50 text-emerald-800 dark:bg-emerald-400/10 dark:text-emerald-200; }
     .iv-input::file-selector-button { @apply mr-3 cursor-pointer rounded-lg border-0 bg-violet-100 px-3 py-2 text-sm font-semibold text-violet-700 dark:bg-indigo-400/20 dark:text-violet-200; }
     :is(.iv-app,.pagina-autenticacion) :is(button,a,input,select,textarea):focus-visible { @apply outline-2 outline-offset-2 outline-violet-500; }
-    .admin-page { @apply bg-slate-50 bg-none text-slate-800 dark:bg-[#050c21] dark:text-slate-100; }
-    .admin-page :is(input:not([type=checkbox]),select,textarea) { @apply box-border min-h-11 max-w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-base text-slate-900 dark:border-indigo-300/20 dark:bg-[#09142c] dark:text-slate-100; }
+    .admin-page { @apply bg-slate-50 bg-none text-slate-800 dark:bg-iv-canvas dark:text-slate-100; }
+    .admin-page :is(input:not([type=checkbox]),select,textarea) { @apply box-border min-h-11 max-w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-base text-slate-900 dark:border-indigo-300/20 dark:bg-iv-field dark:text-slate-100; }
     .admin-page button { @apply min-h-11 rounded-xl px-4 py-2.5 text-sm font-semibold; }
     .admin-page h1 { @apply text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl dark:text-white; }
 }
 
 @layer components {
-    .admin-page form:not(.accion-formulario) { @apply rounded-2xl border-slate-200 bg-white p-5 shadow-sm sm:p-6 dark:border-indigo-300/20 dark:bg-[#0d1731]; }
+    .admin-page form:not(.accion-formulario) { @apply rounded-2xl border-slate-200 bg-white p-5 shadow-sm sm:p-6 dark:border-indigo-300/20 dark:bg-iv-surface; }
     .admin-page form button:not(.accion-eliminar):not(.accion-editar) { @apply rounded-xl bg-violet-600 text-white hover:bg-violet-700; }
 }
 
@@ -222,5 +227,53 @@
     .admin-page form.iv-admin-form { @apply grid gap-2; }
     .admin-page form.iv-admin-form > label { @apply mt-3 mb-0 text-sm font-semibold first:mt-0; }
     .admin-page form.iv-admin-form > button { @apply mt-4 justify-self-start max-sm:w-full; }
-    .iv-auth-card input:not([type=checkbox]), .admin-page :is(input:not([type=checkbox]):not([type=hidden]),select,textarea) { @apply min-h-12 border-slate-200 bg-slate-50/80 px-4 shadow-xs transition-[border-color,box-shadow,background-color] duration-150 hover:border-violet-300 focus:border-violet-500 focus:outline-none focus:ring-4 focus:ring-violet-500/10 dark:border-indigo-300/20 dark:bg-[#09142c] dark:hover:border-violet-400/50 motion-reduce:transition-none; }
+    .iv-auth-card input:not([type=checkbox]), .admin-page :is(input:not([type=checkbox]):not([type=hidden]),select,textarea) { @apply min-h-12 border-slate-200 bg-slate-50/80 px-4 shadow-xs transition-[border-color,box-shadow,background-color] duration-150 hover:border-violet-300 focus:border-violet-500 focus:outline-none focus:ring-4 focus:ring-violet-500/10 dark:border-indigo-300/20 dark:bg-iv-field dark:hover:border-violet-400/50 motion-reduce:transition-none; }
+}
+
+/* Superficies y textos por función: el modo oscuro no invierte la paleta. */
+@layer components {
+    .iv-svg { @apply inline-block h-[1.125em] w-[1.125em] shrink-0 align-[-0.15em]; }
+    .iv-bruno-card { @apply min-w-0 overflow-hidden rounded-3xl border border-violet-200 bg-white p-5 shadow-sm sm:p-6 dark:border-indigo-300/20 dark:bg-iv-surface; }
+    .iv-bruno-presentacion { @apply grid grid-cols-[minmax(0,1fr)_110px] items-center gap-1 sm:grid-cols-[minmax(0,1fr)_150px]; }
+    .iv-bruno-presentacion img { @apply h-auto w-full self-end; }
+    .iv-bruno-etiqueta { @apply mb-3 inline-block text-xs font-semibold tracking-wide text-violet-700 dark:text-violet-200; }
+    .iv-bruno-presentacion h2 { @apply mb-3 text-xl font-bold leading-tight tracking-tight text-slate-900 sm:text-2xl dark:text-slate-50; }
+    .iv-bruno-presentacion p { @apply mb-0 text-sm leading-6 text-slate-600 dark:text-slate-300; }
+    .iv-bruno-detalles { @apply mt-5 mb-0 grid list-none gap-0 border-t border-slate-200 p-0 dark:border-indigo-300/15; }
+    .iv-bruno-detalles li { @apply flex items-center gap-3 border-b border-slate-100 py-3 dark:border-indigo-300/10; }
+    .iv-bruno-detalles svg { @apply h-5 w-5 text-violet-600 dark:text-violet-300; }
+    .iv-bruno-detalles strong { @apply block text-sm font-semibold text-slate-800 dark:text-slate-100; }
+    .iv-bruno-detalles small { @apply block text-xs leading-5 text-slate-500 dark:text-slate-300; }
+    .iv-bruno-enlace { @apply mt-3 flex min-h-11 items-center justify-between gap-2 rounded-xl px-2 text-sm font-semibold text-violet-700 no-underline hover:bg-violet-50 dark:text-violet-200 dark:hover:bg-violet-400/10; }
+    .pagina-inicio .icono-tarjeta { @apply rounded-2xl bg-violet-100 text-violet-700 dark:bg-violet-400/15 dark:text-violet-200; }
+    .icono-tarjeta svg { @apply h-6 w-6; }
+    .pagina-inicio .tarjeta { @apply rounded-2xl; }
+    .pagina-inicio .etiqueta-seccion, .pagina-inicio .etiqueta-portada { @apply bg-violet-100 text-violet-800 dark:bg-violet-400/15 dark:text-violet-200; }
+    [data-tema=oscuro] .pagina-inicio :is(.encabezado-seccion h2,.tarjeta h3,.portada h1) { @apply text-slate-50; }
+    [data-tema=oscuro] .pagina-inicio .portada h1 span { @apply text-violet-300; }
+    [data-tema=oscuro] .pagina-inicio :is(.descripcion-portada,.encabezado-seccion p,.tarjeta p,.seccion-acerca > p) { @apply text-slate-300; }
+    [data-tema=oscuro] .pagina-inicio .seccion-acerca { @apply border-l-violet-400 bg-iv-surface; }
+    [data-tema=oscuro] .pagina-inicio .seccion-empresa { @apply bg-transparent; }
+    [data-tema=oscuro] .boton.secundario { @apply border border-indigo-300/30 bg-transparent text-violet-200 hover:bg-violet-400/10; }
+    [data-tema=oscuro] .seccion-llamada { @apply bg-gradient-to-r from-violet-900 to-indigo-900; }
+    [data-tema=oscuro] .seccion-llamada .boton { @apply bg-white text-violet-900 hover:bg-violet-100; }
+    .iv-empty-bruno { @apply col-span-full flex flex-col items-center justify-center gap-4 border-solid bg-white p-5 dark:bg-iv-surface sm:flex-row sm:text-left; }
+    .iv-empty-bruno img { @apply h-28 w-28 shrink-0 object-contain; }
+    .iv-empty-bruno > div { @apply max-w-sm; }
+    .iv-empty-bruno p { @apply mb-0 leading-6 text-slate-600 dark:text-slate-300; }
+    .iv-empty-bruno .iv-empty-title { @apply mb-1 text-base font-semibold text-slate-900 dark:text-slate-100; }
+    .iv-eventos-panel .iv-empty-bruno { @apply flex-row gap-2 border-0 p-2 text-left; }
+    .iv-eventos-panel .iv-empty-bruno img { @apply h-16 w-16; }
+    .iv-eventos-panel .iv-empty-bruno p { @apply text-xs leading-5; }
+    .iv-stars button { @apply inline-flex items-center justify-center text-slate-500 dark:text-slate-300; }
+    .iv-stars button.seleccionada svg { fill: currentColor; }
+    .iv-stars button.seleccionada { @apply text-amber-600 dark:text-amber-300; }
+    .validacion-item[data-estado] { @apply flex items-start gap-2; }
+    .validacion-item[data-estado]::before { content: ""; @apply mt-1 inline-block h-3 w-3 shrink-0 rounded-full border border-current; }
+    .validacion-item[data-estado=completo]::before { @apply bg-current; }
+}
+
+/* El estado vacío ocupa toda la fila, en lugar del 48% reservado a cada evento. */
+@layer utilities {
+    #lista-eventos:has(> .iv-empty-bruno) { @apply block; }
 }

@@ -31,7 +31,7 @@ $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <?php mostrarErrorFormulario($_SESSION['error_admin'] ?? ''); unset($_SESSION['error_admin']); ?>
 
 <main class="listado-admin">
-    <a class="volver-admin" href="index.php?ruta=admin">← Volver al panel</a>
+    <a class="volver-admin" href="index.php?ruta=admin"><?= iconoSvg('volver') ?> Volver al panel</a>
 
     <header class="encabezado-listado max-md:items-start max-md:flex-col">
         <div>

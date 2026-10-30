@@ -1,18 +1,22 @@
 User-agent: *
-Allow: /index.php?ruta=home
-Allow: /index.php?ruta=login
-Allow: /index.php?ruta=registro
-Allow: /public/
+Allow: /Proyecto-master/index.php?ruta=home
+Allow: /Proyecto-master/index.php?ruta=login
+Allow: /Proyecto-master/index.php?ruta=registro
+Allow: /Proyecto-master/public/
 
-Disallow: /index.php?ruta=mapa
-Disallow: /index.php?ruta=menu
-Disallow: /index.php?ruta=favoritos
-Disallow: /index.php?ruta=perfil
-Disallow: /index.php?ruta=crear-evento
-Disallow: /index.php?ruta=admin
-Disallow: /src/
-Disallow: /database/
-Disallow: /includes/
-Disallow: /tests/
+Allow: /Proyecto-master/index.php?ruta=mapa
+Allow: /Proyecto-master/index.php?ruta=eventos
+Disallow: /Proyecto-master/index.php?ruta=menu
+Disallow: /Proyecto-master/index.php?ruta=favoritos
+Disallow: /Proyecto-master/index.php?ruta=perfil
+Disallow: /Proyecto-master/index.php?ruta=crear-evento
+Disallow: /Proyecto-master/index.php?ruta=admin
+Disallow: /Proyecto-master/src/
+Disallow: /Proyecto-master/database/
+Disallow: /Proyecto-master/includes/
+Disallow: /Proyecto-master/tests/
 
-Sitemap: https://www.ivento.uy/sitemap.xml
+Disallow: /Proyecto-master/tools/
+Disallow: /Proyecto-master/index.php?ruta=api
+
+Sitemap: https://ivento.site.je/Proyecto-master/sitemap.xml

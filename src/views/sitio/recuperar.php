@@ -76,7 +76,7 @@ if ($cambiar) {
 </head>
 <body class="iv-app pagina-autenticacion">
     <?php require dirname(__DIR__,3).'/includes/navegacion.php'; ?>
-    <div class="enlace-volver"><a href="index.php?ruta=login">← Volver al ingreso</a></div>
+    <div class="enlace-volver"><a href="index.php?ruta=login"><?= iconoSvg('volver') ?> Volver al ingreso</a></div>
     <main class="iv-auth-card">
         <div class="iv-logo-tematico"><img class="iv-logo-claro" src="public/img/ivento-logo-horizontal.png" alt="iVento"><img class="iv-logo-oscuro" src="public/img/ivento-logo-horizontal-blanco.png" alt="iVento"></div>
         <h1 class="titulo-formulario"><?= $cambiar?'Elegí una nueva contraseña':'Recuperá tu cuenta' ?></h1>

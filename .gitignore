@@ -16,4 +16,4 @@
 .env
 .env.*
 !.env.example
-/tests/*.png
+/tests/**/*.png

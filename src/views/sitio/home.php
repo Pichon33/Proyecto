@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once dirname(__DIR__,3).'/includes/config.php';
 $urlBase = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/');
 $urlCanonica = $urlBase . '/index.php?ruta=home';
 ?>
@@ -41,15 +42,21 @@ $urlCanonica = $urlBase . '/index.php?ruta=home';
                 </div>
             </div>
 
-            <aside class="tarjeta-portada max-sm:p-6">
-                <img class="logo-portada" src="public/img/ivento-icono-app.png" alt="Icono de iVento">
-                <h2>Tu plan, con los detalles a mano</h2>
-                <p>La información que necesitás antes de salir.</p>
-                <ul class="lista-portada">
-                    <li><strong>Qué y cuándo</strong><span>Actividades, fechas y horarios.</span></li>
-                    <li><strong>Dónde</strong><span>La ubicación de cada evento en el mapa.</span></li>
-                    <li><strong>Para quién</strong><span>Precio y edad mínima de cada propuesta.</span></li>
+            <aside class="iv-bruno-card" aria-labelledby="bruno-titulo">
+                <div class="iv-bruno-presentacion">
+                    <div>
+                        <span class="iv-bruno-etiqueta">Conocé a Bruno</span>
+                        <h2 id="bruno-titulo">Un buen plan<br>empieza por descubrir.</h2>
+                        <p>Todo lo que necesitás saber antes de salir, en un solo lugar.</p>
+                    </div>
+                    <img src="public/img/bruno.webp" width="320" height="320" alt="Bruno, la mascota de iVento, con su lupa" fetchpriority="high">
+                </div>
+                <ul class="iv-bruno-detalles">
+                    <li><?= iconoSvg('calendario') ?><span><strong>Elegí cuándo</strong><small>Fechas y horarios a mano.</small></span></li>
+                    <li><?= iconoSvg('pin') ?><span><strong>Encontrá dónde</strong><small>La ubicación en el mapa.</small></span></li>
+                    <li><?= iconoSvg('entrada') ?><span><strong>Revisá los detalles</strong><small>Precio, acceso y edades.</small></span></li>
                 </ul>
+                <a class="iv-bruno-enlace" href="index.php?ruta=eventos">Encontrar mi próximo plan <?= iconoSvg('flecha') ?></a>
             </aside>
         </section>
 
@@ -62,25 +69,25 @@ $urlCanonica = $urlBase . '/index.php?ruta=home';
 
             <div class="fila-tarjetas max-md:grid-cols-2 max-sm:grid-cols-1">
                 <article class="tarjeta">
-                    <div class="icono-tarjeta" aria-hidden="true">🎉</div>
+                    <div class="icono-tarjeta"><?= iconoSvg('brujula') ?></div>
                     <h3>Descubrí</h3>
                     <p>Conocé actividades, ferias, música y propuestas de la zona.</p>
                 </article>
 
                 <article class="tarjeta">
-                    <div class="icono-tarjeta" aria-hidden="true">📍</div>
+                    <div class="icono-tarjeta"><?= iconoSvg('pin') ?></div>
                     <h3>Ubicate</h3>
                     <p>Usá el mapa para saber dónde se realiza cada evento.</p>
                 </article>
 
                 <article class="tarjeta">
-                    <div class="icono-tarjeta" aria-hidden="true">🗓️</div>
+                    <div class="icono-tarjeta"><?= iconoSvg('calendario') ?></div>
                     <h3>Planificá</h3>
                     <p>Revisá la fecha, el tipo de evento y sus detalles.</p>
                 </article>
 
                 <article class="tarjeta">
-                    <div class="icono-tarjeta" aria-hidden="true">⭐</div>
+                    <div class="icono-tarjeta"><?= iconoSvg('corazon') ?></div>
                     <h3>Guardá tus planes</h3>
                     <p>Agregá eventos a favoritos para encontrarlos cuando quieras.</p>
                 </article>

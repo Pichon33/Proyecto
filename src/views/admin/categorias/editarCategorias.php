@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body class="admin-page max-md:py-7 max-md:px-4">
 
-<a class="volver-admin" href="index.php?ruta=admin/categorias">← Volver a categorías</a>
+<a class="volver-admin" href="index.php?ruta=admin/categorias"><?= iconoSvg('volver') ?> Volver a categorías</a>
 
 <h1>Editar categoría</h1>
 <?php mostrarErrorFormulario($error); ?>

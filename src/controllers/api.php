@@ -2,6 +2,9 @@
 require_once dirname(__DIR__,2).'/includes/eventos.php';
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
+// Solo la imagen creada por esta petición se descarta si el guardado falla.
+$imagenNueva=null;
+$imagenConfirmada=false;
 
 try {
     $accion = texto($_GET['accion'] ?? '',40);
@@ -74,6 +77,7 @@ try {
             case 'notificaciones':
                 exigir($uid>0,'Ingresá para ver tus avisos.',401); recordatorios();
                 $respuesta['notificaciones'] = consulta('SELECT * FROM Notificacion WHERE id_usuario=? ORDER BY fecha DESC,id DESC LIMIT 80',[$uid])->fetchAll(PDO::FETCH_ASSOC);
+                $respuesta['avisos']=(int)consulta('SELECT COUNT(*) FROM Notificacion WHERE id_usuario=? AND leida=0',[$uid])->fetchColumn();
                 break;
             case 'comunidad':
                 exigir($uid>0,'Ingresá para ver la comunidad.',401);
@@ -133,7 +137,7 @@ try {
                 if ((int)$e['id_usuario']!==$uid) { notificar((int)$e['id_usuario'],'comentarios',$_SESSION['username'].' comentó en '.$e['titulo'],$id); }
                 break;
             case 'valorar':
-                obtenerEvento($id); $estrellas=(int)($datos['estrellas']??0); exigir($estrellas>=1 && $estrellas<=5,'Elegí de una a cinco estrellas.');
+                obtenerEvento($id); $estrellas=entero($datos['estrellas']??null,'Elegí de una a cinco estrellas.',1,5);
                 consulta('INSERT INTO Valoracion(id_usuario,id_evento,estrellas) VALUES(?,?,?) ON DUPLICATE KEY UPDATE estrellas=VALUES(estrellas)',[$uid,$id,$estrellas]);
                 break;
             case 'asistencia':
@@ -147,8 +151,10 @@ try {
                 consulta('INSERT IGNORE INTO Asistencia(id_usuario,id_evento,distancia_m) VALUES(?,?,?)',[$uid,$id,(int)round($distancia)]);
                 break;
             case 'foto':
-                obtenerEvento($id); $imagen=guardarImagen('foto');
-                consulta('INSERT INTO FotoEvento(id_evento,id_usuario,imagen,descripcion) VALUES(?,?,?,?)',[$id,$uid,$imagen,texto($datos['descripcion']??'',180)]);
+                obtenerEvento($id); $descripcion=texto($datos['descripcion']??'',180);
+                $imagenNueva=guardarImagen('foto');
+                consulta('INSERT INTO FotoEvento(id_evento,id_usuario,imagen,descripcion) VALUES(?,?,?,?)',[$id,$uid,$imagenNueva,$descripcion]);
+                $imagenConfirmada=true;
                 break;
             case 'ocultar-foto':
                 $foto=consulta('SELECT * FROM FotoEvento WHERE id=?',[$id])->fetch(PDO::FETCH_ASSOC); exigir((bool)$foto,'Foto no encontrada.',404);
@@ -160,7 +166,7 @@ try {
             case 'lista-compartir':
                 consulta('UPDATE ListaEvento SET publica=? WHERE id=? AND id_usuario=?',[(int)!empty($datos['publica']),$id,$uid]); break;
             case 'lista-evento':
-                $lista=(int)($datos['lista']??0); obtenerEvento($id);
+                $lista=entero($datos['lista']??null,'La lista no es válida.'); obtenerEvento($id);
                 exigir((bool)consulta('SELECT 1 FROM ListaEvento WHERE id=? AND id_usuario=?',[$lista,$uid])->fetchColumn(),'Esta lista no te pertenece.',403);
                 if (!empty($datos['quitar'])) { consulta('DELETE FROM ListaItem WHERE id_lista=? AND id_evento=?',[$lista,$id]); }
                 else { consulta('INSERT IGNORE INTO ListaItem(id_lista,id_evento) VALUES(?,?)',[$lista,$id]); } break;
@@ -175,9 +181,9 @@ try {
                 exigir($id!==$uid && (bool)consulta('SELECT 1 FROM Usuario WHERE id_usuario=?',[$id])->fetchColumn(),'Usuario inválido.');
                 if ($accion==='seguir') { exigir(!bloqueado($id),'No podés seguir a este usuario.',403); }
                 if (!empty($datos['activo'])) {
-                    consulta('INSERT IGNORE INTO RelacionUsuario(origen,destino,tipo) VALUES(?,?,?)',[$uid,$id,$accion]);
-                    if ($accion==='seguir') { notificar($id,'social',$_SESSION['username'].' comenzó a seguirte.'); }
-                    else { consulta("DELETE FROM RelacionUsuario WHERE tipo='seguir' AND ((origen=? AND destino=?) OR (origen=? AND destino=?))",[$uid,$id,$id,$uid]); }
+                    $insertado=consulta('INSERT IGNORE INTO RelacionUsuario(origen,destino,tipo) VALUES(?,?,?)',[$uid,$id,$accion])->rowCount();
+                    if ($accion==='seguir' && $insertado) { notificar($id,'social',$_SESSION['username'].' comenzó a seguirte.'); }
+                    if ($accion==='bloquear') { consulta("DELETE FROM RelacionUsuario WHERE tipo='seguir' AND ((origen=? AND destino=?) OR (origen=? AND destino=?))",[$uid,$id,$id,$uid]); }
                 } else { consulta('DELETE FROM RelacionUsuario WHERE origen=? AND destino=? AND tipo=?',[$uid,$id,$accion]); }
                 break;
             case 'grupo':
@@ -188,7 +194,7 @@ try {
                 $g=consulta('SELECT * FROM Grupo WHERE codigo=?',[texto($datos['codigo']??'',20)])->fetch(PDO::FETCH_ASSOC); exigir($g && !bloqueado((int)$g['id_usuario']),'Código de grupo inválido.');
                 consulta('INSERT IGNORE INTO MiembroGrupo(id_grupo,id_usuario) VALUES(?,?)',[$g['id'],$uid]); break;
             case 'grupo-evento':
-                $grupo=(int)($datos['grupo']??0); $e=obtenerEvento($id);
+                $grupo=entero($datos['grupo']??null,'El grupo no es válido.'); $e=obtenerEvento($id);
                 exigir($e['visibilidad']==='publico','Compartí el código de invitación para un evento privado.');
                 exigir((bool)consulta('SELECT 1 FROM MiembroGrupo WHERE id_grupo=? AND id_usuario=?',[$grupo,$uid])->fetchColumn(),'No pertenecés a este grupo.',403);
                 consulta('INSERT IGNORE INTO GrupoEvento(id_grupo,id_evento) VALUES(?,?)',[$grupo,$id]); break;
@@ -206,7 +212,7 @@ try {
                 consulta('INSERT INTO Reporte(id_usuario,tipo,destino,motivo) VALUES(?,?,?,?)',[$uid,$tipo,$id,$motivo]); break;
             case 'moderar':
                 exigir(esAdmin(),'No tenés permiso.',403); $r=consulta('SELECT * FROM Reporte WHERE id=?',[$id])->fetch(PDO::FETCH_ASSOC); exigir((bool)$r,'Reporte no encontrado.',404);
-                $estado=texto($datos['estado']??'',15); exigir(in_array($estado,['revisando','resuelto','descartado'],true),'Estado inválido.');
+                $estado=texto($datos['estado']??'',15); exigir(in_array($estado,['abierto','revisando','resuelto','descartado'],true),'Estado inválido.');
                 $pdo->beginTransaction();
                 if (!empty($datos['ocultar'])) {
                     if ($r['tipo']==='evento') { consulta("UPDATE Evento SET estado='Pendiente' WHERE id_evento=?",[$r['destino']]); }
@@ -221,13 +227,21 @@ try {
             case 'colaborador':
                 $e=obtenerEvento($id); exigir((int)$e['id_usuario']===$uid || esAdmin(),'Solo el organizador puede cambiar colaboradores.',403);
                 $otro=consulta('SELECT id_usuario FROM Usuario WHERE email=?',[texto($datos['email']??'',255)])->fetchColumn(); exigir($otro && !bloqueado((int)$otro),'No encontramos esa cuenta.');
-                consulta('INSERT IGNORE INTO Colaborador(id_usuario,id_evento) VALUES(?,?)',[$otro,$id]); notificar((int)$otro,'social','Ahora colaborás en '.$e['titulo'],$id); break;
+                $insertado=consulta('INSERT IGNORE INTO Colaborador(id_usuario,id_evento) VALUES(?,?)',[$otro,$id])->rowCount();
+                if($insertado)notificar((int)$otro,'social','Ahora colaborás en '.$e['titulo'],$id); break;
             case 'cupon':
                 $e=obtenerEvento($id); exigir(puedeGestionar($e),'No tenés permiso.',403);
-                $codigo=strtoupper(texto($datos['codigo']??'',30)); $descuento=(int)($datos['descuento']??0); $max=($datos['max_usos']??'')===''?null:(int)$datos['max_usos']; $vence=texto($datos['vence']??'',20);
+                $codigo=strtoupper(texto($datos['codigo']??'',30)); $descuento=entero($datos['descuento']??null,'Elegí un descuento entero entre 1 y 100.',1,100); $max=($datos['max_usos']??'')===''?null:entero($datos['max_usos'],'La cantidad de usos debe ser un entero positivo.',1,2147483647); $vence=texto($datos['vence']??'',20);
                 exigir(preg_match('/^[A-Z0-9_-]{2,30}$/',$codigo) && $descuento>=1 && $descuento<=100 && ($max===null || $max>0),'Revisá el código, porcentaje y cantidad de usos.');
-                exigir($vence==='' || strtotime($vence)>time(),'La fecha de vencimiento debe ser futura.');
-                consulta('INSERT INTO Cupon(id_evento,codigo,descuento,max_usos,vence) VALUES(?,?,?,?,?)',[$id,$codigo,$descuento,$max,$vence?:null]); break;
+                $vencimiento=$vence===''?null:DateTimeImmutable::createFromFormat('!Y-m-d\TH:i',$vence);
+                exigir($vence==='' || ($vencimiento && $vencimiento->format('Y-m-d\TH:i')===$vence && $vencimiento->getTimestamp()>time()),'Elegí una fecha y hora de vencimiento válidas y futuras.');
+                try {
+                    consulta('INSERT INTO Cupon(id_evento,codigo,descuento,max_usos,vence) VALUES(?,?,?,?,?)',[$id,$codigo,$descuento,$max,$vencimiento?$vencimiento->format('Y-m-d H:i:s'):null]);
+                } catch (PDOException $errorCupon) {
+                    if(($errorCupon->errorInfo[1]??0)===1062)throw new RuntimeException('Ese código de cupón ya existe en este evento.',409);
+                    throw $errorCupon;
+                }
+                break;
             case 'entrada':
                 $pdo->beginTransaction(); consulta('SELECT id_evento FROM Evento WHERE id_evento=? FOR UPDATE',[$id]); $e=obtenerEvento($id);
                 exigir($e['estado']==='Aprobado' && !$e['cancelado'] && fechaFin($e)>=time(),'El evento no está aprobado, ya terminó o fue cancelado.');
@@ -259,6 +273,10 @@ try {
     echo json_encode($respuesta,JSON_UNESCAPED_UNICODE|JSON_INVALID_UTF8_SUBSTITUTE);
 } catch (Throwable $error) {
     if ($pdo->inTransaction()) { $pdo->rollBack(); }
+    if ($imagenNueva!==null && !$imagenConfirmada) {
+        $rutaImagen=dirname(__DIR__,2).'/'.$imagenNueva;
+        if (is_file($rutaImagen) && !unlink($rutaImagen)) { error_log('iVento: no se pudo retirar la imagen de una operación fallida.'); }
+    }
     $codigo=$error instanceof RuntimeException && $error->getCode()>=400 && $error->getCode()<500 ? $error->getCode() : 500;
     http_response_code($codigo);
     if ($codigo===500) { error_log((string)$error); }

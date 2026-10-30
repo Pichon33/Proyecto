@@ -39,7 +39,7 @@ foreach($eventos as $i=>$e) {
     if(isset($e['recorrido'])) $sql.="INSERT INTO Recorrido(id_evento,descripcion,puntos) VALUES(@demo_evento_$i,'Recorrido ilustrativo de demostración',".sqlDemo(json_encode($e['recorrido'])).");\n";
     foreach([1,2] as $persona) {
         $sql.="INSERT INTO EventoFavorito(id_usuario,id_evento) VALUES(@demo_usuario_$persona,@demo_evento_$i);\n";
-        $estado=$persona===1?'voy':'interesado';
+        $estado=$persona===1?'voy':'interesa';
         $sql.="INSERT INTO Participacion(id_usuario,id_evento,estado) VALUES(@demo_usuario_$persona,@demo_evento_$i,'$estado');\n";
     }
     if($i<8) {

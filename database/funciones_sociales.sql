@@ -143,3 +143,7 @@ CREATE TABLE IF NOT EXISTS VisitaEvento (
  FOREIGN KEY(id_evento) REFERENCES Evento(id_evento) ON DELETE CASCADE,
  FOREIGN KEY(id_usuario) REFERENCES Usuario(id_usuario) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Compatibilidad con la presentación de octubre: el estado usado por la aplicación es "interesa".
+-- Es idempotente y no reemplaza eventos, cuentas ni interacciones.
+UPDATE Participacion SET estado='interesa' WHERE estado='interesado';

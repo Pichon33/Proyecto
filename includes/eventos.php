@@ -23,6 +23,13 @@ function texto($valor, int $maximo = 1000): string {
     exigir(is_scalar($valor) || $valor === null, 'El texto no es válido.');
     return mb_substr(trim((string) $valor), 0, $maximo);
 }
+function entero($valor, string $mensaje, int $minimo=1, int $maximo=PHP_INT_MAX): int {
+    // No convertir arrays, booleanos, decimales ni texto parcial en identificadores o cantidades.
+    exigir(is_int($valor) || is_string($valor),$mensaje);
+    $numero=filter_var($valor,FILTER_VALIDATE_INT);
+    exigir($numero!==false && $numero>=$minimo && $numero<=$maximo,$mensaje);
+    return $numero;
+}
 function h($valor): string { return htmlspecialchars((string) $valor, ENT_QUOTES, 'UTF-8'); }
 function bloqueado(int $otro): bool {
     return (bool) consulta("SELECT 1 FROM RelacionUsuario WHERE tipo='bloquear' AND ((origen=? AND destino=?) OR (origen=? AND destino=?))", [usuarioActual(), $otro, $otro, usuarioActual()])->fetchColumn();
@@ -85,9 +92,10 @@ function datosEvento(array $e): array {
     $e['mi_valoracion'] = (int)$e['mi_valoracion'];
     return $e;
 }
-function condicionEventosVisibles(): string {
-    $uid=usuarioActual();
-    if ($uid && ($_SESSION['rol']??'')==='Administrador') { return '1=1'; }
+function condicionEventosVisibles(?int $usuario=null): string {
+    $uid=$usuario??usuarioActual();
+    $rol=$uid===usuarioActual()?($_SESSION['rol']??''):consulta('SELECT rol FROM Usuario WHERE id_usuario=?',[$uid])->fetchColumn();
+    if ($uid && $rol==='Administrador') { return '1=1'; }
     return "(e.id_usuario=$uid OR EXISTS(SELECT 1 FROM Colaborador co WHERE co.id_evento=e.id_evento AND co.id_usuario=$uid)
         OR (e.estado='Aprobado' AND NOT EXISTS(SELECT 1 FROM RelacionUsuario bl WHERE bl.tipo='bloquear' AND
         ((bl.origen=$uid AND bl.destino=e.id_usuario) OR (bl.destino=$uid AND bl.origen=e.id_usuario)))
@@ -116,7 +124,7 @@ function catalogoEventos(array $f): array {
     if ($fecha==='proximos') { $condicion.=" AND $fin>=? AND COALESCE(x.cancelado,0)=0"; $valores[]=$ahora; }
     if ($fecha==='pasados') { $condicion.=" AND $fin<?"; $valores[]=$ahora; }
     if ($fecha==='hoy') { $condicion.=' AND e.fecha<=? AND COALESCE(e.fecha_fin,e.fecha)>=?'; array_push($valores,date('Y-m-d'),date('Y-m-d')); }
-    if ($fecha==='semana') { $condicion.=' AND e.fecha BETWEEN ? AND ?'; array_push($valores,date('Y-m-d'),date('Y-m-d',strtotime('+7 days'))); }
+    if ($fecha==='semana') { $condicion.=' AND COALESCE(e.fecha_fin,e.fecha)>=? AND e.fecha<=?'; array_push($valores,date('Y-m-d'),date('Y-m-d',strtotime('+7 days'))); }
     if ($precio==='gratis') { $condicion.=' AND e.precio_uyu=0'; }
     if ($precio==='pago') { $condicion.=' AND e.precio_uyu>0'; }
     $orden=texto($f['orden']??'fecha',20); $radio=texto($f['radio']??'todos',20);
@@ -151,6 +159,8 @@ function rankingComunidad(): array {
         ORDER BY puntos DESC,u.username,u.id_usuario LIMIT 10",[$uid,$uid])->fetchAll(PDO::FETCH_ASSOC);
 }
 function notificar(int $uid, string $tipo, string $mensaje, ?int $evento = null, ?string $clave = null): void {
+    // Revisar el acceso del destinatario, no el de quien está realizando la acción.
+    if ($evento!==null && !consulta('SELECT 1 FROM Evento e LEFT JOIN EventoExtra x ON x.id_evento=e.id_evento WHERE e.id_evento=? AND '.condicionEventosVisibles($uid),[$evento])->fetchColumn()) { return; }
     $campo = in_array($tipo, ['comentarios','recordatorios','cambios','social'], true) ? $tipo : 'cambios';
     $p = consulta('SELECT * FROM PerfilExtra WHERE id_usuario=?', [$uid])->fetch(PDO::FETCH_ASSOC);
     if ($p && !$p[$campo]) { return; }
@@ -167,7 +177,7 @@ function recordatorios(): void {
     if (!usuarioActual()) { return; }
     $eventos = consulta("SELECT e.id_evento,e.titulo,e.fecha,e.hora FROM Evento e JOIN Participacion p ON p.id_evento=e.id_evento
         LEFT JOIN EventoExtra x ON x.id_evento=e.id_evento WHERE p.id_usuario=? AND p.estado IN ('voy','interesa')
-        AND e.estado='Aprobado' AND COALESCE(x.cancelado,0)=0 AND TIMESTAMP(e.fecha,e.hora) BETWEEN ? AND ?",
+        AND ".condicionEventosVisibles()." AND e.estado='Aprobado' AND COALESCE(x.cancelado,0)=0 AND TIMESTAMP(e.fecha,e.hora) BETWEEN ? AND ?",
         [usuarioActual(),date('Y-m-d H:i:s'),date('Y-m-d H:i:s',time()+86400)])->fetchAll(PDO::FETCH_ASSOC);
     foreach ($eventos as $e) { notificar(usuarioActual(),'recordatorios','Tu plan se acerca: '.$e['titulo'],(int)$e['id_evento'],'recordatorio-'.usuarioActual().'-'.$e['id_evento'].'-'.$e['fecha'].'-'.$e['hora']); }
 }
@@ -183,7 +193,7 @@ function promocionarEspera(array $evento): void {
 }
 function guardarImagen(string $campo): string {
     $f = $_FILES[$campo] ?? null;
-    exigir($f && $f['error'] === UPLOAD_ERR_OK && $f['size'] <= 5*1024*1024, 'Elegí una imagen de hasta 5 MB.');
+    exigir(is_array($f) && ($f['error']??null) === UPLOAD_ERR_OK && is_int($f['size']??null) && $f['size'] > 0 && $f['size'] <= 5*1024*1024 && is_string($f['tmp_name']??null) && is_uploaded_file($f['tmp_name']), 'Elegí una imagen de hasta 5 MB.');
     $tipos = ['image/jpeg'=>'jpg','image/png'=>'png','image/webp'=>'webp'];
     $tipo = mime_content_type($f['tmp_name']);
     exigir(isset($tipos[$tipo]) && getimagesize($f['tmp_name']) !== false, 'La imagen debe ser JPG, PNG o WebP.');

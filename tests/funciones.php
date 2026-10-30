@@ -51,6 +51,7 @@ function limpiar(array $f): void {
     $ubicaciones=sql("SELECT id_ubicacion FROM Evento WHERE id_usuario IN ($marcas)",$ids)->fetchAll(PDO::FETCH_COLUMN);
     $ubicaciones=array_merge($ubicaciones,sql('SELECT id_ubicacion FROM Ubicacion WHERE nombre_lugar=?',[$f['prefijo'].'lugar'])->fetchAll(PDO::FETCH_COLUMN));
     $fotos=sql("SELECT imagen FROM FotoEvento WHERE id_usuario IN ($marcas)",$ids)->fetchAll(PDO::FETCH_COLUMN);
+    $fotos=array_unique(array_merge($fotos,sql("SELECT imagen FROM Evento WHERE id_usuario IN ($marcas)",$ids)->fetchAll(PDO::FETCH_COLUMN)));
     $pdo->beginTransaction();sql("DELETE FROM Evento WHERE id_usuario IN ($marcas)",$ids);sql("DELETE FROM Usuario WHERE id_usuario IN ($marcas)",$ids);
     foreach(array_unique($ubicaciones) as $u)sql('DELETE FROM Ubicacion WHERE id_ubicacion=? AND NOT EXISTS(SELECT 1 FROM Evento WHERE id_ubicacion=?)',[$u,$u]);
     $pdo->commit();
@@ -107,6 +108,8 @@ try {
         verificar(paginaAdmin('admin/'.$seccion.'/crear',[])['status']===200,'Formulario vacío de '.$seccion.' muestra error sin fallar');
     }
     verificar(paginaAdmin('admin/cortes',['id_corte'=>0,'estado'=>'Aprobado'],false)['status']===403,'Aprobar cortes exige CSRF');
+    verificar(paginaAdmin('admin/cortes',['id_corte'=>[1],'estado'=>'Aprobado'])['status']===400,'Corte de calle rechaza un identificador enviado como array');
+    verificar(paginaAdmin('admin/cortes',['id_corte'=>2147483647,'estado'=>'Aprobado'])['status']===404,'Corte de calle inexistente no anuncia una actualización exitosa');
     sql("UPDATE Usuario SET rol='Usuario' WHERE id_usuario=?",[$fixture['cuentas'][0]['id']]);
     verificar(paginaAdmin('admin/usuarios')['status']===403,'Rol revocado deja de dar acceso en la sesión abierta');
     sql("UPDATE Usuario SET rol='Administrador' WHERE id_usuario=?",[$fixture['cuentas'][0]['id']]);
@@ -281,6 +284,77 @@ try {
     verificar(catalogoPrueba(['texto'=>$catalogoTitulo,'pagina'=>999])['data']['pagina']===2,'Página que excede el total se ajusta a la última');
     $resumen=paginaWeb('api&accion=inicio&resumen=1');
     verificar(json_decode($resumen['raw'],true)['eventos']===[],'Inicio resumido evita cargar todo el catálogo');
+    // Regresiones de la revisión integral. Se informan juntas para detectar causas independientes.
+    $fallosRevision=[];
+    $revisar=function(bool $ok,string $mensaje) use (&$fallosRevision): void {
+        if($ok)verificar(true,$mensaje);else {$fallosRevision[]=$mensaje;echo "FALLO REVISIÓN: $mensaje\n";}
+    };
+    foreach([['valor'=>5],4.9,'5texto',true] as $malformado) {
+        $revisar(peticion('valorar',$eid,['estrellas'=>$malformado],1)['status']===400,'Valoración rechaza tipos inválidos: '.json_encode($malformado));
+    }
+    $revisar(peticion('cupon',$eid,['codigo'=>'QA25','descuento'=>25],0)['status']===409,'Cupón duplicado devuelve conflicto legible, sin error interno');
+    $revisar(peticion('cupon',$eid,['codigo'=>'QANUEVO','descuento'=>10.5],0)['status']===400,'Cupón rechaza porcentajes fraccionarios en vez de truncarlos');
+    $revisar(peticion('cupon',$eid,['codigo'=>'QAFECHA','descuento'=>10,'vence'=>date('Y',strtotime('+1 year')).'-02-30T15:00'],0)['status']===400,'Cupón rechaza fechas imposibles');
+    $venceCupon=date('Y-m-d\TH:i',strtotime('+1 day'));
+    $revisar(peticion('cupon',$eid,['codigo'=>'QAVALIDO','descuento'=>10,'vence'=>$venceCupon],0)['status']===200 && sql("SELECT vence FROM Cupon WHERE id_evento=? AND codigo='QAVALIDO'",[$eid])->fetchColumn()===str_replace('T',' ',$venceCupon).':00','Cupón guarda fecha válida en formato de base de datos');
+    $revisar(peticion('guardar-evento',0,array_replace($datos,['categoria'=>[$categoria]]),0)['status']===400,'Publicación rechaza categoría enviada como array');
+    $revisar(peticion('lista-evento',$eid,['lista'=>[$lista['id']]],1)['status']===400,'Lista rechaza identificador enviado como array');
+    $revisar(peticion('grupo-evento',$eid,['grupo'=>[$g['id']]],1)['status']===400,'Grupo rechaza identificador enviado como array');
+    $datosUbicacion=sql('SELECT u.* FROM Ubicacion u JOIN Evento e ON e.id_ubicacion=u.id_ubicacion WHERE e.id_evento=?',[$eid])->fetch(PDO::FETCH_ASSOC);
+    $ubicacionEditada=paginaAdmin('admin/ubicaciones/editar&id='.$datosUbicacion['id_ubicacion'],array_replace($datosUbicacion,['latitud'=>-34.44,'longitud'=>-57.44]));
+    $enMapa=peticion('evento',$eid,null,0)['data']['evento'];
+    $revisar($ubicacionEditada['status']===303 && $enMapa['lat']===-34.44 && $enMapa['lng']===-57.44,'Editar ubicación administrativa mueve también el pin del evento');
+    $antes=(int)sql('SELECT COUNT(*) FROM Ubicacion')->fetchColumn();
+    $mismosDatos=array_replace($editado,['latitud'=>-34.44,'longitud'=>-57.44]);
+    peticion('guardar-evento',$eid,$mismosDatos,0);
+    $revisar((int)sql('SELECT COUNT(*) FROM Ubicacion')->fetchColumn()===$antes,'Editar sin cambiar el lugar no duplica ubicaciones');
+    $multi=$eventosCatalogo[0];
+    sql('UPDATE Evento SET fecha=?,fecha_fin=? WHERE id_evento=?',[date('Y-m-d',strtotime('-2 days')),date('Y-m-d',strtotime('+2 days')),$multi]);
+    $semana=catalogoPrueba(['texto'=>$catalogoTitulo.' 00','fecha'=>'semana'])['data'];
+    $revisar($semana['total']===1,'Filtro semanal incluye eventos que comenzaron antes y siguen activos');
+    $avisosAntes=(int)sql("SELECT COUNT(*) FROM Notificacion WHERE id_usuario=? AND tipo='social'",[$fixture['cuentas'][3]['id']])->fetchColumn();
+    peticion('seguir',$fixture['cuentas'][3]['id'],['activo'=>true],1);
+    peticion('seguir',$fixture['cuentas'][3]['id'],['activo'=>true],1);
+    $revisar((int)sql("SELECT COUNT(*) FROM Notificacion WHERE id_usuario=? AND tipo='social'",[$fixture['cuentas'][3]['id']])->fetchColumn()===$avisosAntes+1,'Reintentar un seguimiento no duplica notificaciones');
+    peticion('leer',0,[],1);
+    foreach(['Aviso de prueba A','Aviso de prueba B'] as $textoAviso) sql("INSERT INTO Notificacion(id_usuario,tipo,texto) VALUES(?,'social',?)",[$fixture['cuentas'][1]['id'],$textoAviso]);
+    $ultimoAviso=(int)$pdo->lastInsertId();
+    peticion('leer',$ultimoAviso,[],1);
+    $revisar((peticion('notificaciones',0,null,1)['data']['avisos']??null)===1,'Leer un aviso devuelve el total restante, no oculta todos');
+    peticion('leer',0,[],1);
+    $revisar((peticion('notificaciones',0,null,1)['data']['avisos']??null)===0,'Leer todos los avisos deja el contador en cero');
+    // Una participación anterior no equivale a una invitación a un evento privado.
+    sql("INSERT INTO Participacion(id_usuario,id_evento,estado) VALUES(?,?,'interesa')",[$fixture['cuentas'][2]['id'],$pid]);
+    sql('UPDATE Evento SET fecha=?,hora=?,fecha_fin=?,hora_fin=? WHERE id_evento=?',[date('Y-m-d',time()+3600),date('H:i:s',time()+3600),date('Y-m-d',time()+7200),date('H:i:s',time()+7200),$pid]);
+    peticion('inicio',0,null,2);
+    $revisar((int)sql("SELECT COUNT(*) FROM Notificacion WHERE id_usuario=? AND id_evento=? AND tipo='recordatorios'",[$fixture['cuentas'][2]['id'],$pid])->fetchColumn()===0,'Recordatorios respetan privacidad aunque exista una participación anterior');
+    sql("INSERT INTO Participacion(id_usuario,id_evento,estado) VALUES(?,?,'interesa') ON DUPLICATE KEY UPDATE estado='interesa'",[$fixture['cuentas'][1]['id'],$pid]);
+    sql('UPDATE PerfilExtra SET cambios=1 WHERE id_usuario=?',[$fixture['cuentas'][1]['id']]);
+    $r=peticion('guardar-evento',$pid,array_replace($privado,['titulo'=>'Evento privado actualizado']),0);
+    $revisar($r['status']===200 && (int)sql("SELECT COUNT(*) FROM Notificacion WHERE id_usuario=? AND id_evento=? AND tipo='cambios'",[$fixture['cuentas'][2]['id'],$pid])->fetchColumn()===0,'Cambios de un evento privado no filtran el título a participantes sin invitación');
+    $revisar((int)sql("SELECT COUNT(*) FROM Notificacion WHERE id_usuario=? AND id_evento=? AND tipo='cambios'",[$fixture['cuentas'][1]['id'],$pid])->fetchColumn()===1,'Participante invitado conserva los avisos de su evento privado');
+    $imagenPrueba=sys_get_temp_dir().'/'.$fixture['prefijo'].'fallo.png';
+    try {
+        file_put_contents($imagenPrueba,base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aH1sAAAAASUVORK5CYII='));
+        $fotosAntes=glob(__DIR__.'/../public/img/eventos/*')?:[];
+        $r=peticion('foto',$eid,['foto'=>new CURLFile($imagenPrueba,'image/png','foto.png'),'descripcion[mal]'=>'texto'],1,true);
+        $fotosDespues=glob(__DIR__.'/../public/img/eventos/*')?:[];
+        $revisar($r['status']===400 && !array_diff($fotosDespues,$fotosAntes),'Foto con datos inválidos no deja un archivo huérfano');
+        foreach(array_diff($fotosDespues,$fotosAntes) as $rutaTemporal)if(is_file($rutaTemporal))unlink($rutaTemporal);
+        $datosImagen=$mismosDatos;
+        unset($datosImagen['recorrido']);
+        $datosImagen['recorrido']='[]';
+        $datosImagen['imagen']=new CURLFile($imagenPrueba,'image/png','portada.png');
+        $r=peticion('guardar-evento',$eid,$datosImagen,0,true);
+        $portadaGuardada=sql('SELECT imagen FROM Evento WHERE id_evento=?',[$eid])->fetchColumn();
+        $revisar($r['status']===200 && is_file(__DIR__.'/../'.$portadaGuardada),'Portada válida permanece en disco después de confirmar la transacción');
+        sql("INSERT INTO Participacion(id_usuario,id_evento,estado) VALUES(?,?,'voy') ON DUPLICATE KEY UPDATE estado='voy'",[$fixture['cuentas'][1]['id'],$eid]);
+        $fotosAntes=glob(__DIR__.'/../public/img/eventos/*')?:[];
+        $r=peticion('guardar-evento',$eid,array_replace($datosImagen,['cupo'=>1]),0,true);
+        $revisar($r['status']===400 && !array_diff(glob(__DIR__.'/../public/img/eventos/*')?:[],$fotosAntes),'Error transaccional de cupo elimina solo la portada recién subida');
+        $revisar(sql('SELECT imagen FROM Evento WHERE id_evento=?',[$eid])->fetchColumn()===$portadaGuardada && is_file(__DIR__.'/../'.$portadaGuardada),'Guardado fallido conserva la portada anterior y los datos originales');
+    } finally {if(is_file($imagenPrueba))unlink($imagenPrueba);}
+    if($fallosRevision)throw new RuntimeException(count($fallosRevision).' regresiones pendientes: '.implode('; ',$fallosRevision));
     echo "\n$pasos comprobaciones correctas.\n";
     if($conservar){file_put_contents($archivo,json_encode($fixture,JSON_PRETTY_PRINT));echo "Datos temporales disponibles para revisión visual: $archivo\n";}
 } finally {

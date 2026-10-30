@@ -137,7 +137,7 @@ $avatarDisponible = !empty($perfil['avatar']) && is_file(dirname(__DIR__,3).'/'.
     <a class="enlace-saltar" href="#contenido">Ir al contenido</a>
     <?php require dirname(__DIR__,3).'/includes/navegacion.php'; ?>
     <main id="contenido" class="mx-auto w-full max-w-4xl px-4 py-6 sm:px-6 sm:py-8">
-        <a href="index.php?ruta=perfil" class="iv-back">← Mi perfil</a>
+        <a href="index.php?ruta=perfil" class="iv-back"><?= iconoSvg('volver') ?> Mi perfil</a>
         <header class="mb-5 mt-4">
             <span class="iv-kicker">Tu cuenta, a tu manera</span>
             <h1 class="iv-title">Editar perfil</h1>
