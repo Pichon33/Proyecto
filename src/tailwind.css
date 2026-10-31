@@ -102,10 +102,11 @@
     .iv-heart[aria-pressed=true] { @apply bg-violet-600 text-white; }
     .iv-heart svg { @apply h-5 w-5; }
     .iv-badge { @apply inline-flex items-center gap-1 rounded-full bg-violet-600 px-2.5 py-1 text-[10px] font-bold text-white; }
-    .iv-map-shell { @apply relative isolate min-h-70 overflow-hidden rounded-2xl bg-sky-100 dark:bg-slate-800; }
+    .iv-map-shell { @apply relative isolate flex min-h-70 flex-col overflow-hidden rounded-2xl bg-sky-100 dark:bg-slate-800; }
     .iv-map-layout { @apply grid min-w-0 gap-2 lg:grid-cols-[320px_minmax(0,1fr)] lg:gap-4; }
     .iv-map-layout.iv-eventos-cerrados { @apply lg:grid-cols-1; }
-    .iv-map-shell #mapa { @apply min-h-0 h-[max(280px,calc(100dvh-490px))] lg:h-[650px]; }
+    /* En escritorio la fila puede crecer con las tarjetas: Leaflet debe ocuparla completa. */
+    .iv-map-shell #mapa { @apply min-h-0 flex-auto shrink-0 h-[max(280px,calc(100dvh-490px))] lg:h-[650px]; }
     .iv-map-layout.iv-eventos-cerrados #mapa { @apply h-[max(280px,calc(100dvh-280px))] lg:h-[650px]; }
     .iv-eventos-desplegable { @apply grid grid-rows-[1fr] opacity-100 transition-[grid-template-rows,opacity] duration-200 motion-reduce:transition-none; }
     .iv-eventos-cerrados .iv-eventos-desplegable { @apply grid-rows-[0fr] opacity-0; }
