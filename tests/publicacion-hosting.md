@@ -1,5 +1,54 @@
 # Publicación en InfinityFree
 
+## Actualización del 31/10/2026
+
+**Archivos publicados y navegación pública verificada.** Se desplegó el código de
+`6415013b5bdd13884dccf1cef02f039115d06dd1` de `Pichon33/Proyecto`, que incluye la
+integración de Bruno, iconos SVG, mejoras de tema oscuro, correcciones funcionales
+y el ajuste de altura del mapa en escritorio.
+
+- Se subió y extrajo `ivento-6415013.zip` en `/htdocs/Proyecto-master`: 110 archivos
+  públicos, 9 MiB, rutas internas con `/`.
+- SHA256 del paquete: `12f72d29a76178f74fb0ff8f97ef95ed1a336146a1b20c2eb3ee27d3c9a9b529`.
+- El paquete excluye configuraciones privadas, conexión local, SQL y fotografías
+  cargadas por usuarios. Se conservaron `database/db.php`, `database/correo.local.php`
+  y las imágenes existentes del hosting. No se reimportó la muestra de eventos.
+- Se añadió también `robots.txt` a `/htdocs`, raíz pública del dominio. El File
+  Manager confirmó el archivo de 808 bytes; su lectura pública fue bloqueada por
+  el navegador, por lo que no se afirma una comprobación HTTP de ese archivo.
+- El inicio muestra Bruno correctamente cargado y el fondo oscuro nuevo
+  (`rgb(22,28,45)`), sin desborde horizontal en la ventana de escritorio utilizada.
+- El mapa mantiene los diez eventos Demo. Mapa y contenedor miden 711,5 px con
+  tarjetas abiertas y 650 px con ellas cerradas: separación inferior de 0 px.
+  Se comprobó ocultar y volver a mostrar las tarjetas y abrir un marcador.
+- El detalle de la feria carga portada, información y comentario de muestra.
+  Las pantallas de ingreso y recuperación abren correctamente. No se enviaron
+  correos reales ni se repitió una prueba de acceso completo en este despliegue.
+- No se registraron errores de consola en las comprobaciones de mapa y detalle.
+- Evidencia local: `tests/hosting-bruno-20261031.png`. Las capturas no forman parte
+  del paquete público ni se agregan al repositorio.
+
+**Corrección de datos completada en phpMyAdmin:** se comprobó que `estado` es
+`varchar(15)` y que había 10 participaciones con el valor antiguo `interesado`,
+1 con `interesa` y 12 con `voy`. Se ejecutó únicamente:
+
+```sql
+UPDATE Participacion SET estado='interesa' WHERE estado='interesado';
+```
+
+phpMyAdmin confirmó 10 filas afectadas. La consulta posterior devolvió 11
+participaciones `interesa` y 12 `voy`: se conservaron las 23 filas. No se borraron
+eventos, cuentas ni interacciones. Evidencia local adicional:
+`tests/hosting-participaciones-20261031.png`.
+
+La descarga de una copia nueva del hosting no llegó a verificarse; no se presenta
+como respaldo completado. El respaldo de código previo sigue en la rama
+`respaldo-master-20261029` (`cb150f98291dac9c430d14b9846d89a981043fb9`).
+La actualización de PHP local fue pospuesta por el usuario; continúa en 8.2.12.
+La prueba en un teléfono físico sigue pendiente.
+
+## Historial: publicación inicial
+
 Estado al 18/10/2026: **archivos publicados y navegación pública verificada**. El usuario confirmó que el acceso y el correo funcionan en el hosting. Esa confirmación es del usuario; no se presenta como una prueba automatizada de entrega.
 
 ## Destino
